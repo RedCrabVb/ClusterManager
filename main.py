@@ -1,13 +1,24 @@
 from flask import Flask, jsonify, request
+import paramiko
+from ping3 import ping, verbose_ping
 
 app = Flask(__name__)
 
 hosts = [
     {
         'id': 1,
-        'name': 'host1',
-        'user': 'admin',
-        'password': 'password',
+        'hostname': '192.168.56.110',
+        'port': 21,
+        'username': 'root',
+        'password': '1234',
+        'private_ssh': None
+    },
+    {
+        'id': 2,
+        'hostname': '192.138.56.110',
+        'port': 21,
+        'username': 'root3',
+        'password': '1234',
         'private_ssh': None
     }
 ]
@@ -22,17 +33,38 @@ def get_hosts():
 def put():
     hosts.append(None)
 
+
 @app.route('/host', methods=['GET'])
 def host_ping():
-    id = request.args.get('id', default = 1, type = int)
-    print(id)
-    return {'id': id}
+    id = request.args.get('id', default=1, type=int)
 
-@app.route('/hosts', methods=['GET'])
+    host = None
+    for i_host in hosts:
+        if i_host['id'] == id:
+            host = i_host
+
+    print(id)
+    # verbose_ping(host['hostname'], count=3)
+    delay = ping(host['hostname'], timeout=2)
+    return {'id': id, 'delay': delay}
+
+
+@app.route('/host/shell', methods=['GET'])
 def host_shell_execute():
     shell = request.args.get('shell')
+    id = request.args.get('id')
     print(shell)
-    return shell
+
+    host = None
+    for i_host in hosts:
+        if i_host['id'] == id:
+            host = i_host
+
+    ssh_client = paramiko.SSHClient()
+    ssh_client.connect(hostname=host['hostname'], username=host['username'], password=host['password'])
+    stdin, out, err = ssh_client.exec_command('ls -l ')
+    return out.readline()
+
 
 if __name__ == '__main__':
     print('Start ClusterManager')
