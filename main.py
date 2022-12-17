@@ -52,7 +52,7 @@ def host_ping():
 @app.route('/host/shell', methods=['GET'])
 def host_shell_execute():
     shell = request.args.get('shell')
-    id = request.args.get('id')
+    id = request.args.get('id', type=int)
     print(shell)
 
     host = None
@@ -61,8 +61,10 @@ def host_shell_execute():
             host = i_host
 
     ssh_client = paramiko.SSHClient()
+    ssh_client.load_system_host_keys()
     ssh_client.connect(hostname=host['hostname'], username=host['username'], password=host['password'])
-    stdin, out, err = ssh_client.exec_command('ls -l ')
+    stdin, out, err = ssh_client.exec_command(shell)
+    out.read()
     return out.readline()
 
 
