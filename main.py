@@ -1,13 +1,15 @@
-from flask import Flask, jsonify, request
 import paramiko
-from ping3 import ping, verbose_ping
+import uvicorn
+from fastapi import FastAPI
+from ping3 import ping
 
-app = Flask(__name__)
+app = FastAPI()
+
 
 hosts = [
     {
         'id': 1,
-        'hostname': '192.168.56.110',
+        'hostname': '192.168.56.114',
         'port': 21,
         'username': 'root',
         'password': '1234',
@@ -15,7 +17,7 @@ hosts = [
     },
     {
         'id': 2,
-        'hostname': '192.138.56.110',
+        'hostname': '192.138.56.114',
         'port': 21,
         'username': 'root3',
         'password': '1234',
@@ -24,9 +26,9 @@ hosts = [
 ]
 
 
-@app.route('/hosts', methods=['GET'])
+@app.get('/hosts')
 def get_hosts():
-    return jsonify({'hosts': hosts})
+    return ({'hosts': hosts})
 
 
 @app.route('/hosts', methods=['PUT'])
@@ -34,10 +36,8 @@ def put():
     hosts.append(None)
 
 
-@app.route('/host', methods=['GET'])
-def host_ping():
-    id = request.args.get('id', default=1, type=int)
-
+@app.get('/host')
+def host_ping(id: int):
     host = None
     for i_host in hosts:
         if i_host['id'] == id:
@@ -49,10 +49,8 @@ def host_ping():
     return {'id': id, 'delay': delay}
 
 
-@app.route('/host/shell', methods=['GET'])
-def host_shell_execute():
-    shell = request.args.get('shell')
-    id = request.args.get('id', type=int)
+@app.get('/host/shell')
+def host_shell_execute(shell, id: int):
     print(shell)
 
     host = None
@@ -64,10 +62,14 @@ def host_shell_execute():
     ssh_client.load_system_host_keys()
     ssh_client.connect(hostname=host['hostname'], username=host['username'], password=host['password'])
     stdin, out, err = ssh_client.exec_command(shell)
-    out.read()
+    # out.read()
     return out.readline()
 
 
+@app.get("/")
+async def read_root():
+    return {"Hello": "World"}
+
 if __name__ == '__main__':
     print('Start ClusterManager')
-    app.run(debug=True)
+    uvicorn.run(app, host="localhost", port=5000, log_level="info")
