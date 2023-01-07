@@ -24,7 +24,45 @@ hosts = [
         'private_ssh': None
     }
 ]
+# host
+# add to CM
+# check/ping connection
+#
 
+cluster = [
+    {
+        'id': 1,
+        'name': 'test cluster',
+        'description': 'description cluster',
+        'services': [],
+        'hosts': []
+    }
+]
+
+service = {
+    'id': 1,
+    'name': 'name service',
+    'install_command_ansibele': "run install job",
+    'active': 'stop/start'
+}
+# service.config.addParams
+# service.config.addHost
+
+job = {
+    'id': 1,
+    'name': 'install hadoop',
+    'commands_ansible_script': ["check", "install", "test"]
+}
+
+# add bundle
+
+# list cluster
+
+# job run:
+# list host get
+# gen on list host
+# gen config
+# run ansible script
 
 @app.get('/hosts')
 def get_hosts():

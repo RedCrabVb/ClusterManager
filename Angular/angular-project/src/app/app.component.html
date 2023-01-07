@@ -1,0 +1,9 @@
+<div class="max-w-2xl container mx-auto pt-5">
+<h1 class="font-bload text-center border">Hello, welcom</h1>
+
+<!-- <app-product [product]="product[0]"></app-product>
+<app-product [product]="product[1]"></app-product> -->
+
+<app-product *ngFor="let product of products"
+[product]="product"></app-product>
+</div>

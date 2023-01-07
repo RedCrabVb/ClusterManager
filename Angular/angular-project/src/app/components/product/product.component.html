@@ -1,0 +1,16 @@
+<div class="py-4 border flex items-center mb-5">
+    <h1>Product Id {{ product.Id }}</h1>
+    <p class="mb-2">Product {{ product.Title }}</p>
+
+    <button class="boroder py-2 px-4 rounded btn "
+    [ngClass]="{
+        'btn-primary' : !description,
+        'btn-warning': description
+    }"
+    (click)="description = !description"
+    >{{ description ? "Hide" : "Show"}} description</button>
+
+    <div *ngIf="description">
+    <p>Product Description {{ product.Description }}</p>
+    </div>
+</div>
