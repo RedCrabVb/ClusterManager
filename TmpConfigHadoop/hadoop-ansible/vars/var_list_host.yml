@@ -1,0 +1,7 @@
+iter:
+  - key: master
+    val: 192.168.56.118
+  - key: workers
+    val: 192.168.56.119
+  - key: workers
+    val: 192.168.56.11944
