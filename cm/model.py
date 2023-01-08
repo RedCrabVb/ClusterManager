@@ -6,13 +6,6 @@ import paramiko
 from itertools import groupby
 
 
-# installationFile = {'InitService': serviceInit.to_json(), 'HdfsService': serviceHdfs.to_json(),
-#                     'ActionTODO': ['stop', 'run', 'addHost']}
-# class InitFile:
-#     def __init__(self, _init_service):
-#         self.init_service = _init_service
-#         self.
-
 class ServiceRequirementGroup:
 
     def __init__(self, type_host, count, quantity_max):
@@ -40,14 +33,6 @@ class Action:
         self.shell = shell
         self.params = params
 
-# class Service:
-#
-#     def __init__(self, _id, _name, _actions, _idCluster, _hosts):
-#         self.id = _id
-#         self.name = _name
-#         self.actions = _actions
-#         self.idCluster = _idCluster
-#         self.hosts = _hosts
 
 class Vars:
 
@@ -131,6 +116,7 @@ class ServiceTemplate:
                 for g2 in g:
                     f.write(g2.hostname + '\n')
 
+    # todo: must move to run job service
     def run_action_sh(self, extid_action, path_cluster, vars_shell=None):
         wd = os.getcwd()
         os.chdir(path_cluster)
@@ -158,9 +144,6 @@ class HostInCluster:
         self.username = _host.username
         self.password = _host.password
         self.group = _group
-
-
-
 
 
 class Host:

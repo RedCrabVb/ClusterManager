@@ -6,8 +6,6 @@ from cm.model import *
 if __name__ == '__main__':
     print('Start ClusterManager')
 
-    # # TODO: download hadoop
-    # # TODO: format vars
     # # user: load config
     # serviceInit = ServiceTemplate('INIT_HADOOP', 'Init service hadoop',
     #                               [Action('etc_hosts_update', 'Add info about hosts to /etc/hosts',
@@ -74,9 +72,8 @@ if __name__ == '__main__':
     print(json.dumps(installationFile))
     # serviceInit.run_action_sh('etc_hosts_update', 'ConfigHadoop/hadoop-ansible')
     serviceInit.run_action_sh('copy_file_hadoop', serviceInit.cluster_path, serviceInit.copy_file_hadoop)
+    # TODO: how to update vars .yaml?
     # serviceHdfs.run_action_sh('install_master', 'ConfigHadoop/hadoop-ansible')
     # serviceHdfs.run_action_sh('install_worker', 'ConfigHadoop/hadoop-ansible')
-    # TODO: format file dir hadoop ansible
-    # TODO: run action from command
 
     uvicorn.run(api.app, host="localhost", port=5000, log_level="info")

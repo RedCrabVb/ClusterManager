@@ -1,3 +1,5 @@
+# todo: connect to postgres, postgres continue table
+
 db = {
     'hosts': [],
     'init_files': [],
