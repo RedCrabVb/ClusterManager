@@ -100,6 +100,7 @@ class ServiceTemplate:
         self.hosts.append(HostInCluster(host, group))
 
     def save_hosts_to_cluster(self, path_cluster):
+        return_code = subprocess.run(f'export ANSIBLE_CONFIG={os.getcwd()}/{path_cluster}', shell=True)
         with open(path_cluster + "/vars/var_list_host.yml", 'w') as f:
             f.write('iter:\n')
             for i, h in enumerate(self.hosts):
@@ -114,7 +115,7 @@ class ServiceTemplate:
             for g in grouped:
                 f.write(f'[{g[0].group}]\n')
                 for g2 in g:
-                    f.write(g2.hostname + '\n')
+                    f.write(g2.hostname + f' ansible_user={g2.username} ansible_ssh_pass={g2.password}\n')
 
     # todo: must move to run job service
     def run_action_sh(self, extid_action, path_cluster, vars_shell=None):
@@ -155,15 +156,18 @@ class Host:
 
     def test_connection(self):
         try:
-            subprocess.call(f'sshpass -p "{self.password}" ssh-copy-id {self.username}@{self.hostname}', shell=True)
+            # ssh_copy_id_shell = f'sshpass -p "{self.password}" ssh {self.username}@{self.hostname} "echo \"`cat ' \
+            #                     f'~/.ssh/id_rsa.pub`\" >> ~/.ssh/authorized_keys" '
+            # print(ssh_copy_id_shell)
+            # return_code = subprocess.call(ssh_copy_id_shell, shell=True)
+            # print(return_code)
 
             ssh_client = paramiko.SSHClient()
-            ssh_client.load_system_host_keys()
+            # ssh_client.load_system_host_keys()
 
             ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-            ssh_client.connect(hostname=self.hostname, username=self.username, password=self.password,
-                               look_for_keys=False, allow_agent=False)
+            ssh_client.connect(hostname=self.hostname, username=self.username, password=self.password)
             ssh_client.close()
             return True
         except paramiko.ssh_exception.AuthenticationException as e:
