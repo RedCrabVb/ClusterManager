@@ -7,12 +7,12 @@ db = {
 }
 
 
-def add_init_file(i):
+def add_init_file(name, version):
     # todo: path FS
-    db['init_files'].append(i)
+    db.get('init_files').append({name, version})
 
 
-def create_cluster(i_file):
+def create_cluster(cluster):
     # todo: cp i_file to new dir
-    db['clusters'].append(None)
+    db['clusters'].append(cluster)
 

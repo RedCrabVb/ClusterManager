@@ -1,10 +1,13 @@
 import uvicorn
 
-from cm import api
+# from cm import api
 from cm.model import *
+
+import cm.api
 
 if __name__ == '__main__':
     print('Start ClusterManager')
+    uvicorn.run(cm.api.app, host="localhost", port=5000, log_level="info")
 
     # # user: load config
     # serviceInit = ServiceTemplate('INIT_HADOOP', 'Init service hadoop',
@@ -73,6 +76,8 @@ if __name__ == '__main__':
                                     'username_master': hostMaster.username, 'password_master': hostMaster.password, 'hostname_master': hostMaster.hostname,
                                     'download_path': '/' + hostMaster.username}
 
+
+
     # installationFile = [serviceInit.to_json(), serviceHdfs.to_json()]
     # print(json.dumps(installationFile))
     serviceInit.run_action_sh('etc_hosts_update', 'ConfigHadoop/hadoop-ansible')
@@ -81,4 +86,3 @@ if __name__ == '__main__':
     serviceHdfs.run_action_sh('install_master', 'ConfigHadoop/hadoop-ansible')
     serviceHdfs.run_action_sh('install_worker', 'ConfigHadoop/hadoop-ansible', serviceHdfs.install_worker)
 
-    # uvicorn.run(api.app, host="localhost", port=5000, log_level="info")

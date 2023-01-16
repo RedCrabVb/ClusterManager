@@ -4,7 +4,7 @@ import { ProductsService } from './services/Products.service';
 import { InitFileService } from './services/initfile.service'; 
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-initfile',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
@@ -17,9 +17,6 @@ export class AppComponent {
   }
 
   sendInitFile() {
-    console.log('Click me!')
-    // this.productsService.getAll().subscribe((res) => {console.log(res)});
-    this.initFileService.get().subscribe((res) => {console.log(res)});
-    this.initFileService.uploadFile('bla-bla', '0101010', 'hadoop-test-user-name').subscribe((res) => {console.log(res)})
+
   }
 }
