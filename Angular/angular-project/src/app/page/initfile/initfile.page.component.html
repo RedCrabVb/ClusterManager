@@ -7,8 +7,26 @@
     <item-initfile *ngFor="let product of products"
     [initfile]="product"></item-initfile> 
 
-<!-- <button (click)="sendInitFile()">Send InitFile</button> -->
 
 <!-- <app-product *ngFor="let product of products" -->
 <!-- [product]="product"></app-product> -->
 </div>
+
+
+<button (click)="openModal('custom-modal-1')">Add initfile</button>
+
+<jw-modal id="custom-modal-1">
+    <div class="max-w-2xl container mx-auto pt-5">
+        <h1>InitFile add</h1>
+        <form (ngSubmit)="sendInitFile($event)">
+
+(            <input type="text" name="nameuser" (keyup)="sendInitFile($event)"/> <BR>
+)
+            <button type="submit">Send InitFile</button> <BR>
+
+        </form>
+
+        <button (click)="closeModal('custom-modal-1');">Close</button> <BR>
+
+    </div>
+</jw-modal>

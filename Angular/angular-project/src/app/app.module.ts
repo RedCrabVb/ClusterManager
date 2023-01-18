@@ -9,6 +9,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppHeaderComponent } from './components/header/app-header';
 import { InitFilePage } from './page/initfile/initfile.page.component';
 import { InitFileComponent } from './components/initfile/initfile.component';
+import { ModalComponent } from './components/initfile/initfile.modal.component';
+import { ModalService } from './components/initfile/initfile.modalService';
 
 
 @NgModule({
@@ -17,6 +19,7 @@ import { InitFileComponent } from './components/initfile/initfile.component';
     PrductComponent,
     AppHeaderComponent, 
     InitFileComponent,
+    ModalComponent,
     InitFilePage
   ],
   imports: [
