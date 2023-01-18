@@ -16,9 +16,12 @@
         class="collapse navbar-collapse"
         id="jumbotronExample"
       >
-        <!-- <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item active">
-            <a class="nav-link" aria-current="page" href="/initfile">InitFile</a>
+            <a class="nav-link" aria-current="page" routerLink="/welcome">Welcome</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/initfile">initfile</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">Cluster</a>
@@ -26,12 +29,8 @@
           <li class="nav-item">
             <a class="nav-link" href="#">Host</a>
           </li>
-        </ul> -->
-        <nav>
-            <a routerLink="">Home</a>
-            <a routerLink="">InitFile</a>
-            <router-outlet></router-outlet>
-        </nav>
+          <router-outlet></router-outlet>
+        </ul>
       </div>
     </div>
   </nav>

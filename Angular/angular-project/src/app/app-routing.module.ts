@@ -1,14 +1,18 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { InitFileComponent } from './components/initfile/initfile.component';
 import { AppComponent } from './app.component';
+import { InitFilePage } from './page/initfile/initfile.page.component';
+import { WelcomeComponent } from './page/welcome/welcom.page.component';
 
 const routes: Routes = [
+  // {
+    // 'path': '**', component: AppComponent
+  // }, 
   {
-    'path': '**', component: AppComponent
-  }, 
+    'path': 'initfile', component: InitFilePage
+  },
   {
-    'path': 'initfile', component: InitFileComponent
+    'path': 'welcome', component: WelcomeComponent
   }
 ];
 

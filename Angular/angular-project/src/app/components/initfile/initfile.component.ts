@@ -1,10 +1,11 @@
 import { Component, Input } from '@angular/core';
+import { IInitFile } from 'src/app/date/IInitfile';
 
 @Component({
-    selector: 'app-header',
+    selector: 'item-initfile',
     templateUrl: './initfile.component.html',
 })
 
 export class InitFileComponent {
-    @Input() title: string;
+    @Input() initfile: IInitFile;
 }
