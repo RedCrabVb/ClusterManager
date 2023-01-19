@@ -1,18 +1,30 @@
-<!-- <app-header title='f'></app-header> -->
-<!-- <app-initfile></app-initfile> -->
-<div class="max-w-2xl container mx-auto pt-5">
+<div class="max-w-2xl container mx-auto pt-5 mb-2">
 
-    <h1 class="font-bload text-center border">Init file</h1>
-
-    <item-initfile *ngFor="let product of products" [initfile]="product"></item-initfile>
+    <!-- <h1 class="font-bload text-center border">Init file</h1> -->
+    <button class="btn btn-info" (click)="openModal('custom-modal-1')">Add initfile</button>
 
 
-    <!-- <app-product *ngFor="let product of products" -->
-    <!-- [product]="product"></app-product> -->
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Namefile</th>
+            <th scope="col">Version</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let item of products">
+            <tr>
+              <td>{{item.name }}</td>
+              <td>{{item.namefile}}</td>
+              <td>{{item.version}} </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
 </div>
 
 
-<button class="btn btn-info" (click)="openModal('custom-modal-1')">Add initfile</button>
 
 <jw-modal id="custom-modal-1">
     <div class="max-w-2xl container mx-auto pt-5">

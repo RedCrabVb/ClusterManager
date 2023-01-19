@@ -1,5 +1,5 @@
 export interface IInitFile {
     name: string
-    nameinitfile: string
+    namefile: string
     version: string
 }

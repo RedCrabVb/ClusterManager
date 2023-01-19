@@ -3,6 +3,7 @@ import { InitFile as data } from '../../date/initfile';
 import { ProductsService } from '../../services/Products.service';
 import { InitFileService } from '../../services/initfile.service';
 import { ModalService } from 'src/app/components/modal/modalService';
+import { IInitFile } from 'src/app/date/IInitfile';
 // import { ConsoleReporter } from 'jasmine';
 
 @Component({
@@ -19,7 +20,10 @@ export class InitFilePage {
   fileToUpload: File;
 
   constructor(private productsService: ProductsService, private initFileService: InitFileService, private modalService: ModalService) {
-
+    this.initFileService.getAllInitfiles().subscribe((initfiles: any) => {
+      console.log(initfiles);
+      this.products = initfiles
+    })
   }
 
   updateNameUser(event: any) {
@@ -35,10 +39,14 @@ export class InitFilePage {
     reader.onload = () => {
         console.log(reader.result);
         if (reader.result != undefined) {
-          this.initFileService.uploadFile(this.namefile, reader.result.toString(), this.nameuser).subscribe((res) => {console.log(res)})
+          this.initFileService.uploadFile(this.namefile, reader.result.toString(), this.nameuser).subscribe((res) => {console.log(res); alert("success upload!")})
         }
     };
 
+    this.initFileService.getAllInitfiles().subscribe((initfiles: any) => {
+      console.log(initfiles);
+      this.products = initfiles
+    })
   }
 
   handleFileInput(event: Event) {

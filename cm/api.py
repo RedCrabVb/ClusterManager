@@ -107,7 +107,10 @@ def upload(item: Item):#name cluster
     Path(f'{InitFilesDir}/{item.name}').mkdir(parents=True, exist_ok=True)
     with open(f'{InitFilesDir}/{item.name}/{item.namefile}', 'wb') as finit:
         finit.write(base64.standard_b64decode(item.data))
-    add_init_file('name', item.name)
+
+    # todo: unzip
+
+    add_init_file(item.name, item.namefile, 'v0')
 
 @app.get("/")
 async def read_root():

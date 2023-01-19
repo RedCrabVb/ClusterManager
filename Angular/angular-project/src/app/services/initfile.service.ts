@@ -12,13 +12,6 @@ export class InitFileService {
 
     // todo: limit version
     uploadFile(namefile: string, data: string, name: string) {
-        // let body = new HttpParams()
-        // .set('namefile', namefile)
-        // .set('data', data)
-        // .set('name', name);
-
-        // let headers = new Headers();
-        //   let requestOptions = new RequestOptions({headers});
         let headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });
@@ -28,6 +21,12 @@ export class InitFileService {
         return this.http.post(
             this.config.urlBackEnd + 'upload/initfile/test', {namefile, data, name}
         );
+    }
+
+    getAllInitfiles() {
+        return this.http.get(
+            this.config.urlBackEnd + 'initfile'
+        )
     }
 
     get() {
