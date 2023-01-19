@@ -4,29 +4,51 @@
 
     <h1 class="font-bload text-center border">Init file</h1>
 
-    <item-initfile *ngFor="let product of products"
-    [initfile]="product"></item-initfile> 
+    <item-initfile *ngFor="let product of products" [initfile]="product"></item-initfile>
 
 
-<!-- <app-product *ngFor="let product of products" -->
-<!-- [product]="product"></app-product> -->
+    <!-- <app-product *ngFor="let product of products" -->
+    <!-- [product]="product"></app-product> -->
 </div>
 
 
-<button (click)="openModal('custom-modal-1')">Add initfile</button>
+<button class="btn btn-info" (click)="openModal('custom-modal-1')">Add initfile</button>
 
 <jw-modal id="custom-modal-1">
     <div class="max-w-2xl container mx-auto pt-5">
         <h1>InitFile add</h1>
-        <form (ngSubmit)="sendInitFile($event)">
+        <div >
 
-(            <input type="text" name="nameuser" (keyup)="sendInitFile($event)"/> <BR>
-)
-            <button type="submit">Send InitFile</button> <BR>
+            <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="nameInitFile">Name initfile</span>
+                </div>
+                <input type="text" name="nameInitFile" aria-label="Small" aria-describedby="nameInitFile"
+                    (keyup)="updateNameUser($event)" />
+            </div>
 
-        </form>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Upload InitFile</span>
+                </div>
+                <div class="input-group-prepend">
+                    <label for="inputGroupFile" class="form-control">{{ namefile ? namefile : 'Choose file'}}</label>
+                </div>
+                <div class="custom-file">
+                  <input type="file" class="file-input" (change)="handleFileInput($event)" id="inputGroupFile">
+                  <label for="inputGroupFile" type="text" name="nameInitFile" aria-label="Small" disabled="true"></label>
+                </div>
+            </div>
 
-        <button (click)="closeModal('custom-modal-1');">Close</button> <BR>
+            <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                    <button class="btn btn-info" (click)="sendInitFile()">Send InitFile</button> <BR>
+                </div>
+            </div>
+
+        </div>
+
+        <button class="btn btn-secondary" (click)="closeModal('custom-modal-1');">Close</button> <BR>
 
     </div>
 </jw-modal>

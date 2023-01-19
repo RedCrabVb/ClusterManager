@@ -6,6 +6,10 @@ from cm.db import *
 from fastapi.middleware import Middleware
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+import base64
+from pathlib import Path
+
+InitFilesDir = './TmpConfigHadoop'
 
 origins = [
     "http://localhost:4200",
@@ -96,9 +100,14 @@ def list_init_file():
 # dev
 @app.post("/upload/initfile/test")
 def upload(item: Item):#name cluster
-    print(item)
-    add_init_file('name', item.name)
 
+
+    print(item)
+
+    Path(f'{InitFilesDir}/{item.name}').mkdir(parents=True, exist_ok=True)
+    with open(f'{InitFilesDir}/{item.name}/{item.namefile}', 'wb') as finit:
+        finit.write(base64.standard_b64decode(item.data))
+    add_init_file('name', item.name)
 
 @app.get("/")
 async def read_root():

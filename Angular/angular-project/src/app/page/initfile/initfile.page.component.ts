@@ -1,27 +1,52 @@
 import { Component, Input } from '@angular/core';
 import { InitFile as data } from '../../date/initfile';
-import { ProductsService } from '../../services/Products.service'; 
-import { InitFileService } from '../../services/initfile.service'; 
+import { ProductsService } from '../../services/Products.service';
+import { InitFileService } from '../../services/initfile.service';
 import { ModalService } from 'src/app/components/modal/modalService';
+// import { ConsoleReporter } from 'jasmine';
 
 @Component({
   selector: 'app-initfile',
   templateUrl: './initfile.page.component.html',
-  // styleUrls: ['./app.component.css']
+  styleUrls: ['./initfile.page.component.css']
 })
 export class InitFilePage {
   title = 'angular-project';
   products = data
-  nameuser = ''  
+
+  nameuser = ''
+  namefile: string = ''
+  fileToUpload: File;
 
   constructor(private productsService: ProductsService, private initFileService: InitFileService, private modalService: ModalService) {
 
   }
 
-  sendInitFile(event: any) {
+  updateNameUser(event: any) {
     console.log(this.nameuser)
     console.log(event)
     this.nameuser = event.target.value
+  }
+
+  sendInitFile() {
+    const reader = new FileReader();
+
+    reader.readAsDataURL(this.fileToUpload);
+    reader.onload = () => {
+        console.log(reader.result);
+        if (reader.result != undefined) {
+          this.initFileService.uploadFile(this.namefile, reader.result.toString(), this.nameuser).subscribe((res) => {console.log(res)})
+        }
+    };
+
+  }
+
+  handleFileInput(event: Event) {
+    var tmpFile = (event.currentTarget as HTMLInputElement).files?.item(0);
+    if (tmpFile != undefined) {
+      this.fileToUpload = tmpFile;
+      this.namefile = this.fileToUpload.name;
+    }
   }
 
   ngOnInit() {
