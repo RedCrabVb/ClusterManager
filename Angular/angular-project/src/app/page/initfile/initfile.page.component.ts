@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { InitFile as data } from '../../date/initfile';
 import { ProductsService } from '../../services/Products.service'; 
 import { InitFileService } from '../../services/initfile.service'; 
-import { ModalService } from 'src/app/components/initfile/initfile.modalService';
+import { ModalService } from 'src/app/components/modal/modalService';
 
 @Component({
   selector: 'app-initfile',

@@ -88,12 +88,12 @@ def create_cluster(name: str, description: str, initfile_name: str):
     create_cluster({name, description, item})
     return {'Status': 'Ok'}
 
-
+# dev
 @app.get('/initfile')
 def list_init_file():
     return db.get('init_files')
 
-
+# dev
 @app.post("/upload/initfile/test")
 def upload(item: Item):#name cluster
     print(item)
