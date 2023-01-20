@@ -1,5 +1,5 @@
 export interface IHost {
-    username: string
-    hostname: string
-    password: string
+    username: string | null
+    hostname: string | null
+    password: string | null
 } 

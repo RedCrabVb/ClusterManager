@@ -65,7 +65,7 @@ def list_tasks():
     return []
 
 
-@app.get('/host')
+@app.get('/hosts')
 def list_host():
     return db['hosts']
 

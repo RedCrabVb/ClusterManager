@@ -1,59 +1,63 @@
-import { Component, Input } from '@angular/core';
-import { product as data } from '../../date/product';
-import { ProductsService } from '../../services/Products.service'; 
-import { InitFileService } from '../../services/initfile.service'; 
+import { Component, Input, OnInit } from '@angular/core';
 import { HostsService } from 'src/app/services/hosts.service';
 import { ModalService } from 'src/app/components/modal/modalService';
 import { IHost } from 'src/app/date/IHost';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-welcome',
   templateUrl: './hosts.page.html',
 })
-export class HostsComponent {
-    hosts = [
-        {
-            "hostname": "192.176",
-            "username": "root"
-        }
-    ]
+export class HostsComponent implements OnInit {
+    hosts: IHost[] = []
 
-    hostAdd: IHost = {
-        hostname: '',
-        username: '',
-        password: ''
-    }
-
+    hostnameModal = new FormControl('')
+    usernameModal = new FormControl('')
+    passwordModal = new FormControl('')
     
     constructor(private hostsService: HostsService, private modalService: ModalService) {
 
     }
+    
+    ngOnInit(): void {
+        this.hostsService.getAllHosts().subscribe((res: any) =>{
+            this.hosts = res
+        })
+    }
+
+    addHostModal(host: IHost) {
+        this.hostnameModal.setValue(host.hostname)
+        this.usernameModal.setValue(host.username)
+        this.passwordModal.setValue(host.password)
+    }
+
+    getHostModal() {
+        return {
+            "hostname": this.hostnameModal.value,
+            "username": this.usernameModal.value,
+            "password": this.passwordModal.value
+        }
+    }
+
+    openHost(host: IHost) {
+        this.addHostModal(host);
+        // this.formName.setValue('ddd');
+        this.openModal('custom-modal-1')
+    }
 
     addHost() {
-        this.hostsService.addHosts(this.hostAdd).subscribe((res) => console.log(res))
+        this.hostsService.addHosts(this.getHostModal()).subscribe((res) => console.log(res))
         console.log('add host')
+
+        this.hostsService.getAllHosts().subscribe((res: any) =>{
+            this.hosts = res
+        })
     }
 
     testConnection() {
         console.log('test connection')
 
-        this.hostsService.testConnection(this.hostAdd).subscribe((res) => {console.log(res)})
-    }
-
-    updatePropHostname(event: any) {
-        this.hostAdd.hostname = event.target.value;
-        console.log(this.hostAdd)
-    }
-
-
-    updatePropUsername(event: any) {
-        this.hostAdd.username = event.target.value;
-        console.log(this.hostAdd)
-    }
-
-    updatePropPassword(event: any) {
-        this.hostAdd.password = event.target.value;
-        console.log(this.hostAdd)
+        this.hostsService.testConnection(this.getHostModal()).subscribe((res) => {console.log(res)})
     }
 
 

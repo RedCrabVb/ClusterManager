@@ -1,7 +1,5 @@
 <div class="max-w-2xl container mx-auto pt-5">
 
-<h1>Hosts</h1>
-
 <button class="btn btn-info" (click)="openModal('custom-modal-1')">Add host</button>
 
 
@@ -10,6 +8,7 @@
       <tr>
         <th scope="col">Hostname</th>
         <th scope="col">Username</th>
+        <th scope="col">Action</th>
       </tr>
     </thead>
     <tbody>
@@ -17,6 +16,7 @@
         <tr>
           <td>{{item.hostname }}</td>
           <td>{{item.username}}</td>
+          <button class="btn btn-info" (click)="openHost(item)">Edit</button>
         </tr>
       </ng-container>
     </tbody>
@@ -34,23 +34,23 @@
                     <span class="input-group-text" id="nameInitFile">Hostname</span>
                 </div>
                 <input type="text" name="nameInitFile" aria-label="Small" aria-describedby="nameInitFile"
-                    (keyup)="updatePropHostname($event)" />
+                [formControl]="hostnameModal"/>
             </div>
 
             <div class="input-group input-group-sm mb-3">
                 <div class="input-group-prepend">
-                    <span class="input-group-text" id="nameInitFile">Username</span>
+                    <span class="input-group-text" id="Username">Username</span>
                 </div>
-                <input type="text" name="nameInitFile" aria-label="Small" aria-describedby="nameInitFile"
-                    (keyup)="updatePropUsername($event)" />
+                <input type="text" name="Username" aria-label="Small" aria-describedby="Username"
+                  [formControl]="usernameModal"/>
             </div>
 
             <div class="input-group input-group-sm mb-3">
                 <div class="input-group-prepend">
-                    <span class="input-group-text" id="nameInitFile">Password</span>
+                    <span class="input-group-text" id="Password">Password</span>
                 </div>
-                <input type="text" name="nameInitFile" aria-label="Small" aria-describedby="nameInitFile"
-                    (keyup)="updatePropPassword($event)" />
+                <input type="text" name="Password" aria-label="Small" aria-describedby="Password"
+                    [formControl]="passwordModal"/>
             </div>
 
             <div class="input-group input-group-sm mb-3">

@@ -11,6 +11,7 @@ import { InitFilePage } from './page/initfile/initfile.page.component';
 import { ModalComponent } from './components/modal/modal.component';
 import { ModalService } from './components/modal/modalService';
 import { HostsComponent } from './page/hosts/hosts.page';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -25,6 +26,8 @@ import { HostsComponent } from './page/hosts/hosts.page';
   imports: [
     AppRoutingModule,
     BrowserModule,
+    FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
     NgbModule
   ],

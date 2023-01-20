@@ -35,7 +35,4 @@ export class HostsService {
         )
     }
 
-    // get() {
-    //     return this.http.get(this.config.urlBackEnd)
-    // }
 }
