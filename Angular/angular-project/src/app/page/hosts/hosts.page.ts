@@ -18,7 +18,7 @@ export class HostsComponent implements OnInit {
     constructor(private hostsService: HostsService, private modalService: ModalService) {
 
     }
-    
+
     ngOnInit(): void {
         this.hostsService.getAllHosts().subscribe((res: any) =>{
             this.hosts = res
@@ -41,7 +41,6 @@ export class HostsComponent implements OnInit {
 
     openHost(host: IHost) {
         this.addHostModal(host);
-        // this.formName.setValue('ddd');
         this.openModal('custom-modal-1')
     }
 
@@ -57,7 +56,7 @@ export class HostsComponent implements OnInit {
     testConnection() {
         console.log('test connection')
 
-        this.hostsService.testConnection(this.getHostModal()).subscribe((res) => {console.log(res)})
+        this.hostsService.testConnection(this.getHostModal()).subscribe((res: any) => {console.log(res); alert(res.Status == true ? 'Соединение установлено' : 'Не удалось подключиться к серверу')})
     }
 
 
