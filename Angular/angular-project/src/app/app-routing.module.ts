@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
 import { InitFilePage } from './page/initfile/initfile.page.component';
 import { WelcomeComponent } from './page/welcome/welcom.page.component';
+import { HostsComponent } from './page/hosts/hosts.page';
 
 const routes: Routes = [
   // {
@@ -13,6 +14,9 @@ const routes: Routes = [
   },
   {
     'path': 'welcome', component: WelcomeComponent
+  },
+  {
+    'path': 'hosts', component: HostsComponent
   }
 ];
 

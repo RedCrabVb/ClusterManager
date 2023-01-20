@@ -1,9 +1,12 @@
 import json
 import os
+import socket
 import subprocess
 
 import paramiko
 from itertools import groupby
+
+from pydantic import BaseModel
 
 
 class ServiceRequirementGroup:
@@ -147,12 +150,15 @@ class HostInCluster:
         self.group = _group
 
 
-class Host:
+class Host(BaseModel):
+    hostname: str
+    username: str
+    password: str
 
-    def __init__(self, _hostname, _username, _password):
-        self.hostname = _hostname
-        self.username = _username
-        self.password = _password
+    # def __init__(self, _hostname, _username, _password):
+    #     self.hostname = _hostname
+    #     self.username = _username
+    #     self.password = _password
 
     def test_connection(self):
         try:
@@ -171,6 +177,8 @@ class Host:
             ssh_client.close()
             return True
         except paramiko.ssh_exception.AuthenticationException as e:
+            return False
+        except socket.gaierror as er:
             return False
 
     def run_shell(self, command):

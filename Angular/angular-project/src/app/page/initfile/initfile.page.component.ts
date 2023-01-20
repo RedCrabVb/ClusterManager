@@ -19,7 +19,7 @@ export class InitFilePage {
   namefile: string = ''
   fileToUpload: File;
 
-  constructor(private productsService: ProductsService, private initFileService: InitFileService, private modalService: ModalService) {
+  constructor(private initFileService: InitFileService, private modalService: ModalService) {
     this.initFileService.getAllInitfiles().subscribe((initfiles: any) => {
       console.log(initfiles);
       this.products = initfiles
@@ -27,8 +27,6 @@ export class InitFilePage {
   }
 
   updateNameUser(event: any) {
-    console.log(this.nameuser)
-    console.log(event)
     this.nameuser = event.target.value
   }
 

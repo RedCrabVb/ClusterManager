@@ -10,6 +10,7 @@ import { AppHeaderComponent } from './components/header/app-header';
 import { InitFilePage } from './page/initfile/initfile.page.component';
 import { ModalComponent } from './components/modal/modal.component';
 import { ModalService } from './components/modal/modalService';
+import { HostsComponent } from './page/hosts/hosts.page';
 
 
 @NgModule({
@@ -18,6 +19,7 @@ import { ModalService } from './components/modal/modalService';
     PrductComponent,
     AppHeaderComponent, 
     ModalComponent,
+    HostsComponent,
     InitFilePage
   ],
   imports: [

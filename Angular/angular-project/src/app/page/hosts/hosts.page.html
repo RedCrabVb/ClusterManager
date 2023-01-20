@@ -1,0 +1,73 @@
+<div class="max-w-2xl container mx-auto pt-5">
+
+<h1>Hosts</h1>
+
+<button class="btn btn-info" (click)="openModal('custom-modal-1')">Add host</button>
+
+
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Hostname</th>
+        <th scope="col">Username</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let item of hosts">
+        <tr>
+          <td>{{item.hostname }}</td>
+          <td>{{item.username}}</td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+
+</div>
+
+<jw-modal id="custom-modal-1">
+    <div class="max-w-2xl container mx-auto pt-5">
+        <h1>Host add</h1>
+        <div >
+
+            <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="nameInitFile">Hostname</span>
+                </div>
+                <input type="text" name="nameInitFile" aria-label="Small" aria-describedby="nameInitFile"
+                    (keyup)="updatePropHostname($event)" />
+            </div>
+
+            <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="nameInitFile">Username</span>
+                </div>
+                <input type="text" name="nameInitFile" aria-label="Small" aria-describedby="nameInitFile"
+                    (keyup)="updatePropUsername($event)" />
+            </div>
+
+            <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="nameInitFile">Password</span>
+                </div>
+                <input type="text" name="nameInitFile" aria-label="Small" aria-describedby="nameInitFile"
+                    (keyup)="updatePropPassword($event)" />
+            </div>
+
+            <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                    <button class="btn btn-info" (click)="addHost()" >Add host</button> <BR>
+                </div>
+            </div>
+
+            <div class="input-group input-group-sm mb-3">
+              <div class="input-group-prepend">
+                  <button class="btn btn-info" (click)="testConnection()" >Test connection</button> <BR>
+              </div>
+             </div>
+
+        </div>
+
+        <button class="btn btn-secondary" (click)="closeModal('custom-modal-1');">Close</button> <BR>
+
+    </div>
+</jw-modal>

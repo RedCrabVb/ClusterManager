@@ -1,13 +1,12 @@
-import paramiko
-from ping3 import ping
 from fastapi import FastAPI, Body
-from fastapi import File, UploadFile
 from cm.db import *
 from fastapi.middleware import Middleware
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import base64
 from pathlib import Path
+
+from cm.model import Host
 
 InitFilesDir = './TmpConfigHadoop'
 
@@ -27,6 +26,7 @@ middleware = [
 
 app = FastAPI(middleware=middleware)
 
+
 # return cluster
 # return host
 # return cluster example
@@ -34,25 +34,30 @@ app = FastAPI(middleware=middleware)
 # run action
 # create cluster from template
 
-@app.post("/upload")
-def upload(file: UploadFile = File(...)):#name cluster
-    try:
-        contents = file.file.read()
-        with open(file.filename, 'wb') as f:#unzip
-            f.write(contents)
-    except Exception:
-        return {"message": "There was an error uploading the file"}
-    finally:
-        file.file.close()
-
-    return {"message": f"Successfully uploaded {file.filename}"}
-
 
 class Item(BaseModel):
     name: str
     namefile: str
     data: str
 
+
+class TaskRunAction(BaseModel):
+    # type: str # add_host cluster, test_connection, run_action,
+    cluster: str
+    extid_action: str
+
+
+@app.post('/task/test_connection')
+def test_connection(host: Host):
+    # TODO: async
+    print('test connection')
+
+    print(host)
+    return {'Status': host.test_connection()}
+
+@app.post('/task/run_action')
+def add_task(any):
+    print(any)
 
 
 @app.get('/tasks')
@@ -66,8 +71,12 @@ def list_host():
 
 
 @app.post('/host')
-def add_host(hostname: str, username: str, password: str):
-    db['hosts'].append({hostname, username, password})
+def add_host(host: Host):
+    for h in db['hosts']:
+        if h['hostname'] == host.hostname and h['username'] == host.username:
+            raise Exception('This host exists')
+
+    db['hosts'].append({'hostname': host.hostname, 'username': host.username, 'password' : host.password, 'status_connect': False})
     return {'Status': 'Ok'}
 
 
@@ -77,6 +86,7 @@ def list_cluster(name):
     # list var
     # list change
     return db['clusters']
+
 
 @app.get('/cluster')
 def list_cluster():
@@ -92,15 +102,16 @@ def create_cluster(name: str, description: str, initfile_name: str):
     create_cluster({name, description, item})
     return {'Status': 'Ok'}
 
+
 # dev
 @app.get('/initfile')
 def list_init_file():
     return db.get('init_files')
 
+
 # dev
 @app.post("/upload/initfile/test")
-def upload(item: Item):#name cluster
-
+def upload(item: Item):  # name cluster
 
     print(item)
 
@@ -112,7 +123,7 @@ def upload(item: Item):#name cluster
 
     add_init_file(item.name, item.namefile, 'v0')
 
+
 @app.get("/")
 async def read_root():
     return {"Hello": "World"}
-
