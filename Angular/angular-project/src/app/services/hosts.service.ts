@@ -11,15 +11,21 @@ export class HostsService {
 
     }
 
+    deleteHost(host: IHost) {
+        return this.http.post(
+            this.config.urlBackEnd + 'host/delete', { "hostname": host.hostname, "password": host.password, "username": host.username }
+        );
+    }
+
     addHosts(host: IHost) {
         let headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });
         let options = { headers: headers, body: host };
 
-          
+
         return this.http.post(
-            this.config.urlBackEnd + 'host', {"hostname": host.hostname, "password": host.password, "username": host.username}
+            this.config.urlBackEnd + 'host', { "hostname": host.hostname, "password": host.password, "username": host.username }
         );
     }
 

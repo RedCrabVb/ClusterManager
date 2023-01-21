@@ -62,12 +62,13 @@ def test_connection(host: Host):
     print(host)
     return {'Status': host.test_connection()}
 
-@app.post('/task/run_action')
+
+@app.post('/task/run_action')  # todo
 def add_task(any):
     print(any)
 
 
-@app.get('/tasks')
+@app.get('/tasks')  # todo
 def list_tasks():
     return []
 
@@ -77,13 +78,26 @@ def list_host():
     return db['hosts']
 
 
+@app.post('/host/delete')
+def delete_host(host: Host):
+    new_db_hosts = []
+    for h in db['hosts']:
+        if not h['hostname'] == host.hostname or not h['username'] == host.username:
+            new_db_hosts.append(h)
+
+    db['hosts'] = new_db_hosts
+    return {'Status': 'Ok'}
+
+
+
 @app.post('/host')
 def add_host(host: Host):
     for h in db['hosts']:
         if h['hostname'] == host.hostname and h['username'] == host.username:
             raise Exception('This host exists')
 
-    db['hosts'].append({'hostname': host.hostname, 'username': host.username, 'password' : host.password, 'status_connect': False})
+    db['hosts'].append(
+        {'hostname': host.hostname, 'username': host.username, 'password': host.password, 'status_connect': False})
     return {'Status': 'Ok'}
 
 
@@ -112,12 +126,8 @@ def list_init_file():
     return db.get('init_files')
 
 
-# dev
-@app.post("/upload/initfile/test")
-def upload(item: Item):  # name cluster
-
-    print(item)
-
+@app.post("/upload/initfile")
+def upload(item: Item):
     Path(f'{InitFilesDir}/{item.name}').mkdir(parents=True, exist_ok=True)
     with open(f'{InitFilesDir}/{item.name}/{item.namefile}', 'wb') as finit:
         finit.write(base64.standard_b64decode(item.data))

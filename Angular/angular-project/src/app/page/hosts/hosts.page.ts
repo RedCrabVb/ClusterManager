@@ -5,8 +5,8 @@ import { IHost } from 'src/app/date/IHost';
 import { FormControl } from '@angular/forms';
 
 @Component({
-  selector: 'app-welcome',
-  templateUrl: './hosts.page.html',
+    selector: 'app-welcome',
+    templateUrl: './hosts.page.html',
 })
 export class HostsComponent implements OnInit {
     hosts: IHost[] = []
@@ -14,13 +14,13 @@ export class HostsComponent implements OnInit {
     hostnameModal = new FormControl('')
     usernameModal = new FormControl('')
     passwordModal = new FormControl('')
-    
+
     constructor(private hostsService: HostsService, private modalService: ModalService) {
 
     }
 
     ngOnInit(): void {
-        this.hostsService.getAllHosts().subscribe((res: any) =>{
+        this.hostsService.getAllHosts().subscribe((res: any) => {
             this.hosts = res
         })
     }
@@ -39,24 +39,42 @@ export class HostsComponent implements OnInit {
         }
     }
 
+    deleteHost(host: IHost) {
+        this.hostsService.deleteHost(host).subscribe((res) => console.log(res));
+        this.hostsService.getAllHosts().subscribe((res: any) => {
+            this.hosts = res
+        })
+    }
+    
+
     openHost(host: IHost) {
         this.addHostModal(host);
-        this.openModal('custom-modal-1')
+        this.openModal('custom-modal-2')
     }
 
     addHost() {
-        this.hostsService.addHosts(this.getHostModal()).subscribe((res) => console.log(res))
+        this.hostsService.addHosts(this.getHostModal()).subscribe((res: any) => {
+            alert(res.Status == 'Ok' ? 'Хост добавлен' : 'Ошибка ' + res['Status'])
+            console.log(res)
+
+            this.hostsService.getAllHosts().subscribe((res: any) => {
+                this.hosts = res
+
+                this.closeModal('custom-modal-1');
+                this.addHostModal(this.getHostModal());
+                this.openModal('custom-modal-2');
+            })
+
+         })
         console.log('add host')
 
-        this.hostsService.getAllHosts().subscribe((res: any) =>{
-            this.hosts = res
-        })
+
     }
 
     testConnection() {
         console.log('test connection')
-
-        this.hostsService.testConnection(this.getHostModal()).subscribe((res: any) => {console.log(res); alert(res.Status == true ? 'Соединение установлено' : 'Не удалось подключиться к серверу')})
+        const currentHost = this.getHostModal()
+        this.hostsService.testConnection(currentHost).subscribe((res: any) => { console.log(res); alert(res.Status == true ? 'Соединение установлено: ' + currentHost.hostname : 'Не удалось подключиться к серверу: ' + currentHost.hostname) })
     }
 
 

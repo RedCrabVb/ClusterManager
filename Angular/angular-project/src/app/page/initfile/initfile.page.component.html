@@ -1,65 +1,65 @@
 <div class="container-fluid">
 
-    <button class="btn btn-info" (click)="openModal('custom-modal-1')">Add initfile</button>
+  <button class="btn btn-info" (click)="openModal('custom-modal-1')">Add initfile</button>
 
 
-    <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Namefile</th>
-            <th scope="col">Version</th>
-          </tr>
-        </thead>
-        <tbody>
-          <ng-container *ngFor="let item of products">
-            <tr>
-              <td>{{item.name }}</td>
-              <td>{{item.namefile}}</td>
-              <td>{{item.version}} </td>
-            </tr>
-          </ng-container>
-        </tbody>
-      </table>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Namefile</th>
+        <th scope="col">Version</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let item of initfiles">
+        <tr>
+          <td>{{item.name }}</td>
+          <td>{{item.namefile}}</td>
+          <td>{{item.version}} </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
 </div>
 
 
 
 <jw-modal id="custom-modal-1">
-    <div class="max-w-2xl container mx-auto pt-5">
-        <h1>InitFile add</h1>
-        <div >
+  <div class="max-w-2xl container mx-auto pt-5">
+    <h1>InitFile add</h1>
+    <div>
 
-            <div class="input-group input-group-sm mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text" id="nameInitFile">Name initfile</span>
-                </div>
-                <input type="text" name="nameInitFile" aria-label="Small" aria-describedby="nameInitFile"
-                    (keyup)="updateNameUser($event)" />
-            </div>
-
-            <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text">Upload InitFile</span>
-                </div>
-                <div class="input-group-prepend">
-                    <label for="inputGroupFile" class="form-control">{{ namefile ? namefile : 'Choose file'}}</label>
-                </div>
-                <div class="custom-file">
-                  <input type="file" class="file-input" (change)="handleFileInput($event)" id="inputGroupFile">
-                  <label for="inputGroupFile" type="text" name="nameInitFile" aria-label="Small" disabled="true"></label>
-                </div>
-            </div>
-
-            <div class="input-group input-group-sm mb-3">
-                <div class="input-group-prepend">
-                    <button class="btn btn-info" (click)="sendInitFile()">Send InitFile</button> <BR>
-                </div>
-            </div>
-
+      <div class="input-group input-group-sm mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="nameInitFile">Name initfile</span>
         </div>
+        <input type="text" name="nameInitFile" aria-label="Small" aria-describedby="nameInitFile"
+          (keyup)="updateNameUser($event)" />
+      </div>
 
-        <button class="btn btn-secondary" (click)="closeModal('custom-modal-1');">Close</button> <BR>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Upload InitFile</span>
+        </div>
+        <div class="input-group-prepend">
+          <label for="inputGroupFile" class="form-control">{{ namefile ? namefile : 'Choose file'}}</label>
+        </div>
+        <div class="custom-file">
+          <input type="file" class="file-input" (change)="handleFileInput($event)" id="inputGroupFile">
+          <label for="inputGroupFile" type="text" name="nameInitFile" aria-label="Small" disabled="true"></label>
+        </div>
+      </div>
+
+      <div class="input-group input-group-sm mb-3">
+        <div class="input-group-prepend">
+          <button class="btn btn-info" (click)="sendInitFile()">Send InitFile</button> <BR>
+        </div>
+      </div>
 
     </div>
+
+    <button class="btn btn-secondary" (click)="closeModal('custom-modal-1');">Close</button> <BR>
+
+  </div>
 </jw-modal>

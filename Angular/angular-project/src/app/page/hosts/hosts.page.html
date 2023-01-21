@@ -1,9 +1,9 @@
 <div class="container-fluid">
 
-<button class="btn btn-info" (click)="openModal('custom-modal-1')">Add host</button>
+  <button class="btn btn-info" (click)="openModal('custom-modal-1')">Add host</button>
 
 
-<table class="table">
+  <table class="table">
     <thead>
       <tr>
         <th scope="col">Hostname</th>
@@ -16,7 +16,10 @@
         <tr>
           <td>{{item.hostname }}</td>
           <td>{{item.username}}</td>
-          <button class="btn btn-info" (click)="openHost(item)">Edit</button>
+          <td>
+            <button class="btn btn-info" (click)="openHost(item)">Edit</button>
+            <button class="btn btn-danger" (click)="deleteHost(item)">Delete</button>
+          </td>
         </tr>
       </ng-container>
     </tbody>
@@ -25,49 +28,91 @@
 </div>
 
 <jw-modal id="custom-modal-1">
-    <div class="max-w-2xl container mx-auto pt-5">
-        <h1>Host add</h1>
-        <div >
+  <div class="max-w-2xl container mx-auto pt-5">
+    <h1>Host add</h1>
+    <div>
 
-            <div class="input-group input-group-sm mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text" id="nameInitFile">Hostname</span>
-                </div>
-                <input type="text" name="nameInitFile" aria-label="Small" aria-describedby="nameInitFile"
-                [formControl]="hostnameModal"/>
-            </div>
-
-            <div class="input-group input-group-sm mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text" id="Username">Username</span>
-                </div>
-                <input type="text" name="Username" aria-label="Small" aria-describedby="Username"
-                  [formControl]="usernameModal"/>
-            </div>
-
-            <div class="input-group input-group-sm mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text" id="Password">Password</span>
-                </div>
-                <input type="text" name="Password" aria-label="Small" aria-describedby="Password"
-                    [formControl]="passwordModal"/>
-            </div>
-
-            <div class="input-group input-group-sm mb-3">
-                <div class="input-group-prepend">
-                    <button class="btn btn-info" (click)="addHost()" >Add host</button> <BR>
-                </div>
-            </div>
-
-            <div class="input-group input-group-sm mb-3">
-              <div class="input-group-prepend">
-                  <button class="btn btn-info" (click)="testConnection()" >Test connection</button> <BR>
-              </div>
-             </div>
-
+      <div class="input-group input-group-sm mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="nameInitFile">Hostname</span>
         </div>
+        <input type="text" name="nameInitFile" aria-label="Small" aria-describedby="nameInitFile"
+          [formControl]="hostnameModal" />
+      </div>
 
-        <button class="btn btn-secondary" (click)="closeModal('custom-modal-1');">Close</button> <BR>
+      <div class="input-group input-group-sm mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="Username">Username</span>
+        </div>
+        <input type="text" name="Username" aria-label="Small" aria-describedby="Username"
+          [formControl]="usernameModal" />
+      </div>
+
+      <div class="input-group input-group-sm mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="Password">Password</span>
+        </div>
+        <input type="text" name="Password" aria-label="Small" aria-describedby="Password"
+          [formControl]="passwordModal" />
+      </div>
+
+      <div class="input-group input-group-sm mb-3">
+        <div class="input-group-prepend">
+          <button class="btn btn-info" (click)="addHost()">Add host</button> <BR>
+        </div>
+      </div>
+
+      <div class="input-group input-group-sm mb-3">
+        <div class="input-group-prepend">
+          <button class="btn btn-info" (click)="testConnection()">Test connection</button> <BR>
+        </div>
+      </div>
 
     </div>
+
+    <button class="btn btn-secondary" (click)="closeModal('custom-modal-1');">Close</button> <BR>
+
+  </div>
+</jw-modal>
+
+<jw-modal id="custom-modal-2">
+  <div class="max-w-2xl container mx-auto pt-5">
+    <h1>Host view</h1>
+    <div>
+
+      <div class="input-group input-group-sm mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="nameInitFile">Hostname</span>
+        </div>
+        <input type="text" name="nameInitFile" aria-label="Small" aria-describedby="nameInitFile" [disabled]="true"
+          [formControl]="hostnameModal" />
+      </div>
+
+      <div class="input-group input-group-sm mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="Username">Username</span>
+        </div>
+        <input type="text" name="Username" aria-label="Small" aria-describedby="Username" [disabled]="true"
+          [formControl]="usernameModal" />
+      </div>
+
+      <div class="input-group input-group-sm mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="Password">Password</span>
+        </div>
+        <input type="text" name="Password" aria-label="Small" aria-describedby="Password" [disabled]="true"
+          [formControl]="passwordModal" />
+      </div>
+
+      <div class="input-group input-group-sm mb-3">
+        <div class="input-group-prepend">
+          <button class="btn btn-info" (click)="testConnection()">Test connection</button> <BR>
+        </div>
+      </div>
+
+    </div>
+
+    <button class="btn btn-secondary" (click)="closeModal('custom-modal-2');">Close</button> <BR>
+
+  </div>
 </jw-modal>

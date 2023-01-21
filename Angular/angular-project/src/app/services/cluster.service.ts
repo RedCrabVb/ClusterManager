@@ -19,7 +19,7 @@ export class ClusterService {
 
     createCluster(clusetr: ICluster) {
         return this.http.post(
-            this.config.urlBackEnd + 'cluster', {name: clusetr.name, description: clusetr.description, initfile_name: clusetr.initfile}
+            this.config.urlBackEnd + 'cluster', { name: clusetr.name, description: clusetr.description, initfile_name: clusetr.initfile }
         )
     }
 }

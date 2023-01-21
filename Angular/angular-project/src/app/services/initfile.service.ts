@@ -15,11 +15,11 @@ export class InitFileService {
         let headers = new HttpHeaders({
             'Content-Type': 'application/json'
         });
-        let options = { headers: headers, body: {namefile, data, name} };
+        let options = { headers: headers, body: { namefile, data, name } };
 
-          
+
         return this.http.post(
-            this.config.urlBackEnd + 'upload/initfile/test', {namefile, data, name}
+            this.config.urlBackEnd + 'upload/initfile/test', { namefile, data, name }
         );
     }
 

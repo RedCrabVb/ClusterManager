@@ -4,8 +4,8 @@ import { ICluster } from "src/app/date/ICluster";
 import { IInitFile } from "src/app/date/IInitfile";
 import { ClusterService } from "src/app/services/cluster.service";
 import { InitFileService } from "src/app/services/initfile.service";
-import {cluster as data } from 'src/app/date/cluster';
-import {InitFile as dataInit } from 'src/app/date/initfile';
+import { cluster as data } from 'src/app/date/cluster';
+import { InitFile as dataInit } from 'src/app/date/initfile';
 import { FormControl } from "@angular/forms";
 
 @Component({
@@ -19,13 +19,13 @@ export class ClusterComponenet implements OnInit {
     name = new FormControl('');
     description = new FormControl('');
     initfile = new FormControl('');
-    
+
     constructor(private initFileService: InitFileService, private clusterService: ClusterService, private modalService: ModalService) {
 
     }
 
     ngOnInit(): void {
-        this.initFileService.getAllInitfiles().subscribe((res: any) =>{
+        this.initFileService.getAllInitfiles().subscribe((res: any) => {
             this.initfiles = res
         })
         this.clusterService.getAllCluster().subscribe((res: any) => {
@@ -34,11 +34,11 @@ export class ClusterComponenet implements OnInit {
     }
 
     createCluseter() {
-        console.log({"n": this.name.value, "d": this.description.value, "i": this.initfile.value})
+        console.log({ "n": this.name.value, "d": this.description.value, "i": this.initfile.value })
 
         const cluseterNew: ICluster = {
-            "name": this.name.value, 
-            "description": this.name.value, 
+            "name": this.name.value,
+            "description": this.name.value,
             "initfile": this.initfile.value
         }
         this.clusterService.createCluster(cluseterNew).subscribe((res) => {

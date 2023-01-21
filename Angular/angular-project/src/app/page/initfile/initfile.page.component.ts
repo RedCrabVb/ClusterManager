@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { InitFile as data } from '../../date/initfile';
-import { ProductsService } from '../../services/Products.service';
 import { InitFileService } from '../../services/initfile.service';
 import { ModalService } from 'src/app/components/modal/modalService';
 import { IInitFile } from 'src/app/date/IInitfile';
@@ -12,8 +11,7 @@ import { IInitFile } from 'src/app/date/IInitfile';
   styleUrls: ['./initfile.page.component.css']
 })
 export class InitFilePage {
-  title = 'angular-project';
-  products = data
+  initfiles = data
 
   nameuser = ''
   namefile: string = ''
@@ -22,7 +20,7 @@ export class InitFilePage {
   constructor(private initFileService: InitFileService, private modalService: ModalService) {
     this.initFileService.getAllInitfiles().subscribe((initfiles: any) => {
       console.log(initfiles);
-      this.products = initfiles
+      this.initfiles = initfiles
     })
   }
 
@@ -35,15 +33,15 @@ export class InitFilePage {
 
     reader.readAsDataURL(this.fileToUpload);
     reader.onload = () => {
-        console.log(reader.result);
-        if (reader.result != undefined) {
-          this.initFileService.uploadFile(this.namefile, reader.result.toString(), this.nameuser).subscribe((res) => {console.log(res); alert("success upload!")})
-        }
+      console.log(reader.result);
+      if (reader.result != undefined) {
+        this.initFileService.uploadFile(this.namefile, reader.result.toString(), this.nameuser).subscribe((res) => { console.log(res); alert("success upload!") })
+      }
     };
 
     this.initFileService.getAllInitfiles().subscribe((initfiles: any) => {
       console.log(initfiles);
-      this.products = initfiles
+      this.initfiles = initfiles
     })
   }
 
@@ -56,14 +54,13 @@ export class InitFilePage {
   }
 
   ngOnInit() {
-      // this.bodyText = 'This text can be updated in modal 1';
   }
 
   openModal(id: string) {
-      this.modalService.open(id);
+    this.modalService.open(id);
   }
 
   closeModal(id: string) {
-      this.modalService.close(id);
+    this.modalService.close(id);
   }
 }

@@ -18,13 +18,6 @@ class ServiceRequirementGroup:
 
 
 class Cluster:
-    # id: int
-    # name: str
-    # description: str
-    # service: any
-    # serviceInstall: any
-    # init_service: any
-    # hosts: any
     def __int__(self, _id, _name, _description, _service, _hosts, _init_service):
         self.id = _id
         self.name = _name
@@ -162,21 +155,9 @@ class Host(BaseModel):
     username: str
     password: str
 
-    # def __init__(self, _hostname, _username, _password):
-    #     self.hostname = _hostname
-    #     self.username = _username
-    #     self.password = _password
-
     def test_connection(self):
         try:
-            # ssh_copy_id_shell = f'sshpass -p "{self.password}" ssh {self.username}@{self.hostname} "echo \"`cat ' \
-            #                     f'~/.ssh/id_rsa.pub`\" >> ~/.ssh/authorized_keys" '
-            # print(ssh_copy_id_shell)
-            # return_code = subprocess.call(ssh_copy_id_shell, shell=True)
-            # print(return_code)
-
             ssh_client = paramiko.SSHClient()
-            # ssh_client.load_system_host_keys()
 
             ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 

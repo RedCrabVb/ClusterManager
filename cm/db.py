@@ -3,11 +3,11 @@
 db = {
     'hosts': [],
     'init_files': [
-    {
-        "version": "v0",
-        "namefile": "hadoop-ansible.zip",
-        "name": "hadoop"
-    }
+        {
+            "version": "v0",
+            "namefile": "hadoop-ansible.zip",
+            "name": "hadoop"
+        }
     ],
     'clusters': []
 }
@@ -16,6 +16,3 @@ db = {
 def add_init_file(name, namefile, version):
     # todo: path FS
     db.get('init_files').append({"name": name, "namefile": namefile, "version": version})
-
-
-
