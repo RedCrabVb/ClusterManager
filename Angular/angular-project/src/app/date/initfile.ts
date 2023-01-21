@@ -7,7 +7,7 @@ export const InitFile: IInitFile[] = [
         "version": "2.3.4"
     },
     {
-        "name": "test",
+        "name": "test2",
         "namefile": "cluster bla-bla",
         "version": "2.3.4"
     }

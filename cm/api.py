@@ -97,6 +97,7 @@ def list_cluster():
 def create_cluster(name: str, description: str, initfile_name: str):
     item: Item = db.get(initfile_name)
 
+    # загружать файлы на сервер
     print('cp item.data')
 
     create_cluster({name, description, item})

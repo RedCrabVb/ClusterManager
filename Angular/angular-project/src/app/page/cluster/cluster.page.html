@@ -1,0 +1,78 @@
+<div class=" border  container-fluid">
+    <div class="row md-2">
+    <div class="col-md-2">
+        <button class="btn btn-info" (click)="openModal('custom-modal-1')">Create cluster</button>
+        <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Description</th>
+            <th scope="col">Initfile</th>
+            <th scope="col">Open</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let item of cluseters">
+            <tr>
+              <td>{{item.name }}</td>
+              <td>{{item.description}}</td>
+              <td>{{item.initfile}} </td>
+              <button class="btn btn-info">Open</button>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+    <div class="col">
+        <h1>div 2</h1>
+        <h1>Cluster</h1>
+        <h1>Cluster Cluster ClusterCluster Cluster Cluster Cluster Cluster </h1>
+        
+        <h1>Cluster Cluster ClusterCluster Cluster Cluster Cluster Cluster </h1>
+        
+        <h1>Cluster Cluster ClusterCluster Cluster Cluster Cluster Cluster </h1>
+        
+        <h1>Cluster Cluster ClusterCluster Cluster Cluster Cluster Cluster dddddddddddddddddddddddddddddddddddddddddddd</h1>
+    </div>
+</div>
+</div>
+
+
+<jw-modal id="custom-modal-1">
+    <div class="max-w-2xl container mx-auto pt-5">
+        <h1>Create cluster</h1>
+        <div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend col-3">
+                <span class="input-group-text col-12" id="nameCluster">Name cluster</span>
+            </div>
+            <input type="text" name="nameCluster" aria-label="Small" class="form-control" aria-describedby="nameCluster" />
+        </div>
+        <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend col-3">
+                <span class="input-group-text col-12" id="decriptionCluster">Decription cluster</span>
+            </div>
+            <input type="text" name="decriptionCluster" aria-label="Small" class="form-control" aria-describedby="decriptionCluster" />
+        </div>
+        <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend col-3">
+                <span class="input-group-text col-12" id="initFile">Initfile for instal cluster</span>
+            </div>
+            <select class="custom-select form-control" id="initFile">
+                    <option selected>Choice ...</option>
+                    <ng-container *ngFor="let item of initfiles">
+                        <option value="{{item.name}}">{{item.name}}|{{item.version}}</option>
+                    </ng-container>
+            </select>
+            <!-- <input type="text" name="initFile" aria-label="Small" class="form-control" aria-describedby="initFile" /> -->
+        </div>
+        <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+                <button class="btn btn-primary mb-3" >Create</button> 
+            </div>
+        </div>
+        <button class="btn btn-secondary" (click)="closeModal('custom-modal-1');">Close</button> 
+        </div>
+        
+        </div>
+</jw-modal>

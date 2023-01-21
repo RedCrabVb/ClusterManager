@@ -12,6 +12,7 @@ import { ModalComponent } from './components/modal/modal.component';
 import { ModalService } from './components/modal/modalService';
 import { HostsComponent } from './page/hosts/hosts.page';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ClusterComponenet } from './page/cluster/cluster.page';
 
 
 @NgModule({
@@ -20,6 +21,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     PrductComponent,
     AppHeaderComponent, 
     ModalComponent,
+    ClusterComponenet,
     HostsComponent,
     InitFilePage
   ],

@@ -4,6 +4,7 @@ import { AppComponent } from './app.component';
 import { InitFilePage } from './page/initfile/initfile.page.component';
 import { WelcomeComponent } from './page/welcome/welcom.page.component';
 import { HostsComponent } from './page/hosts/hosts.page';
+import { ClusterComponenet } from './page/cluster/cluster.page';
 
 const routes: Routes = [
   // {
@@ -17,6 +18,9 @@ const routes: Routes = [
   },
   {
     'path': 'hosts', component: HostsComponent
+  },
+  {
+    'path': 'cluster', component: ClusterComponenet
   }
 ];
 
