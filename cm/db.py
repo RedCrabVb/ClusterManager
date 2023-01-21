@@ -18,7 +18,4 @@ def add_init_file(name, namefile, version):
     db.get('init_files').append({"name": name, "namefile": namefile, "version": version})
 
 
-def create_cluster(cluster):
-    # todo: cp i_file to new dir
-    db['clusters'].append(cluster)
 

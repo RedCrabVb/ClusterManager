@@ -18,6 +18,13 @@ class ServiceRequirementGroup:
 
 
 class Cluster:
+    # id: int
+    # name: str
+    # description: str
+    # service: any
+    # serviceInstall: any
+    # init_service: any
+    # hosts: any
     def __int__(self, _id, _name, _description, _service, _hosts, _init_service):
         self.id = _id
         self.name = _name

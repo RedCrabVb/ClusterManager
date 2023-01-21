@@ -1,5 +1,5 @@
 export interface ICluster {
-    name: string
-    description: string
-    initfile: string
+    name: string | null
+    description: string | null
+    initfile: string | null
 }

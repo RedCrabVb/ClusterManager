@@ -45,6 +45,13 @@ class TaskRunAction(BaseModel):
     # type: str # add_host cluster, test_connection, run_action,
     cluster: str
     extid_action: str
+    intifle_name: str
+
+
+class ClusterUser(BaseModel):
+    name: str
+    description: str
+    initfile_name: str
 
 
 @app.post('/task/test_connection')
@@ -81,26 +88,21 @@ def add_host(host: Host):
 
 
 @app.get('/cluster')
-def list_cluster(name):
-    # json ret
-    # list var
-    # list change
-    return db['clusters']
-
-
-@app.get('/cluster')
 def list_cluster():
     return db['clusters']
 
 
 @app.post('/cluster')
-def create_cluster(name: str, description: str, initfile_name: str):
-    item: Item = db.get(initfile_name)
+def create_cluster(cluster: ClusterUser):
+    (name_cluster, version_cluster) = cluster.initfile_name.split('|')
+    for ifile in db['init_files']:
+        if ifile['version'] == version_cluster and ifile['name'] == name_cluster:
+            item = ifile
 
     # загружать файлы на сервер
     print('cp item.data')
 
-    create_cluster({name, description, item})
+    db['clusters'].append({"name": cluster.name, "description": cluster.description, "item": item})
     return {'Status': 'Ok'}
 
 
