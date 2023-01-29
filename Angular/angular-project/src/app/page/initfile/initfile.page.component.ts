@@ -3,7 +3,6 @@ import { InitFile as data } from '../../date/initfile';
 import { InitFileService } from '../../services/initfile.service';
 import { ModalService } from 'src/app/components/modal/modalService';
 import { IInitFile } from 'src/app/date/IInitfile';
-// import { ConsoleReporter } from 'jasmine';
 
 @Component({
   selector: 'app-initfile',

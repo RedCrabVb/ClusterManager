@@ -1,3 +1,5 @@
+import json
+
 from fastapi import FastAPI, Body
 from cm.db import *
 from fastapi.middleware import Middleware
@@ -6,9 +8,10 @@ from pydantic import BaseModel
 import base64
 from pathlib import Path
 
-from cm.model import Host
+from cm.model import Host, ServiceTemplate
 
 InitFilesDir = './TmpConfigHadoop'
+ClusterDir = './TmpConfigHadoop/Cluster'
 
 origins = [
     "http://localhost:4200",
@@ -108,13 +111,45 @@ def list_cluster():
 
 @app.post('/cluster')
 def create_cluster(cluster: ClusterUser):
-    (name_cluster, version_cluster) = cluster.initfile_name.split('|')
+    import zipfile
+    import os
+
+    (name_initfile, version_cluster) = cluster.initfile_name.split('|')
     for ifile in db['init_files']:
-        if ifile['version'] == version_cluster and ifile['name'] == name_cluster:
+        if ifile['version'] == version_cluster and ifile['name'] == name_initfile:
             item = ifile
+
+    item_name = item['name']
+    item_namefile = item['namefile']
+    item_version = item['version']
+    path_initfile = Path(f'{InitFilesDir}/{item_name}/{item_namefile}')
+    path_cluster_dir = Path(f'{ClusterDir}/{item_name}/{item_version}')
+    path_cluster_dir.mkdir(parents=True, exist_ok=True)
+
+    with zipfile.ZipFile(path_initfile, 'r') as zip_ref:
+        zip_ref.extractall(path_cluster_dir)
+
+    cluster_files = f'{path_cluster_dir}/{next(os.walk(path_cluster_dir))[1][0]}'
+
+    with open(f'{cluster_files}/conf.json') as f:
+        data = json.loads(f.read())
+        # init_file = [ServiceTemplate(**s) for s in data]
+        print(data)
+
+    # +json load
+    # ------json add variable
+    # +json add path
+
+
+    # user see to action
+    # user change _dir file_
+    # user change _vars file_
+    # user add host and role
 
     # загружать файлы на сервер
     print('cp item.data')
+
+
 
     db['clusters'].append({"name": cluster.name, "description": cluster.description, "item": item})
     return {'Status': 'Ok'}
