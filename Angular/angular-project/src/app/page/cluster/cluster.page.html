@@ -17,15 +17,89 @@
                             <td>{{item.name }}</td>
                             <td>{{item.description}}</td>
                             <td>{{item.initfile}} </td>
-                            <button class="btn btn-info">Open</button>
+                            <button class="btn btn-info" (click)="openCluster(item)">Open</button>
                         </tr>
                     </ng-container>
                 </tbody>
             </table>
         </div>
         <div class="col">
-            <h1>div 2</h1>
-            <h2>sdklsklldslffsdlfsl askdjd;flaksdfj</h2>
+            <div *ngIf="clusterObject != null" class="row">
+                <h1>{{clusterObject.name}}</h1>
+                <h2>{{clusterObject.description}}</h2>
+                <div class="col-md-3">
+                    <div class="m-2" (click)="radioButton('addHostWindows')"> <button class="btn btn-secondary"><h3>Add host</h3></button>
+                    </div>
+                    <div class="m-2">
+                        <button class="btn btn-secondary"><h3>Edit config</h3></button>
+                    </div>
+                    <div class="m-2">
+                        <button class="btn btn-secondary"><h3>Run action (service)</h3></button>
+                    </div>
+                    <div class="m-2">
+                        <button class="btn btn-secondary"><h3>Main</h3></button>
+                    </div>
+                </div>
+                <div class="col">
+                    <div *ngIf="addHostWindows">
+                        addHostWindows
+                        <!-- <div class="input-group input-group-sm mb-3">
+                            <div class="input-group-prepend col-3">
+                                <span class="input-group-text col-12" id="host">Hosts</span>
+                            </div>
+                            <select class="custom-select form-control" id="host">
+                                <ng-container *ngFor="let item of hosts">
+                                    <option value="{{item.username}}|{{item.hostname}}">{{item.username}}@{{item.hostname}}</option>
+                                </ng-container>
+                            </select>
+                        </div> -->
+                        <div class="input-group input-group-sm mb-3">
+                            <div class="input-group-prepend col-3">
+                                <span class="input-group-text col-12" id="service">Service</span>
+                            </div>
+                            <select class="custom-select form-control" id="service" [formControl]="serviceForm">
+                                <ng-container *ngFor="let item of clusterObject.data">
+                                    <option value="{{item.extid}}">{{item.name}}</option>
+                                </ng-container>
+                            </select>
+                        </div>
+                        <div class="input-group input-group-sm mb-3" *ngIf="service != null">
+                            <div class="input-group-prepend col-3">
+                                <span class="input-group-text col-12" id="grouphost" >Group</span>
+                            </div>
+                            <select class="custom-select form-control" id="grouphost" [formControl]="groupTragetAdd">
+                                <ng-container *ngFor="let item of service.requirements_groups">
+                                    <option value="{{item.type_host}}">{{item.type_host}} | {{this.whoHostGroupInCluster(item.type_host)}} / {{item.quantity_max != null ? item.quantity_max : 'None limit'}}</option>
+                                </ng-container>
+                            </select>
+                        </div>
+                        <div class="input-group input-group-sm mb-3" *ngIf="service != null">
+                            <div class="input-group-prepend col-3">
+                                <span class="input-group-text col-12" id="host">Host</span>
+                            </div>
+                            <select class="custom-select form-control" id="host" [formControl]="hostTargetAdd">
+                                <ng-container *ngFor="let item of hosts">
+                                    <option value="{{item.username}}|{{item.hostname}}">{{item.username}}@{{item.hostname}}</option>
+                                </ng-container>
+                            </select>
+                        </div>
+                        <div class="input-group input-group-sm mb-3">
+                            <div class="input-group-prepend">
+                                <button class="btn btn-primary mb-3" (click)="addHostToCluster()">Add</button>
+                            </div>
+                        </div>
+                        <div class="input-group input-group-sm mb-3">
+                            <div class="input-group-prepend">
+                                <button class="btn btn-primary mb-3" (click)="saveHostInCluster()">Applay</button>
+                            </div>
+                        </div>
+                    </div>
+                    <p>df</p>
+                    <ng-container *ngFor="let item of clusterObject.data">
+                        <p>{{item.name}}</p>
+                    </ng-container>
+                </div>
+            </div>
         </div>
     </div>
 </div>

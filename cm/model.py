@@ -57,18 +57,23 @@ class Vars:
 
 class ServiceTemplate:
 
-    def __init__(self, extid, name, actions,
-                 requirements_groups,
-                 vars_service,
-                 action_vars=None, files_vars=None, hosts=None):
-        self.extid = extid
-        self.name = name
-        self.actions = actions
-        self.requirements_groups = requirements_groups
-        self.vars_service = vars_service
-        self.action_vars = {}
-        self.files_vars = {}
-        self.hosts = []
+    def __init__(self, my_dict):
+
+        for key in my_dict:
+            setattr(self, key, my_dict[key])
+
+    # def __init__(self, extid, name, actions,
+    #              requirements_groups,
+    #              vars_service,
+    #              action_vars=None, files_vars=None, hosts=None):
+    #     self.extid = extid
+    #     self.name = name
+    #     self.actions = actions
+    #     self.requirements_groups = requirements_groups
+    #     self.vars_service = vars_service
+    #     self.action_vars = {}
+    #     self.files_vars = {}
+    #     self.hosts = []
 
     def vars_apply(self):
         for var in self.vars_service:

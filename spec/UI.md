@@ -11,3 +11,8 @@ Cluster
 InitFile
 
 ![img_2.png](img_2.png)
+
+
+New vision tab cluster
+
+![img_3.png](img_3.png)

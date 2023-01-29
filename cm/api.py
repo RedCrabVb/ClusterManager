@@ -44,6 +44,13 @@ class Item(BaseModel):
     data: str
 
 
+class ItemAddClusterHost(BaseModel):
+    name_cluster: str
+    host: Host
+    group: str
+    extid_service: str
+
+
 class TaskRunAction(BaseModel):
     # type: str # add_host cluster, test_connection, run_action,
     cluster: str
@@ -92,7 +99,6 @@ def delete_host(host: Host):
     return {'Status': 'Ok'}
 
 
-
 @app.post('/host')
 def add_host(host: Host):
     for h in db['hosts']:
@@ -109,6 +115,26 @@ def list_cluster():
     return db['clusters']
 
 
+@app.post('/cluster/host/save')
+def save_host(name_cluster: str, extid_service: str):
+    for c in db['clusters']:
+        if c['name'] == name_cluster:
+            for s in c['data']:
+                if s['extid'] == extid_service:
+                    service = ServiceTemplate(s)
+                    service.save_hosts_to_cluster(c['pathClusterDir'])
+
+
+@app.post("/cluster/host")
+def add_host_to_cluster(itemAddClusterHost: ItemAddClusterHost):
+    for c in db['clusters']:
+        if c['name'] == itemAddClusterHost.name_cluster:
+            for s in c['data']:
+                if s['extid'] == itemAddClusterHost.extid_service:
+                    service = ServiceTemplate(s)
+                    service.add_host(itemAddClusterHost.host, itemAddClusterHost.group)
+
+
 @app.post('/cluster')
 def create_cluster(cluster: ClusterUser):
     import zipfile
@@ -123,7 +149,7 @@ def create_cluster(cluster: ClusterUser):
     item_namefile = item['namefile']
     item_version = item['version']
     path_initfile = Path(f'{InitFilesDir}/{item_name}/{item_namefile}')
-    path_cluster_dir = Path(f'{ClusterDir}/{item_name}/{item_version}')
+    path_cluster_dir = Path(f'{ClusterDir}/{cluster.name}/{item_name}/{item_version}')
     path_cluster_dir.mkdir(parents=True, exist_ok=True)
 
     with zipfile.ZipFile(path_initfile, 'r') as zip_ref:
@@ -140,7 +166,6 @@ def create_cluster(cluster: ClusterUser):
     # ------json add variable
     # +json add path
 
-
     # user see to action
     # user change _dir file_
     # user change _vars file_
@@ -149,9 +174,7 @@ def create_cluster(cluster: ClusterUser):
     # загружать файлы на сервер
     print('cp item.data')
 
-
-
-    db['clusters'].append({"name": cluster.name, "description": cluster.description, "item": item})
+    db['clusters'].append({"name": cluster.name, "description": cluster.description, "item": item, "data": data, "pathClusterDir": f'{cluster_files}'})
     return {'Status': 'Ok'}
 
 
