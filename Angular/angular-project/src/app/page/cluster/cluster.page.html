@@ -31,7 +31,7 @@
                     <div class="m-2" (click)="radioButton('addHostWindows')"> <button class="btn btn-secondary"><h3>Add host</h3></button>
                     </div>
                     <div class="m-2">
-                        <button class="btn btn-secondary"><h3>Edit config</h3></button>
+                        <button (click)="radioButton('editConfig')" class="btn btn-secondary"><h3>Edit config</h3></button>
                     </div>
                     <div class="m-2">
                         <button class="btn btn-secondary"><h3>Run action (service)</h3></button>
@@ -94,10 +94,14 @@
                             </div>
                         </div>
                     </div>
-                    <p>df</p>
-                    <ng-container *ngFor="let item of clusterObject.data">
-                        <p>{{item.name}}</p>
-                    </ng-container>
+                    <div *ngIf="editConfig">
+                        <ng-container *ngFor="let item of configs">
+                            <tr>
+                                <td>{{item.filename }}</td>
+                                <button class="btn btn-info" (click)="openConfig(item)">Open</button>
+                            </tr>
+                        </ng-container>
+                    </div>
                 </div>
             </div>
         </div>
@@ -139,6 +143,35 @@
                 </div>
             </div>
             <button class="btn btn-secondary" (click)="closeModal('custom-modal-1');">Close</button>
+        </div>
+
+    </div>
+</jw-modal>
+
+<jw-modal id="custom-modal-editconfig">
+    <div class="max-w-2xl container mx-auto pt-5">
+        <h1>Create cluster</h1>
+        <div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend col-3">
+                    <span class="input-group-text col-12" id="currentConfig">Name config</span>
+                </div>
+                <input type="text" name="currentConfig" aria-label="Small" class="form-control"
+                    aria-describedby="currentConfig" [formControl]="currentConfig" [contentEditable]="false" />
+            </div>
+            <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend col-3">
+                    <span class="input-group-text col-12" id="currentConfigContent">Content</span>
+                </div>
+                <textarea name="currentConfigContent" aria-label="Small" class="form-control"
+                    aria-describedby="currentConfigContent" [formControl]="currentConfigContent" ></textarea>
+            </div>
+            <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                    <button class="btn btn-primary mb-3" (click)="updateConfig()">Update</button>
+                </div>
+            </div>
+            <button class="btn btn-secondary" (click)="closeModal('custom-modal-editconfig');">Close</button>
         </div>
 
     </div>

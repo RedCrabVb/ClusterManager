@@ -35,4 +35,16 @@ export class ClusterService {
             this.config.urlBackEnd + 'cluster/host/save?name_cluster=' + nameCluster + '&extid_service=' + extidService, {"name_cluster": nameCluster}
         )
     }
+
+    getListConfg(clusterName: string) {
+        return this.http.get(
+            this.config.urlBackEnd + 'cluster/conf/list?cluster_name=' + clusterName 
+        )
+    }
+
+    updateConfigFile(clusterName: string, configName: string | null, configFile: string | null) {
+        return this.http.post(
+            this.config.urlBackEnd + 'cluster/conf/update', {cluster_name: clusterName, config_name: configName, config_file: configFile}
+        );
+    }
 }

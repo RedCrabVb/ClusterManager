@@ -8,7 +8,6 @@ Cluster Manager - приложение, которое может подключ
 
 
 # install 
-TODO: requirements fix (test install centos7, check version python)
 yum install python
 pip3 install -r requirements
 pip install fastapi

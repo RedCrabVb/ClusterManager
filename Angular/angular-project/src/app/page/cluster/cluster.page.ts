@@ -11,6 +11,7 @@ import { ClusterObject } from "src/app/date/clusterobject/clusterobject";
 import { IHost } from "src/app/date/IHost";
 import { HostsService } from "src/app/services/hosts.service";
 import { ClusterData } from "src/app/date/clusterobject/clusterdata";
+import { IConfig } from "src/app/date/clusterobject/IConfig";
 
 @Component({
     selector: 'cluster-component',
@@ -19,6 +20,7 @@ import { ClusterData } from "src/app/date/clusterobject/clusterdata";
 export class ClusterComponenet implements OnInit {
     initfiles: IInitFile[] = dataInit;
     hosts: IHost[];
+    configs: IConfig[];
     clusterObjects: ClusterObject[];
     cluseters: ICluster[] = data;
 
@@ -26,13 +28,17 @@ export class ClusterComponenet implements OnInit {
     description = new FormControl('');
     initfile = new FormControl('');
 
-    clusterObject: ClusterObject
+    currentConfig = new FormControl('');
+    currentConfigContent = new FormControl('');
+
+    clusterObject: ClusterObject;
 
     addHostWindows: boolean = false;
     service: ClusterData | null;
     serviceForm = new FormControl('');
     hostTargetAdd = new FormControl('');
     groupTragetAdd = new FormControl('');
+    editConfig: boolean = false;
 
     constructor(private initFileService: InitFileService, private clusterService: ClusterService, private hostsService: HostsService, private modalService: ModalService) {
         this.serviceForm.valueChanges.subscribe((res) => {
@@ -107,8 +113,15 @@ export class ClusterComponenet implements OnInit {
 
     radioButton(nameButton: string) {
         this.addHostWindows = false;
+        this.editConfig = false;
         if (nameButton == 'addHostWindows') {
             this.addHostWindows = true;
+        } else if (nameButton == 'editConfig') {
+            this.editConfig = true;
+            this.clusterService.getListConfg(this.clusterObject.name).subscribe((res: any) => {
+                console.log(res);
+                this.configs = res;
+            });
         }
     }
 
@@ -124,6 +137,10 @@ export class ClusterComponenet implements OnInit {
         this.hostsService.getAllHosts().subscribe((res: any) => {
             this.hosts = res;
         })
+    }
+
+    updateConfig(): void {
+        this.clusterService.updateConfigFile(this.clusterObject.name, this.currentConfig.value, this.currentConfigContent.value).subscribe((res: any) => console.log(res))
     }
 
 
@@ -150,6 +167,12 @@ export class ClusterComponenet implements OnInit {
                 this.clusterObject = c;
             }
         })
+    }
+
+    openConfig(config: IConfig) {
+        this.currentConfig.setValue(config.filename);
+        this.currentConfigContent.setValue(config.content);
+        this.openModal('custom-modal-editconfig')
     }
 
     openModal(id: string) {

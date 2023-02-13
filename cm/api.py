@@ -1,4 +1,5 @@
 import json
+import os
 
 from fastapi import FastAPI, Body
 from cm.db import *
@@ -62,6 +63,12 @@ class ClusterUser(BaseModel):
     name: str
     description: str
     initfile_name: str
+
+
+class UpdateConfigItem(BaseModel):
+    cluster_name: str
+    config_name: str
+    config_file: str
 
 
 @app.post('/task/test_connection')
@@ -135,6 +142,31 @@ def add_host_to_cluster(itemAddClusterHost: ItemAddClusterHost):
                     service.add_host(itemAddClusterHost.host, itemAddClusterHost.group)
 
 
+@app.get('/cluster/conf/list')
+def get_conf_list(cluster_name: str):
+    for c in db['clusters']:
+        if c['name'] == cluster_name:
+            configs = []
+            for (path, dirnames, filenames) in os.walk(c['pathClusterDir'] + '/vars'):
+                for f in filenames:
+                    with open(c['pathClusterDir'] + '/vars/' + f) as fcontent:
+                        configs.append({'filename': f, 'content': fcontent.read()})
+
+            return configs
+    return None
+
+
+@app.post('/cluster/conf/update')
+def update_conf(cluster: UpdateConfigItem):
+    for c in db['clusters']:
+        if c['name'] == cluster.cluster_name:
+            path_conf = c['pathClusterDir']
+            with open(f'{path_conf}/vars/{cluster.config_name}', 'w') as finit:
+                finit.write(cluster.config_file)
+
+    return None
+
+
 @app.post('/cluster')
 def create_cluster(cluster: ClusterUser):
     import zipfile
@@ -174,7 +206,8 @@ def create_cluster(cluster: ClusterUser):
     # загружать файлы на сервер
     print('cp item.data')
 
-    db['clusters'].append({"name": cluster.name, "description": cluster.description, "item": item, "data": data, "pathClusterDir": f'{cluster_files}'})
+    db['clusters'].append({"name": cluster.name, "description": cluster.description, "item": item, "data": data,
+                           "pathClusterDir": f'{cluster_files}'})
     return {'Status': 'Ok'}
 
 
