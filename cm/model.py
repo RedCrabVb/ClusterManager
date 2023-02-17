@@ -140,6 +140,7 @@ class ServiceTemplate:
                 os.chdir(wd)
                 return return_code
 
+        os.chdir(wd)
         raise Exception(f'Not found action with extid {extid_action}')
 
     def to_json(self):

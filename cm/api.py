@@ -1,7 +1,8 @@
 import json
 import os
 
-from fastapi import FastAPI, Body
+from fastapi import FastAPI
+
 from cm.db import *
 from fastapi.middleware import Middleware
 from fastapi.middleware.cors import CORSMiddleware
@@ -29,14 +30,6 @@ middleware = [
 ]
 
 app = FastAPI(middleware=middleware)
-
-
-# return cluster
-# return host
-# return cluster example
-# change params cluster example action
-# run action
-# create cluster from template
 
 
 class Item(BaseModel):
@@ -71,6 +64,12 @@ class UpdateConfigItem(BaseModel):
     config_file: str
 
 
+class RunActionModel(BaseModel):
+    cluster_name: str
+    extid: str
+    shell_parameters: dict
+
+
 @app.post('/task/test_connection')
 def test_connection(host: Host):
     # TODO: async
@@ -80,9 +79,25 @@ def test_connection(host: Host):
     return {'Status': host.test_connection()}
 
 
-@app.post('/task/run_action')  # todo
-def add_task(any):
-    print(any)
+@app.post('/task/run_action')
+def add_task(runActionModel: RunActionModel):
+    print('asdf')
+    for c in db['clusters']:
+        if c['name'] == runActionModel.cluster_name:
+            print(c['name'])
+            for i_file in c['data']:
+                if i_file['extid'] == 'INIT_HADOOP':
+                    service_tmp = ServiceTemplate(i_file)
+
+            service_tmp.run_action_sh(runActionModel.extid, c['pathClusterDir'], runActionModel.shell_parameters)
+
+
+@app.get('/task/get_json_cluster')
+def add_task(name_cluster: str):
+    for c in db['clusters']:
+        if c['name'] == name_cluster:
+            return c
+    raise Exception('Not found cluster')
 
 
 @app.get('/tasks')  # todo
@@ -153,7 +168,7 @@ def get_conf_list(cluster_name: str):
                         configs.append({'filename': f, 'content': fcontent.read()})
 
             return configs
-    return None
+    raise Exception('Not found conf')
 
 
 @app.post('/cluster/conf/update')
@@ -163,8 +178,9 @@ def update_conf(cluster: UpdateConfigItem):
             path_conf = c['pathClusterDir']
             with open(f'{path_conf}/vars/{cluster.config_name}', 'w') as finit:
                 finit.write(cluster.config_file)
+                return {'Status', 'Ok'}
 
-    return None
+    raise Exception('Not found conf')
 
 
 @app.post('/cluster')

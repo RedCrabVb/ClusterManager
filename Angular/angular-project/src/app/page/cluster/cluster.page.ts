@@ -13,6 +13,18 @@ import { HostsService } from "src/app/services/hosts.service";
 import { ClusterData } from "src/app/date/clusterobject/clusterdata";
 import { IConfig } from "src/app/date/clusterobject/IConfig";
 
+class ServiceDecriptionFormControll {
+    nameDescription: string;
+    formControll: FormControl;
+    extid: string;
+
+    constructor(nameDescription: string, extid: string, formControll: FormControl) {
+        this.nameDescription = nameDescription;
+        this.formControll = formControll;
+        this.extid = extid;
+    }
+}
+
 @Component({
     selector: 'cluster-component',
     templateUrl: './cluster.page.html'
@@ -32,6 +44,8 @@ export class ClusterComponenet implements OnInit {
     currentConfigContent = new FormControl('');
 
     clusterObject: ClusterObject;
+    selectServiceInClusterObject = new FormControl('');
+    serviceDecriptionVar: ServiceDecriptionFormControll[] = []
 
     addHostWindows: boolean = false;
     service: ClusterData | null;
@@ -39,6 +53,8 @@ export class ClusterComponenet implements OnInit {
     hostTargetAdd = new FormControl('');
     groupTragetAdd = new FormControl('');
     editConfig: boolean = false;
+    runaction: boolean = false;
+
 
     constructor(private initFileService: InitFileService, private clusterService: ClusterService, private hostsService: HostsService, private modalService: ModalService) {
         this.serviceForm.valueChanges.subscribe((res) => {
@@ -50,6 +66,35 @@ export class ClusterComponenet implements OnInit {
                 }
             });
         })
+    }
+
+    runAction(extid: string) {
+        let serviceClusterData = this.clusterObject.data.find(d => d.name == this.selectServiceInClusterObject.value);
+        var actions = serviceClusterData?.actions.find(a => a.extid)?.extid;
+        var shellParameters: any = {};
+        this.serviceDecriptionVar.forEach(e => {
+            shellParameters[e.nameDescription] = e.formControll.value;
+        })
+        if (actions != undefined) {
+             this.clusterService.runAction(this.clusterObject.name, actions, shellParameters).subscribe(res => console.log(res));
+        }
+    }
+
+    getVarService() {
+        let vars_service = this.clusterObject.data.find(d => d.name == this.selectServiceInClusterObject.value)?.vars_service
+        vars_service?.forEach((var_service) => {
+            var_service.description.forEach((descrit) => {
+                if (this.serviceDecriptionVar.find(s => s.extid == var_service.extid && s.nameDescription == descrit) == undefined) {
+                    this.serviceDecriptionVar.push(new ServiceDecriptionFormControll(descrit, var_service.extid, new FormControl()));
+
+                }
+            })
+        });
+        return vars_service;
+    }
+
+    getServiceDescriptioOnExtId(extid: string) {
+        return this.serviceDecriptionVar.filter(e => e.extid == extid);
     }
 
     whoHostGroupInCluster(type_host: string) {
@@ -114,6 +159,7 @@ export class ClusterComponenet implements OnInit {
     radioButton(nameButton: string) {
         this.addHostWindows = false;
         this.editConfig = false;
+        this.runaction = false;
         if (nameButton == 'addHostWindows') {
             this.addHostWindows = true;
         } else if (nameButton == 'editConfig') {
@@ -122,6 +168,8 @@ export class ClusterComponenet implements OnInit {
                 console.log(res);
                 this.configs = res;
             });
+        } else if (nameButton == 'runaction') {
+            this.runaction = true;
         }
     }
 
@@ -166,7 +214,7 @@ export class ClusterComponenet implements OnInit {
             if (c.name == cluster.name && c.description == cluster.description) {
                 this.clusterObject = c;
             }
-        })
+        });
     }
 
     openConfig(config: IConfig) {

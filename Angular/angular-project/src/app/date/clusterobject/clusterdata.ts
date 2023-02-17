@@ -8,7 +8,7 @@ export interface ClusterData {
     hosts: IHostCluster[]
     name: string
     requirements_groups: RequirementsGroup[]
-    vars_service: VarsService
+    vars_service: VarsService[]
 }
 
 class IHostCluster implements IHost {

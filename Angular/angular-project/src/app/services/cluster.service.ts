@@ -47,4 +47,10 @@ export class ClusterService {
             this.config.urlBackEnd + 'cluster/conf/update', {cluster_name: clusterName, config_name: configName, config_file: configFile}
         );
     }
+
+    runAction(clusterName: string, extid: string, shellParameters: any) {
+        return this.http.post(
+            this.config.urlBackEnd + 'task/run_action', {'cluster_name': clusterName, 'extid': extid, 'shell_parameters': shellParameters}
+        )
+    }
 }
