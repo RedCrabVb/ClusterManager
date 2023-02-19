@@ -48,9 +48,9 @@ export class ClusterService {
         );
     }
 
-    runAction(clusterName: string, extid: string, shellParameters: any) {
+    runAction(clusterName: string, extid: string, extidService: string, shellParameters: any) {
         return this.http.post(
-            this.config.urlBackEnd + 'task/run_action', {'cluster_name': clusterName, 'extid': extid, 'shell_parameters': shellParameters}
+            this.config.urlBackEnd + 'task/run_action', {'cluster_name': clusterName, 'extid': extid, 'shell_parameters': shellParameters, 'extid_service': extidService}
         )
     }
 }

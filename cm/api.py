@@ -67,6 +67,7 @@ class UpdateConfigItem(BaseModel):
 class RunActionModel(BaseModel):
     cluster_name: str
     extid: str
+    extid_service: str
     shell_parameters: dict
 
 
@@ -86,7 +87,7 @@ def add_task(runActionModel: RunActionModel):
         if c['name'] == runActionModel.cluster_name:
             print(c['name'])
             for i_file in c['data']:
-                if i_file['extid'] == 'INIT_HADOOP':
+                if i_file['extid'] == runActionModel.extid_service:
                     service_tmp = ServiceTemplate(i_file)
 
             service_tmp.run_action_sh(runActionModel.extid, c['pathClusterDir'], runActionModel.shell_parameters)

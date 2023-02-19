@@ -68,15 +68,15 @@ export class ClusterComponenet implements OnInit {
         })
     }
 
-    runAction(extid: string) {
+    runAction(extid: string) { 
         let serviceClusterData = this.clusterObject.data.find(d => d.name == this.selectServiceInClusterObject.value);
         var actions = serviceClusterData?.actions.find(a => a.extid)?.extid;
         var shellParameters: any = {};
         this.serviceDecriptionVar.forEach(e => {
             shellParameters[e.nameDescription] = e.formControll.value;
         })
-        if (actions != undefined) {
-             this.clusterService.runAction(this.clusterObject.name, actions, shellParameters).subscribe(res => console.log(res));
+        if (actions != undefined && serviceClusterData != undefined) {
+             this.clusterService.runAction(this.clusterObject.name, actions, serviceClusterData?.extid, shellParameters).subscribe(res => console.log(res));
         }
     }
 
@@ -86,11 +86,11 @@ export class ClusterComponenet implements OnInit {
             var_service.description.forEach((descrit) => {
                 if (this.serviceDecriptionVar.find(s => s.extid == var_service.extid && s.nameDescription == descrit) == undefined) {
                     this.serviceDecriptionVar.push(new ServiceDecriptionFormControll(descrit, var_service.extid, new FormControl()));
-
                 }
             })
         });
-        return vars_service;
+
+        return this.clusterObject.data.find(d => d.name == this.selectServiceInClusterObject.value)?.actions;
     }
 
     getServiceDescriptioOnExtId(extid: string) {
