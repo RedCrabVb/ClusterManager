@@ -1,7 +1,10 @@
 import json
 import os
+import sqlite3
 
+import psycopg2.extras
 from fastapi import FastAPI
+from psycopg2 import sql
 
 from cm.db import *
 from fastapi.middleware import Middleware
@@ -32,7 +35,7 @@ middleware = [
 app = FastAPI(middleware=middleware)
 
 
-class Item(BaseModel):
+class ItemInitFile(BaseModel):
     name: str
     namefile: str
     data: str
@@ -89,8 +92,7 @@ def add_task(runActionModel: RunActionModel):
             for i_file in c['data']:
                 if i_file['extid'] == runActionModel.extid_service:
                     service_tmp = ServiceTemplate(i_file)
-
-            service_tmp.run_action_sh(runActionModel.extid, c['pathClusterDir'], runActionModel.shell_parameters)
+                    service_tmp.run_action_sh(runActionModel.extid, c['pathClusterDir'], runActionModel.shell_parameters)
 
 
 @app.get('/task/get_json_cluster')
@@ -108,28 +110,32 @@ def list_tasks():
 
 @app.get('/hosts')
 def list_host():
-    return db['hosts']
+    with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+        cursor.execute('SELECT * FROM hosts')
+        records = cursor.fetchall()
+        for ix in records:
+            print(dict(ix))
+
+        return [dict(ix) for ix in records]
 
 
 @app.post('/host/delete')
 def delete_host(host: Host):
-    new_db_hosts = []
-    for h in db['hosts']:
-        if not h['hostname'] == host.hostname or not h['username'] == host.username:
-            new_db_hosts.append(h)
+    with conn.cursor() as cursor:
+        cursor.execute('DELETE FROM hosts WHERE hostname = %s and username = %s', (host.hostname, host.username))
 
-    db['hosts'] = new_db_hosts
     return {'Status': 'Ok'}
 
 
 @app.post('/host')
 def add_host(host: Host):
-    for h in db['hosts']:
-        if h['hostname'] == host.hostname and h['username'] == host.username:
-            raise Exception('This host exists')
+    with conn.cursor() as cursor:
+        conn.autocommit = True
+        insert_host = sql.SQL('insert into hosts (hostname, username, password, status_connect) values {}').format(
+            sql.SQL(',').join(map(sql.Literal, [(host.hostname, host.username, host.password, False)]))
+        )
+        cursor.execute(insert_host)
 
-    db['hosts'].append(
-        {'hostname': host.hostname, 'username': host.username, 'password': host.password, 'status_connect': False})
     return {'Status': 'Ok'}
 
 
@@ -208,19 +214,8 @@ def create_cluster(cluster: ClusterUser):
 
     with open(f'{cluster_files}/conf.json') as f:
         data = json.loads(f.read())
-        # init_file = [ServiceTemplate(**s) for s in data]
         print(data)
 
-    # +json load
-    # ------json add variable
-    # +json add path
-
-    # user see to action
-    # user change _dir file_
-    # user change _vars file_
-    # user add host and role
-
-    # загружать файлы на сервер
     print('cp item.data')
 
     db['clusters'].append({"name": cluster.name, "description": cluster.description, "item": item, "data": data,
@@ -235,7 +230,7 @@ def list_init_file():
 
 
 @app.post("/upload/initfile")
-def upload(item: Item):
+def upload(item: ItemInitFile):
     Path(f'{InitFilesDir}/{item.name}').mkdir(parents=True, exist_ok=True)
     with open(f'{InitFilesDir}/{item.name}/{item.namefile}', 'wb') as finit:
         finit.write(base64.standard_b64decode(item.data))
@@ -247,4 +242,11 @@ def upload(item: Item):
 
 @app.get("/")
 async def read_root():
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM hosts')
+    records = cursor.fetchall()
+    print(''.join(records))
+    cursor.close()
+    conn.close()
+
     return {"Hello": "World"}
