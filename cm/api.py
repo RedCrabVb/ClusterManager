@@ -1,6 +1,8 @@
+import fnmatch
 import json
 import os
 import sqlite3
+import zipfile
 
 import psycopg2.extras
 from fastapi import FastAPI
@@ -92,7 +94,8 @@ def add_task(runActionModel: RunActionModel):
             for i_file in c['data']:
                 if i_file['extid'] == runActionModel.extid_service:
                     service_tmp = ServiceTemplate(i_file)
-                    service_tmp.run_action_sh(runActionModel.extid, c['pathClusterDir'], runActionModel.shell_parameters)
+                    service_tmp.run_action_sh(runActionModel.extid, c['pathClusterDir'],
+                                              runActionModel.shell_parameters)
 
 
 @app.get('/task/get_json_cluster')
@@ -130,7 +133,6 @@ def delete_host(host: Host):
 @app.post('/host')
 def add_host(host: Host):
     with conn.cursor() as cursor:
-        conn.autocommit = True
         insert_host = sql.SQL('insert into hosts (hostname, username, password, status_connect) values {}').format(
             sql.SQL(',').join(map(sql.Literal, [(host.hostname, host.username, host.password, False)]))
         )
@@ -226,27 +228,35 @@ def create_cluster(cluster: ClusterUser):
 # dev
 @app.get('/initfile')
 def list_init_file():
-    return db.get('init_files')
+    with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+
+        cursor.execute('SELECT * FROM init_files')
+        records = cursor.fetchall()
+        for ix in records:
+            print(dict(ix))
+
+        return [dict(ix) for ix in records]
 
 
 @app.post("/upload/initfile")
 def upload(item: ItemInitFile):
-    Path(f'{InitFilesDir}/{item.name}').mkdir(parents=True, exist_ok=True)
-    with open(f'{InitFilesDir}/{item.name}/{item.namefile}', 'wb') as finit:
-        finit.write(base64.standard_b64decode(item.data))
+    with conn.cursor() as cursor:
+        Path(f'{InitFilesDir}/{item.name}').mkdir(parents=True, exist_ok=True)
+        with open(f'{InitFilesDir}/{item.name}/{item.namefile}', 'wb') as f_init_file:
+            f_init_file.write(base64.standard_b64decode(item.data))
 
-    # todo: unzip
+        version_init_file = None
+        with zipfile.ZipFile(f'{InitFilesDir}/{item.name}/{item.namefile}') as z_init_file:
+            for filename in z_init_file.namelist():
+                if not os.path.isdir(filename) and fnmatch.fnmatch(filename, '*VERSION'):
+                    with z_init_file.open(filename) as f:
+                        version_init_file = f.read()
 
-    add_init_file(item.name, item.namefile, 'v0')
-
+        insert_init_files = sql.SQL('insert into init_files (version, namefile, name) values {}').format(
+            sql.SQL(',').join(map(sql.Literal, [(version_init_file.decode('UTF-8'), item.namefile, item.name)]))
+        )
+        cursor.execute(insert_init_files)
 
 @app.get("/")
 async def read_root():
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM hosts')
-    records = cursor.fetchall()
-    print(''.join(records))
-    cursor.close()
-    conn.close()
-
     return {"Hello": "World"}

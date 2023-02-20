@@ -19,7 +19,7 @@ export class InitFileService {
 
 
         return this.http.post(
-            this.config.urlBackEnd + 'upload/initfile/test', { namefile, data, name }
+            this.config.urlBackEnd + 'upload/initfile', { namefile, data, name }
         );
     }
 
