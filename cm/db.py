@@ -1,5 +1,6 @@
 import psycopg2
+import os
 
-conn = psycopg2.connect(dbname='cm', user='cm_user',
-                        password='pass', host='localhost', port='34543')
+conn = psycopg2.connect(dbname=os.environ['DB_NAME'], user=os.environ['DB_USER'],
+                        password=os.environ['DB_PASSWORD'], host=os.environ['DB_HOST'], port=os.environ['DB_PORT'])
 conn.autocommit = True

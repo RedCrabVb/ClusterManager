@@ -1,6 +1,5 @@
 import fnmatch
 import json
-import os
 import zipfile
 
 import psycopg2.extras
@@ -18,11 +17,13 @@ from cm.model import ServiceTemplate
 
 from cm.base_model import *
 
-InitFilesDir = './TmpConfigHadoop'
-ClusterDir = './TmpConfigHadoop/Cluster'
+import os
+
+InitFilesDir = os.environ['INIT_FILES_DIR']
+ClusterDir = os.environ['CLUSTER_DIR']
 
 origins = [
-    "http://localhost:4200",
+    os.environ['ORIGINS_WEB_APP'],
 ]
 
 middleware = [
