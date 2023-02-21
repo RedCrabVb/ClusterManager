@@ -85,7 +85,7 @@
           <span class="input-group-text" id="nameInitFile">Hostname</span>
         </div>
         <input type="text" name="nameInitFile" aria-label="Small" aria-describedby="nameInitFile" [disabled]="true"
-          [formControl]="hostnameModal" />
+          [formControl]="hostnameEditModel" />
       </div>
 
       <div class="input-group input-group-sm mb-3">
@@ -93,7 +93,7 @@
           <span class="input-group-text" id="Username">Username</span>
         </div>
         <input type="text" name="Username" aria-label="Small" aria-describedby="Username" [disabled]="true"
-          [formControl]="usernameModal" />
+          [formControl]="usernameEditModel" />
       </div>
 
       <div class="input-group input-group-sm mb-3">
@@ -101,7 +101,7 @@
           <span class="input-group-text" id="Password">Password</span>
         </div>
         <input type="text" name="Password" aria-label="Small" aria-describedby="Password" [disabled]="true"
-          [formControl]="passwordModal" />
+          [formControl]="passwordEditModel" />
       </div>
 
       <div class="input-group input-group-sm mb-3">

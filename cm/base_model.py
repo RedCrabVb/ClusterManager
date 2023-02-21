@@ -34,6 +34,11 @@ class ClusterUser(BaseModel):
     initfile_name: str
 
 
+class ClusterUpdate(BaseModel):
+    cluster_name: str
+    config_name: str
+    config_file: str
+
 class UpdateConfigItem(BaseModel):
     cluster_name: str
     config_name: str

@@ -150,22 +150,22 @@ def get_conf_list(cluster_name: str):
 
     raise Exception('Not found conf')
 
+
 @app.post('/cluster/delete')
 def delete_cluster(clusterName: str):
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
         cursor.execute('SELECT * FROM clusters WHERE name = %s', (clusterName,))
         records = cursor.fetchone()
 
-        path_conf = records['path_cluster_dir']
-
-        shutil.rmtree(Path(path_conf))
+        shutil.rmtree(Path(records['path_cluster_dir']))
 
         cursor.execute('DELETE FROM clusters WHERE name = %s', (clusterName, ))
 
     return {'Status': 'Ok'}
 
+
 @app.post('/cluster/conf/update')
-def update_conf(cluster: ClusterUser):
+def update_conf(cluster: ClusterUpdate):
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
         cursor.execute('SELECT * FROM clusters WHERE name = %s', (cluster.cluster_name,))
         records = cursor.fetchone()
@@ -220,16 +220,18 @@ def create_cluster(cluster: ClusterUser):
 @app.post('/initfile/delete')
 def delete_initfile(item_init_file: ItemInitFileVersion):
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-        cursor.execute('SELECT * FROM init_files WHERE name = %s and version = %s', (item_init_file.name, item_init_file.version))
+        cursor.execute('SELECT * FROM init_files WHERE name = %s and version = %s',
+                       (item_init_file.name, item_init_file.version))
         record_init_file = cursor.fetchone()
 
         shutil.rmtree(Path(f'{InitFilesDir}/{record_init_file["name"]}'))
 
-        cursor.execute('DELETE FROM init_files WHERE name = %s and version = %s', (item_init_file.name, item_init_file.version))
+        cursor.execute('DELETE FROM init_files WHERE name = %s and version = %s',
+                       (item_init_file.name, item_init_file.version))
 
     return {'Status': 'Ok'}
 
-# dev
+
 @app.get('/initfile')
 def list_init_file():
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
