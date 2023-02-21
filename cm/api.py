@@ -150,9 +150,22 @@ def get_conf_list(cluster_name: str):
 
     raise Exception('Not found conf')
 
+@app.post('/cluster/delete')
+def delete_cluster(clusterName: str):
+    with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+        cursor.execute('SELECT * FROM clusters WHERE name = %s', (clusterName,))
+        records = cursor.fetchone()
+
+        path_conf = records['path_cluster_dir']
+
+        shutil.rmtree(Path(path_conf))
+
+        cursor.execute('DELETE FROM clusters WHERE name = %s', (clusterName, ))
+
+    return {'Status': 'Ok'}
 
 @app.post('/cluster/conf/update')
-def update_conf(cluster: UpdateConfigItem):
+def update_conf(cluster: ClusterUser):
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
         cursor.execute('SELECT * FROM clusters WHERE name = %s', (cluster.cluster_name,))
         records = cursor.fetchone()

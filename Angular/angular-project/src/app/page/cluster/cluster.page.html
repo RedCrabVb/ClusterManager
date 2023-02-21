@@ -7,8 +7,7 @@
                     <tr>
                         <th scope="col">Name</th>
                         <th scope="col">Description</th>
-                        <th scope="col">Initfile</th>
-                        <th scope="col">Open</th>
+                        <th scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -16,8 +15,10 @@
                         <tr>
                             <td>{{item.name }}</td>
                             <td>{{item.description}}</td>
-                            <td>{{item.initfile}} </td>
-                            <button class="btn btn-info" (click)="openCluster(item)">Open</button>
+                            <td>
+                                <button class="btn btn-info" (click)="openCluster(item)">Open</button>
+                                <button class="btn btn-danger" (click)="deleteCluster(item.name)">Delete</button>
+                            </td>
                         </tr>
                     </ng-container>
                 </tbody>

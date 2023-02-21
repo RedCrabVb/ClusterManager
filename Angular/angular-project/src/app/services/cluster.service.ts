@@ -53,4 +53,10 @@ export class ClusterService {
             this.config.urlBackEnd + 'task/run_action', {'cluster_name': clusterName, 'extid': extid, 'shell_parameters': shellParameters, 'extid_service': extidService}
         )
     }
+
+    deleteCluster(clusterName: string | null) {
+        return this.http.post(
+            this.config.urlBackEnd + 'cluster/delete?clusterName=' + clusterName, {}
+        );
+    }
 }

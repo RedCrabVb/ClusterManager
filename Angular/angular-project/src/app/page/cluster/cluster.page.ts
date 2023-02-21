@@ -191,6 +191,9 @@ export class ClusterComponenet implements OnInit {
         this.clusterService.updateConfigFile(this.clusterObject.name, this.currentConfig.value, this.currentConfigContent.value).subscribe((res: any) => console.log(res))
     }
 
+    deleteCluster(nameCluster: string | null) {
+        this.clusterService.deleteCluster(nameCluster).subscribe((res: any) => console.log(res))
+    }
 
     createCluseter() {
         console.log({ "n": this.name.value, "d": this.description.value, "i": this.initfile.value })
