@@ -51,15 +51,6 @@ SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-fake_users_db = {
-    "johndoe": {
-        "username": "johndoe",
-        "hashed_password": "$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",
-        "disabled": False,
-    }
-}
-
-
 
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
@@ -76,6 +67,7 @@ def get_user(db, username: str):
         records = cursor.fetchone()
 
         return UserInDB(username=records['username'], hashed_password=records['hash_password'])
+
 
 def authenticate_user(db, username: str, password: str):
     user = get_user(db, username)
@@ -148,8 +140,9 @@ async def read_users_me(current_user: User = Depends(get_current_active_user)):
 async def read_own_items(current_user: User = Depends(get_current_active_user)):
     return [{"item_id": "Foo", "owner": current_user.username}]
 
+
 @app.post('/task/test_connection')
-def test_connection(host: Host):
+def test_connection(host: Host, current_user: User = Depends(get_current_active_user)):
     # TODO: async
     print('test connection')
 
@@ -158,7 +151,7 @@ def test_connection(host: Host):
 
 
 @app.post('/task/run_action')
-def add_task(runActionModel: RunActionModel):
+def add_task(runActionModel: RunActionModel, current_user: User = Depends(get_current_active_user)):
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
 
         cursor.execute('SELECT * FROM clusters WHERE name = %s', (runActionModel.cluster_name,))
@@ -172,7 +165,7 @@ def add_task(runActionModel: RunActionModel):
 
 
 @app.get('/hosts')
-def list_host():
+def list_host(current_user: User = Depends(get_current_active_user)):
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
         cursor.execute('SELECT * FROM hosts')
         records = cursor.fetchall()
@@ -181,7 +174,7 @@ def list_host():
 
 
 @app.post('/host/delete')
-def delete_host(host: Host):
+def delete_host(host: Host, current_user: User = Depends(get_current_active_user)):
     with conn.cursor() as cursor:
         cursor.execute('DELETE FROM hosts WHERE hostname = %s and username = %s', (host.hostname, host.username))
 
@@ -189,7 +182,7 @@ def delete_host(host: Host):
 
 
 @app.post('/host')
-def add_host(host: Host):
+def add_host(host: Host, current_user: User = Depends(get_current_active_user)):
     with conn.cursor() as cursor:
         insert_host = sql.SQL('insert into hosts (hostname, username, password, status_connect) values {}').format(
             sql.SQL(',').join(map(sql.Literal, [(host.hostname, host.username, host.password, False)]))
@@ -200,7 +193,7 @@ def add_host(host: Host):
 
 
 @app.get('/cluster')
-def list_cluster():
+def list_cluster(current_user: User = Depends(get_current_active_user)):
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
         cursor.execute('SELECT * FROM clusters')
         records = cursor.fetchall()
@@ -214,7 +207,7 @@ def list_cluster():
 
 
 @app.post('/cluster/host/save')
-def save_host(name_cluster: str, extid_service: str):
+def save_host(name_cluster: str, extid_service: str, current_user: User = Depends(get_current_active_user)):
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
 
         cursor.execute('SELECT * FROM clusters WHERE name = %s', (name_cluster,))
@@ -227,7 +220,7 @@ def save_host(name_cluster: str, extid_service: str):
 
 
 @app.post("/cluster/host")
-def add_host_to_cluster(itemAddClusterHost: ItemAddClusterHost):
+def add_host_to_cluster(itemAddClusterHost: ItemAddClusterHost, current_user: User = Depends(get_current_active_user)):
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
 
         cursor.execute('SELECT * FROM clusters WHERE name = %s', (itemAddClusterHost.name_cluster,))
@@ -244,7 +237,7 @@ def add_host_to_cluster(itemAddClusterHost: ItemAddClusterHost):
 
 
 @app.get('/cluster/conf/list')
-def get_conf_list(cluster_name: str):
+def get_conf_list(cluster_name: str, current_user: User = Depends(get_current_active_user)):
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
 
         cursor.execute('SELECT * FROM clusters WHERE name = %s', (cluster_name,))
@@ -258,11 +251,11 @@ def get_conf_list(cluster_name: str):
 
         return configs
 
-    raise Exception('Not found conf')
+    raise HTTPException(status_code=400, detail='Not found conf')
 
 
 @app.post('/cluster/delete')
-def delete_cluster(clusterName: str):
+def delete_cluster(clusterName: str, current_user: User = Depends(get_current_active_user)):
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
         cursor.execute('SELECT * FROM clusters WHERE name = %s', (clusterName,))
         records = cursor.fetchone()
@@ -275,7 +268,7 @@ def delete_cluster(clusterName: str):
 
 
 @app.post('/cluster/conf/update')
-def update_conf(cluster: ClusterUpdate):
+def update_conf(cluster: ClusterUpdate, current_user: User = Depends(get_current_active_user)):
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
         cursor.execute('SELECT * FROM clusters WHERE name = %s', (cluster.cluster_name,))
         records = cursor.fetchone()
@@ -285,11 +278,11 @@ def update_conf(cluster: ClusterUpdate):
             f_init.write(cluster.config_file)
             return {'Status', 'Ok'}
 
-    raise Exception('Not found conf')
+    raise HTTPException(status_code=400, detail='Not found conf')
 
 
 @app.post('/cluster')
-def create_cluster(cluster: ClusterUser):
+def create_cluster(cluster: ClusterUser, current_user: User = Depends(get_current_active_user)):
     import zipfile
     import os
 
@@ -328,7 +321,7 @@ def create_cluster(cluster: ClusterUser):
 
 
 @app.post('/initfile/delete')
-def delete_initfile(item_init_file: ItemInitFileVersion):
+def delete_initfile(item_init_file: ItemInitFileVersion, current_user: User = Depends(get_current_active_user)):
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
         cursor.execute('SELECT * FROM init_files WHERE name = %s and version = %s',
                        (item_init_file.name, item_init_file.version))
@@ -343,7 +336,7 @@ def delete_initfile(item_init_file: ItemInitFileVersion):
 
 
 @app.get('/initfile')
-def list_init_file():
+def list_init_file(current_user: User = Depends(get_current_active_user)):
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
         cursor.execute('SELECT * FROM init_files')
         records = cursor.fetchall()
@@ -354,7 +347,7 @@ def list_init_file():
 
 
 @app.post("/upload/initfile")
-def upload(item: ItemInitFile):
+def upload(item: ItemInitFile, current_user: User = Depends(get_current_active_user)):
     with conn.cursor() as cursor:
         Path(f'{InitFilesDir}/{item.name}').mkdir(parents=True, exist_ok=True)
         with open(f'{InitFilesDir}/{item.name}/{item.namefile}', 'wb') as f_init_file:

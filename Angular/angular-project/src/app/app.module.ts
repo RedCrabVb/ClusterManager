@@ -12,6 +12,9 @@ import { ModalService } from './components/modal/modalService';
 import { HostsComponent } from './page/hosts/hosts.page';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ClusterComponenet } from './page/cluster/cluster.page';
+import { LoginComponent } from './page/login/login.page.component';
+import { Router } from '@angular/router';
+import { AuthGuard } from './services/AuthGuard';
 
 
 @NgModule({
@@ -21,7 +24,9 @@ import { ClusterComponenet } from './page/cluster/cluster.page';
     ModalComponent,
     ClusterComponenet,
     HostsComponent,
-    InitFilePage
+    InitFilePage,
+    LoginComponent,
+    
   ],
   imports: [
     AppRoutingModule,
@@ -31,7 +36,7 @@ import { ClusterComponenet } from './page/cluster/cluster.page';
     HttpClientModule,
     NgbModule
   ],
-  providers: [],
+  providers: [AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

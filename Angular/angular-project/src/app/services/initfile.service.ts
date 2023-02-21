@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core'
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http'
 import { ConfigApp } from '../services/config'
+import { Utils } from './utils';
 
 @Injectable({
     providedIn: 'root'
@@ -13,30 +14,39 @@ export class InitFileService {
     // todo: limit version
     uploadFile(namefile: string, data: string, name: string) {
         let headers = new HttpHeaders({
-            'Content-Type': 'application/json'
+            'Authorization': `${Utils.getCookie('token_type')} ${Utils.getCookie('access_token')}`
         });
-        let options = { headers: headers, body: { namefile, data, name } };
-
 
         return this.http.post(
-            this.config.urlBackEnd + 'upload/initfile', { namefile, data, name }
+            this.config.urlBackEnd + 'upload/initfile', { namefile, data, name }, { headers }
         );
     }
 
     deleteFile(name: string, version: string) {
+        let headers = new HttpHeaders({
+            'Authorization': `${Utils.getCookie('token_type')} ${Utils.getCookie('access_token')}`
+        });
 
         return this.http.post(
-            this.config.urlBackEnd + 'initfile/delete', { name, version}
+            this.config.urlBackEnd + 'initfile/delete', { name, version }, { headers }
         );
     }
 
     getAllInitfiles() {
+        let headers = new HttpHeaders({
+            'Authorization': `${Utils.getCookie('token_type')} ${Utils.getCookie('access_token')}`
+        });
+
         return this.http.get(
-            this.config.urlBackEnd + 'initfile'
+            this.config.urlBackEnd + 'initfile', { headers }
         )
     }
 
     get() {
-        return this.http.get(this.config.urlBackEnd)
+        let headers = new HttpHeaders({
+            'Authorization': `${Utils.getCookie('token_type')} ${Utils.getCookie('access_token')}`
+        });
+
+        return this.http.get(this.config.urlBackEnd, { headers })
     }
 }

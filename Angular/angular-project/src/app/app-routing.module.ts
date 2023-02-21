@@ -5,22 +5,24 @@ import { InitFilePage } from './page/initfile/initfile.page.component';
 import { WelcomeComponent } from './page/welcome/welcom.page.component';
 import { HostsComponent } from './page/hosts/hosts.page';
 import { ClusterComponenet } from './page/cluster/cluster.page';
+import { LoginComponent } from './page/login/login.page.component';
+import { AuthGuard } from './services/AuthGuard';
 
 const routes: Routes = [
-  // {
-    // 'path': '**', component: AppComponent
-  // }, 
   {
-    'path': 'initfile', component: InitFilePage
+    'path': 'initfile', component: InitFilePage, canActivate: [AuthGuard]
   },
   {
-    'path': 'welcome', component: WelcomeComponent
+    'path': '', component: WelcomeComponent, canActivate: [AuthGuard]
   },
   {
-    'path': 'hosts', component: HostsComponent
+    'path': 'hosts', component: HostsComponent, canActivate: [AuthGuard]
   },
   {
-    'path': 'cluster', component: ClusterComponenet
+    'path': 'cluster', component: ClusterComponenet, canActivate: [AuthGuard]
+  },
+  {
+    'path': 'login', component: LoginComponent
   }
 ];
 

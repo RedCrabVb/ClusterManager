@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { InitFileService } from './services/initfile.service'; 
+import { Utils } from './services/utils';
 
 @Component({
   selector: 'app-root',
@@ -9,5 +10,10 @@ import { InitFileService } from './services/initfile.service';
 export class AppComponent {
   sendInitFile() {
     console.log('Click me!')
+  }
+
+
+  canHeader() {
+    return Utils.getCookie('access_token');
   }
 }

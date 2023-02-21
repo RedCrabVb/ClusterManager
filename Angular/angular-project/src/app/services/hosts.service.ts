@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core'
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http'
 import { ConfigApp } from '../services/config'
 import { IHost } from '../date/IHost';
+import { Utils } from './utils';
 
 @Injectable({
     providedIn: 'root'
@@ -12,32 +13,42 @@ export class HostsService {
     }
 
     deleteHost(host: IHost) {
+        let headers = new HttpHeaders({
+            'Authorization': `${Utils.getCookie('token_type')} ${Utils.getCookie('access_token')}`
+        });
+
         return this.http.post(
-            this.config.urlBackEnd + 'host/delete', { "hostname": host.hostname, "password": host.password, "username": host.username }
+            this.config.urlBackEnd + 'host/delete', { "hostname": host.hostname, "password": host.password, "username": host.username }, { headers }
         );
     }
 
     addHosts(host: IHost) {
         let headers = new HttpHeaders({
-            'Content-Type': 'application/json'
+            'Authorization': `${Utils.getCookie('token_type')} ${Utils.getCookie('access_token')}`
         });
-        let options = { headers: headers, body: host };
-
 
         return this.http.post(
-            this.config.urlBackEnd + 'host', { "hostname": host.hostname, "password": host.password, "username": host.username }
+            this.config.urlBackEnd + 'host', { "hostname": host.hostname, "password": host.password, "username": host.username }, { headers }
         );
     }
 
     testConnection(host: IHost) {
+        let headers = new HttpHeaders({
+            'Authorization': `${Utils.getCookie('token_type')} ${Utils.getCookie('access_token')}`
+        });
+
         return this.http.post(
-            this.config.urlBackEnd + 'task/test_connection', host
+            this.config.urlBackEnd + 'task/test_connection', host, { headers }
         )
     }
 
     getAllHosts() {
+        let headers = new HttpHeaders({
+            'Authorization': `${Utils.getCookie('token_type')} ${Utils.getCookie('access_token')}`
+        });
+
         return this.http.get(
-            this.config.urlBackEnd + 'hosts'
+            this.config.urlBackEnd + 'hosts', { headers }
         )
     }
 
