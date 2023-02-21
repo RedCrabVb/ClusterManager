@@ -11,6 +11,7 @@ from cm.db import *
 from fastapi.middleware import Middleware
 from fastapi.middleware.cors import CORSMiddleware
 import base64
+import shutil
 from pathlib import Path
 
 from cm.model import ServiceTemplate
@@ -202,6 +203,18 @@ def create_cluster(cluster: ClusterUser):
 
     return {'Status': 'Ok'}
 
+
+@app.post('/initfile/delete')
+def delete_initfile(item_init_file: ItemInitFileVersion):
+    with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+        cursor.execute('SELECT * FROM init_files WHERE name = %s and version = %s', (item_init_file.name, item_init_file.version))
+        record_init_file = cursor.fetchone()
+
+        shutil.rmtree(Path(f'{InitFilesDir}/{record_init_file["name"]}'))
+
+        cursor.execute('DELETE FROM init_files WHERE name = %s and version = %s', (item_init_file.name, item_init_file.version))
+
+    return {'Status': 'Ok'}
 
 # dev
 @app.get('/initfile')

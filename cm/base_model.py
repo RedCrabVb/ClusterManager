@@ -9,6 +9,11 @@ class ItemInitFile(BaseModel):
     data: str
 
 
+class ItemInitFileVersion(BaseModel):
+    name: str
+    version: str
+
+
 class ItemAddClusterHost(BaseModel):
     name_cluster: str
     host: Host

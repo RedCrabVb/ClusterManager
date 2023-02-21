@@ -17,6 +17,7 @@
           <td>{{item.name }}</td>
           <td>{{item.namefile}}</td>
           <td>{{item.version}} </td>
+          <td><button class="btn btn-danger" (click)="deleteInitFile(item.name, item.version)">Delete</button></td>
         </tr>
       </ng-container>
     </tbody>

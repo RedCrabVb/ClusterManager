@@ -1,7 +1,7 @@
 import uvicorn
 
 # from cm import api
-from cm.model import *
+# from cm.model import *
 
 import cm.api
 
@@ -37,44 +37,44 @@ if __name__ == '__main__':
     # installationFile = [serviceInit.to_json(), serviceHdfs.to_json()]
     # print(json.dumps(installationFile))
 
-    print('load config')
-    with open('ConfigHadoop/hadoop-ansible/conf.json') as f:
-        data = json.loads(f.read())
-        init_file = [ServiceTemplate(**s) for s in data]
-
-    for i_file in init_file:
-        if i_file.extid == 'INIT_HADOOP':
-            serviceInit = i_file
-        if i_file.extid == 'HDFS_INSTALL':
-            serviceHdfs = i_file
-
-    installationFile = [serviceInit.to_json(), serviceHdfs.to_json()]
-    print(json.dumps(installationFile))
-
-    print('user: add host')
-    hostMaster = Host('192.168.56.125', 'root', '1234')
-    hostWorker = Host('192.168.56.126', 'root', '1234')
-    hostWorker2 = Host('192.168.56.127', 'root', '1234')
-    print(hostMaster.test_connection())
-    print(hostWorker.test_connection())
-    print(hostWorker2.test_connection())
-
-    serviceInit.__setattr__('cluster_path', 'ConfigHadoop/hadoop-ansible')
-
-    print('host move to cluster.')
-    serviceHdfs.install_worker = {'master_ip': hostMaster.hostname, 'master_hostname': hostMaster.hostname}
-    serviceHdfs.add_host(hostMaster, 'master')
-    serviceHdfs.add_host(hostWorker, 'workers')
-    serviceHdfs.add_host(hostWorker2, 'workers')
-    serviceHdfs.save_hosts_to_cluster(serviceInit.cluster_path)
-
-    serviceInit.copy_file_hadoop = {'download_path_with_file': '/mnt/f/Download/tar/hadoop-3.2.4.tar.gz',
-                                    'username_master': hostMaster.username, 'password_master': hostMaster.password,
-                                    'hostname_master': hostMaster.hostname,
-                                    'download_path': '/' + hostMaster.username}
-
-    serviceInit.run_action_sh('etc_hosts_update', 'ConfigHadoop/hadoop-ansible')
-    serviceInit.run_action_sh('copy_file_hadoop', serviceInit.cluster_path, serviceInit.copy_file_hadoop)
-    serviceHdfs.run_action_sh('install_master', 'ConfigHadoop/hadoop-ansible')
-    serviceHdfs.run_action_sh('install_worker', 'ConfigHadoop/hadoop-ansible', serviceHdfs.install_worker)
+    # print('load config')
+    # with open('ConfigHadoop/hadoop-ansible/conf.json') as f:
+    #     data = json.loads(f.read())
+    #     init_file = [ServiceTemplate(**s) for s in data]
+    #
+    # for i_file in init_file:
+    #     if i_file.extid == 'INIT_HADOOP':
+    #         serviceInit = i_file
+    #     if i_file.extid == 'HDFS_INSTALL':
+    #         serviceHdfs = i_file
+    #
+    # installationFile = [serviceInit.to_json(), serviceHdfs.to_json()]
+    # print(json.dumps(installationFile))
+    #
+    # print('user: add host')
+    # hostMaster = Host('192.168.56.125', 'root', '1234')
+    # hostWorker = Host('192.168.56.126', 'root', '1234')
+    # hostWorker2 = Host('192.168.56.127', 'root', '1234')
+    # print(hostMaster.test_connection())
+    # print(hostWorker.test_connection())
+    # print(hostWorker2.test_connection())
+    #
+    # serviceInit.__setattr__('cluster_path', 'ConfigHadoop/hadoop-ansible')
+    #
+    # print('host move to cluster.')
+    # serviceHdfs.install_worker = {'master_ip': hostMaster.hostname, 'master_hostname': hostMaster.hostname}
+    # serviceHdfs.add_host(hostMaster, 'master')
+    # serviceHdfs.add_host(hostWorker, 'workers')
+    # serviceHdfs.add_host(hostWorker2, 'workers')
+    # serviceHdfs.save_hosts_to_cluster(serviceInit.cluster_path)
+    #
+    # serviceInit.copy_file_hadoop = {'download_path_with_file': '/mnt/f/Download/tar/hadoop-3.2.4.tar.gz',
+    #                                 'username_master': hostMaster.username, 'password_master': hostMaster.password,
+    #                                 'hostname_master': hostMaster.hostname,
+    #                                 'download_path': '/' + hostMaster.username}
+    #
+    # serviceInit.run_action_sh('etc_hosts_update', 'ConfigHadoop/hadoop-ansible')
+    # serviceInit.run_action_sh('copy_file_hadoop', serviceInit.cluster_path, serviceInit.copy_file_hadoop)
+    # serviceHdfs.run_action_sh('install_master', 'ConfigHadoop/hadoop-ansible')
+    # serviceHdfs.run_action_sh('install_worker', 'ConfigHadoop/hadoop-ansible', serviceHdfs.install_worker)
 

@@ -23,6 +23,13 @@ export class InitFileService {
         );
     }
 
+    deleteFile(name: string, version: string) {
+
+        return this.http.post(
+            this.config.urlBackEnd + 'initfile/delete', { name, version}
+        );
+    }
+
     getAllInitfiles() {
         return this.http.get(
             this.config.urlBackEnd + 'initfile'

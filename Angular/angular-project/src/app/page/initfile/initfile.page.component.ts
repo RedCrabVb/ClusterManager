@@ -23,6 +23,10 @@ export class InitFilePage {
     })
   }
 
+  deleteInitFile(name: string, version: string) {
+    this.initFileService.deleteFile(name, version).subscribe((res: any) => console.log(res));
+  }
+
   updateNameUser(event: any) {
     this.nameuser = event.target.value
   }
