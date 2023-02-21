@@ -88,6 +88,14 @@ CREATE TABLE public.init_files (
 ALTER TABLE public.init_files OWNER TO postgres;
 
 
+CREATE TABLE public.user_cm (
+	username varchar NOT NULL,
+	hash_password varchar NOT NULL,
+	CONSTRAINT user_cm_pk PRIMARY KEY (username,hash_password)
+);
+
+ALTER TABLE public.user_cm OWNER TO postgres;
+
 --
 -- TOC entry 2865 (class 2606 OID 174662)
 -- Name: clusters clusters_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
@@ -147,4 +155,6 @@ GRANT ALL ON TABLE public.init_files TO cm_user;
 --
 -- PostgreSQL database dump complete
 --
+
+ALTER TABLE public.user_cm OWNER TO cm_user;
 

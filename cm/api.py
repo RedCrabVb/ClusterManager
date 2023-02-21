@@ -86,13 +86,15 @@ def get_password_hash(password):
 
 
 def get_user(db, username: str):
-    if username in db:
-        user_dict = db[username]
-        return UserInDB(**user_dict)
+    with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
 
+        cursor.execute('SELECT * FROM user_cm WHERE username = %s', (username,))
+        records = cursor.fetchone()
 
-def authenticate_user(fake_db, username: str, password: str):
-    user = get_user(fake_db, username)
+        return UserInDB(username=records['username'], hashed_password=records['hash_password'])
+
+def authenticate_user(db, username: str, password: str):
+    user = get_user(db, username)
     if not user:
         return False
     if not verify_password(password, user.hashed_password):
@@ -125,7 +127,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         token_data = TokenData(username=username)
     except Exception:
         raise credentials_exception
-    user = get_user(fake_users_db, username=token_data.username)
+    user = get_user(conn, username=token_data.username)
     if user is None:
         raise credentials_exception
     return user
@@ -139,7 +141,7 @@ async def get_current_active_user(current_user: User = Depends(get_current_user)
 
 @app.post("/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = authenticate_user(fake_users_db, form_data.username, form_data.password)
+    user = authenticate_user(conn, form_data.username, form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
