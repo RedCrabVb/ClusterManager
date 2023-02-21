@@ -29,31 +29,28 @@
                 <h1>{{clusterObject.name}}</h1>
                 <h2>{{clusterObject.description}}</h2>
                 <div class="col-md-3">
-                    <div class="m-2" (click)="radioButton('addHostWindows')"> <button class="btn btn-secondary"><h3>Add host</h3></button>
+                    <div class="m-2" (click)="radioButton('addHostWindows')"> <button class="btn btn-secondary">
+                            <h3>Add host</h3>
+                        </button>
                     </div>
                     <div class="m-2">
-                        <button (click)="radioButton('editConfig')" class="btn btn-secondary"><h3>Edit config</h3></button>
+                        <button (click)="radioButton('editConfig')" class="btn btn-secondary">
+                            <h3>Edit config</h3>
+                        </button>
                     </div>
                     <div class="m-2">
-                        <button (click)="radioButton('runaction')" class="btn btn-secondary"><h3>Run action (service)</h3></button>
+                        <button (click)="radioButton('runaction')" class="btn btn-secondary">
+                            <h3>Run action</h3>
+                        </button>
                     </div>
                     <div class="m-2">
-                        <button class="btn btn-secondary"><h3>Main</h3></button>
+                        <button (click)="radioButton('main')" class="btn btn-secondary" class="btn btn-secondary">
+                            <h3>Main</h3>
+                        </button>
                     </div>
                 </div>
                 <div class="col">
                     <div *ngIf="addHostWindows">
-                        addHostWindows
-                        <!-- <div class="input-group input-group-sm mb-3">
-                            <div class="input-group-prepend col-3">
-                                <span class="input-group-text col-12" id="host">Hosts</span>
-                            </div>
-                            <select class="custom-select form-control" id="host">
-                                <ng-container *ngFor="let item of hosts">
-                                    <option value="{{item.username}}|{{item.hostname}}">{{item.username}}@{{item.hostname}}</option>
-                                </ng-container>
-                            </select>
-                        </div> -->
                         <div class="input-group input-group-sm mb-3">
                             <div class="input-group-prepend col-3">
                                 <span class="input-group-text col-12" id="service">Service</span>
@@ -66,11 +63,13 @@
                         </div>
                         <div class="input-group input-group-sm mb-3" *ngIf="service != null">
                             <div class="input-group-prepend col-3">
-                                <span class="input-group-text col-12" id="grouphost" >Group</span>
+                                <span class="input-group-text col-12" id="grouphost">Group</span>
                             </div>
                             <select class="custom-select form-control" id="grouphost" [formControl]="groupTragetAdd">
                                 <ng-container *ngFor="let item of service.requirements_groups">
-                                    <option value="{{item.type_host}}">{{item.type_host}} | {{this.whoHostGroupInCluster(item.type_host)}} / {{item.quantity_max != null ? item.quantity_max : 'None limit'}}</option>
+                                    <option value="{{item.type_host}}">{{item.type_host}} |
+                                        {{this.whoHostGroupInCluster(item.type_host)}} / {{item.quantity_max != null ?
+                                        item.quantity_max : 'None limit'}}</option>
                                 </ng-container>
                             </select>
                         </div>
@@ -80,7 +79,8 @@
                             </div>
                             <select class="custom-select form-control" id="host" [formControl]="hostTargetAdd">
                                 <ng-container *ngFor="let item of hosts">
-                                    <option value="{{item.username}}|{{item.hostname}}">{{item.username}}@{{item.hostname}}</option>
+                                    <option value="{{item.username}}|{{item.hostname}}">
+                                        {{item.username}}@{{item.hostname}}</option>
                                 </ng-container>
                             </select>
                         </div>
@@ -108,7 +108,8 @@
                             <div class="input-group-prepend col-3">
                                 <span class="input-group-text col-12" id="selectService">Select service</span>
                             </div>
-                            <select class="custom-select form-control" id="selectService" [formControl]="selectServiceInClusterObject">
+                            <select class="custom-select form-control" id="selectService"
+                                [formControl]="selectServiceInClusterObject">
                                 <ng-container *ngFor="let item of clusterObject.data">
                                     <option value="{{item.name}}">{{item.name}}</option>
                                 </ng-container>
@@ -120,9 +121,11 @@
                             <ng-container *ngFor="let description of this.getServiceDescriptioOnExtId(service.extid)">
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend col-3">
-                                        <span class="input-group-text col-12" id={{description.nameDescription}}>{{description.nameDescription}}</span>
+                                        <span class="input-group-text col-12"
+                                            id={{description.nameDescription}}>{{description.nameDescription}}</span>
                                     </div>
-                                    <input type="text" name={{description.nameDescription}} aria-label="Small" class="form-control" [formControl]="description.formControll" />
+                                    <input type="text" name={{description.nameDescription}} aria-label="Small"
+                                        class="form-control" [formControl]="description.formControll" />
                                 </div>
 
                             </ng-container>
@@ -133,6 +136,9 @@
                             </div>
                         </ng-container>
 
+                    </div>
+                    <div *ngIf="main">
+                        Main, Hello!
                     </div>
                 </div>
             </div>
@@ -196,7 +202,7 @@
                     <span class="input-group-text col-12" id="currentConfigContent">Content</span>
                 </div>
                 <textarea name="currentConfigContent" aria-label="Small" class="form-control"
-                    aria-describedby="currentConfigContent" [formControl]="currentConfigContent" ></textarea>
+                    aria-describedby="currentConfigContent" [formControl]="currentConfigContent"></textarea>
             </div>
             <div class="input-group input-group-sm mb-3">
                 <div class="input-group-prepend">
@@ -208,32 +214,3 @@
 
     </div>
 </jw-modal>
-
-<!-- <jw-modal id="custom-modal-runaction">
-    <div class="max-w-2xl container mx-auto pt-5">
-        <h1>Run action</h1>
-        <div>
-            <div class="input-group mb-3">
-                <div class="input-group-prepend col-3">
-                    <span class="input-group-text col-12" id="currentConfig">Name config</span>
-                </div>
-                <input type="text" name="currentConfig" aria-label="Small" class="form-control"
-                    aria-describedby="currentConfig" [formControl]="currentConfig" [contentEditable]="false" />
-            </div>
-            <div class="input-group input-group-sm mb-3">
-                <div class="input-group-prepend col-3">
-                    <span class="input-group-text col-12" id="currentConfigContent">Content</span>
-                </div>
-                <textarea name="currentConfigContent" aria-label="Small" class="form-control"
-                    aria-describedby="currentConfigContent" [formControl]="currentConfigContent" ></textarea>
-            </div>
-            <div class="input-group input-group-sm mb-3">
-                <div class="input-group-prepend">
-                    <button class="btn btn-primary mb-3">Run</button>
-                </div>
-            </div>
-            <button class="btn btn-secondary" (click)="closeModal('custom-modal-editconfig');">Close</button>
-        </div>
-
-    </div>
-</jw-modal> -->

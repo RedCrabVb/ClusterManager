@@ -12,6 +12,8 @@ import { IHost } from "src/app/date/IHost";
 import { HostsService } from "src/app/services/hosts.service";
 import { ClusterData } from "src/app/date/clusterobject/clusterdata";
 import { IConfig } from "src/app/date/clusterobject/IConfig";
+import { HttpErrorResponse } from "@angular/common/http";
+import { catchError, throwError } from "rxjs";
 
 class ServiceDecriptionFormControll {
     nameDescription: string;
@@ -47,13 +49,16 @@ export class ClusterComponenet implements OnInit {
     selectServiceInClusterObject = new FormControl('');
     serviceDecriptionVar: ServiceDecriptionFormControll[] = []
 
-    addHostWindows: boolean = false;
     service: ClusterData | null;
+
     serviceForm = new FormControl('');
     hostTargetAdd = new FormControl('');
     groupTragetAdd = new FormControl('');
+
+    addHostWindows: boolean = false;
     editConfig: boolean = false;
     runaction: boolean = false;
+    main: boolean = true;
 
 
     constructor(private initFileService: InitFileService, private clusterService: ClusterService, private hostsService: HostsService, private modalService: ModalService) {
@@ -68,7 +73,41 @@ export class ClusterComponenet implements OnInit {
         })
     }
 
-    runAction(extid: string) { 
+    ngOnInit(): void {
+        this.initFileService.getAllInitfiles()
+            .pipe(catchError(this.handleError))
+            .subscribe((res: any) => {
+                this.initfiles = res;
+            });
+        this.clusterService.getAllCluster()
+            .pipe(catchError(this.handleError))
+            .subscribe((res: any) => {
+                this.cluseters = res;
+                this.clusterObjects = res;
+                this.clusterObject = res[0];
+            });
+        this.hostsService.getAllHosts()
+            .pipe(catchError(this.handleError))
+            .subscribe((res: any) => {
+                this.hosts = res;
+            });
+    }
+
+    private handleError(error: HttpErrorResponse) {
+        if (error.status === 0) {
+            console.error('An error occurred:', error.error);
+            alert('An error occurred: ' + error.message);
+        } else {
+            console.error(
+                `Backend returned code ${error.status}, body was: `, error.error);
+
+            alert(`Backend returned code ${error.status}, body was: ` + error.message);
+        }
+        return throwError(() => new Error('Something bad happened; please try again later.'));
+    }
+
+
+    runAction(extid: string) {
         let serviceClusterData = this.clusterObject.data.find(d => d.name == this.selectServiceInClusterObject.value);
         var actions = serviceClusterData?.actions.find(a => a.extid)?.extid;
         var shellParameters: any = {};
@@ -76,12 +115,14 @@ export class ClusterComponenet implements OnInit {
             shellParameters[e.nameDescription] = e.formControll.value;
         })
         if (actions != undefined && serviceClusterData != undefined) {
-             this.clusterService.runAction(this.clusterObject.name, actions, serviceClusterData?.extid, shellParameters).subscribe(res => console.log(res));
+            this.clusterService.runAction(this.clusterObject.name, actions, serviceClusterData?.extid, shellParameters)
+                .pipe(catchError(this.handleError))
+                .subscribe(res => console.log(res));
         }
     }
 
     getVarService() {
-        let vars_service = this.clusterObject.data.find(d => d.name == this.selectServiceInClusterObject.value)?.vars_service
+        let vars_service = this.clusterObject.data.find(d => d.name == this.selectServiceInClusterObject.value)?.vars_service;
         vars_service?.forEach((var_service) => {
             var_service.description.forEach((descrit) => {
                 if (this.serviceDecriptionVar.find(s => s.extid == var_service.extid && s.nameDescription == descrit) == undefined) {
@@ -123,7 +164,7 @@ export class ClusterComponenet implements OnInit {
         this.clusterObjects.forEach((c) => {
             if (c.name == this.clusterObject.name && c.description == this.clusterObject.description) {
                 this.clusterObject = c;
-            } 
+            }
             this.service = null;
             this.clusterObject.data.forEach((c) => {
                 if (c.extid == this.serviceForm.value && (this.addHostWindows && c.requirements_groups != null)) {
@@ -139,12 +180,12 @@ export class ClusterComponenet implements OnInit {
         this.hosts.forEach((v: IHost) => {
             if (v.hostname == hostname && v.username == username && this.service != null) {
                 this.clusterService.addHostToCluster(this.clusterObject.name, v, this.groupTragetAdd.value, this.service.extid).subscribe((res) => {
-                     alert("Связка прошла успешно");
-                     this.clusterService.getAllCluster().subscribe((res: any) => {
+                    alert("Связка прошла успешно");
+                    this.clusterService.getAllCluster().subscribe((res: any) => {
                         this.cluseters = res
                         this.clusterObjects = res
-                        
-                     });
+
+                    });
                 })
             }
         })
@@ -152,7 +193,9 @@ export class ClusterComponenet implements OnInit {
 
     saveHostInCluster() {
         if (this.service != null) {
-            this.clusterService.saveHost(this.clusterObject.name, this.service?.extid).subscribe((res) => console.log(res))
+            this.clusterService.saveHost(this.clusterObject.name, this.service?.extid)
+                .pipe(catchError(this.handleError))
+                .subscribe((res) => console.log(res))
         }
     }
 
@@ -160,39 +203,44 @@ export class ClusterComponenet implements OnInit {
         this.addHostWindows = false;
         this.editConfig = false;
         this.runaction = false;
+        this.main = false;
+
         if (nameButton == 'addHostWindows') {
+            this.serviceForm.setValue('');
             this.addHostWindows = true;
         } else if (nameButton == 'editConfig') {
+
             this.editConfig = true;
-            this.clusterService.getListConfg(this.clusterObject.name).subscribe((res: any) => {
-                console.log(res);
-                this.configs = res;
-            });
+            this.clusterService.getListConfg(this.clusterObject.name)
+                .pipe(catchError(this.handleError))
+                .subscribe((res: any) => {
+                    console.log(res);
+                    this.configs = res;
+                });
         } else if (nameButton == 'runaction') {
             this.runaction = true;
+        } else if (nameButton == 'main') {
+            this.main = true;
         }
     }
 
-    ngOnInit(): void {
-        this.initFileService.getAllInitfiles().subscribe((res: any) => {
-            this.initfiles = res
-        })
-        this.clusterService.getAllCluster().subscribe((res: any) => {
-            this.cluseters = res
-            this.clusterObjects = res
-            this.clusterObject = res[0] //for test
-        })
-        this.hostsService.getAllHosts().subscribe((res: any) => {
-            this.hosts = res;
-        })
-    }
+
 
     updateConfig(): void {
-        this.clusterService.updateConfigFile(this.clusterObject.name, this.currentConfig.value, this.currentConfigContent.value).subscribe((res: any) => console.log(res))
+        this.clusterService
+            .updateConfigFile(this.clusterObject.name, this.currentConfig.value, this.currentConfigContent.value)
+            .pipe(catchError(this.handleError))
+            .subscribe((res: any) => {
+                console.log(res);
+                this.clusterService.getListConfg(this.clusterObject.name).subscribe((res: any) => {
+                    console.log(res);
+                    this.configs = res;
+                });
+            })
     }
 
     deleteCluster(nameCluster: string | null) {
-        this.clusterService.deleteCluster(nameCluster).subscribe((res: any) => console.log(res))
+        this.clusterService.deleteCluster(nameCluster).subscribe((res: any) => { console.log(res); this.ngOnInit(); })
     }
 
     createCluseter() {
@@ -203,19 +251,24 @@ export class ClusterComponenet implements OnInit {
             "description": this.name.value,
             "initfile": this.initfile.value
         }
-        this.clusterService.createCluster(cluseterNew).subscribe((res) => {
-            console.log(res)
+        this.clusterService.createCluster(cluseterNew)
+            .pipe(catchError(this.handleError))
+            .subscribe((res) => {
+                console.log(res)
 
-            this.clusterService.getAllCluster().subscribe((res: any) => {
-                this.cluseters = res
+                this.clusterService.getAllCluster().subscribe((res: any) => {
+                    this.cluseters = res;
+                    this.clusterObjects = res;
+                })
             })
-        })
     }
 
     openCluster(cluster: ICluster) {
+
         this.clusterObjects.forEach((c) => {
             if (c.name == cluster.name && c.description == cluster.description) {
                 this.clusterObject = c;
+                this.radioButton('main');
             }
         });
     }
@@ -223,7 +276,7 @@ export class ClusterComponenet implements OnInit {
     openConfig(config: IConfig) {
         this.currentConfig.setValue(config.filename);
         this.currentConfigContent.setValue(config.content);
-        this.openModal('custom-modal-editconfig')
+        this.openModal('custom-modal-editconfig');
     }
 
     openModal(id: string) {
