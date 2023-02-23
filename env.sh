@@ -6,3 +6,5 @@ export DB_USER=cm_user
 export DB_PASSWORD=pass
 export DB_HOST=localhost
 export DB_PORT=34543
+export ENCODING_CONSOLE=cp866
+export expire_token=1

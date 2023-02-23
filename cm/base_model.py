@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from cm.model import Host
+from cm.service import HostService
 
 
 class Token(BaseModel):
@@ -34,7 +34,7 @@ class ItemInitFileVersion(BaseModel):
 
 class ItemAddClusterHost(BaseModel):
     name_cluster: str
-    host: Host
+    host: HostService
     group: str
     extid_service: str
 

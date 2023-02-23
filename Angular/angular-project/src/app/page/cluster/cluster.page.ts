@@ -109,7 +109,7 @@ export class ClusterComponenet implements OnInit {
 
     runAction(extid: string) {
         let serviceClusterData = this.clusterObject.data.find(d => d.name == this.selectServiceInClusterObject.value);
-        var actions = serviceClusterData?.actions.find(a => a.extid)?.extid;
+        var actions = serviceClusterData?.actions.find(a => a.extid == extid)?.extid;
         var shellParameters: any = {};
         this.serviceDecriptionVar.forEach(e => {
             shellParameters[e.nameDescription] = e.formControll.value;
@@ -117,7 +117,10 @@ export class ClusterComponenet implements OnInit {
         if (actions != undefined && serviceClusterData != undefined) {
             this.clusterService.runAction(this.clusterObject.name, actions, serviceClusterData?.extid, shellParameters)
                 .pipe(catchError(this.handleError))
-                .subscribe(res => console.log(res));
+                .subscribe((res: any) => { 
+                    window.location.href = 'http://localhost:4200/proc_status?proc_id=' + res.ProcId
+                     console.log(res);
+                });
         }
     }
 

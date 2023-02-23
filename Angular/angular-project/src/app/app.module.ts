@@ -15,6 +15,7 @@ import { ClusterComponenet } from './page/cluster/cluster.page';
 import { LoginComponent } from './page/login/login.page.component';
 import { Router } from '@angular/router';
 import { AuthGuard } from './services/AuthGuard';
+import { ProcComponent } from './page/proc/proc.page.component';
 
 
 @NgModule({
@@ -26,7 +27,7 @@ import { AuthGuard } from './services/AuthGuard';
     HostsComponent,
     InitFilePage,
     LoginComponent,
-    
+    ProcComponent
   ],
   imports: [
     AppRoutingModule,

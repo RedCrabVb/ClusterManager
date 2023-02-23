@@ -7,6 +7,7 @@ import { HostsComponent } from './page/hosts/hosts.page';
 import { ClusterComponenet } from './page/cluster/cluster.page';
 import { LoginComponent } from './page/login/login.page.component';
 import { AuthGuard } from './services/AuthGuard';
+import { ProcComponent } from './page/proc/proc.page.component';
 
 const routes: Routes = [
   {
@@ -23,6 +24,9 @@ const routes: Routes = [
   },
   {
     'path': 'login', component: LoginComponent
+  },
+  {
+    'path': 'proc_status', component: ProcComponent
   }
 ];
 

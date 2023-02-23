@@ -3,7 +3,6 @@ import json
 import zipfile
 from datetime import timedelta, datetime
 
-
 from jose import JWTError, jwt
 import psycopg2.extras
 from fastapi import FastAPI, Depends, HTTPException
@@ -19,7 +18,7 @@ import shutil
 from pathlib import Path
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
-from cm.model import ServiceTemplate
+from cm.service import ServiceTemplate
 
 from cm.base_model import *
 
@@ -51,6 +50,8 @@ SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
+wd = os.getcwd()
+
 
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
@@ -62,7 +63,6 @@ def get_password_hash(password):
 
 def get_user(db, username: str):
     with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-
         cursor.execute('SELECT * FROM user_cm WHERE username = %s', (username,))
         records = cursor.fetchone()
 
@@ -83,7 +83,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=15)
+        expire = datetime.utcnow() + timedelta(days=os.environ['expire_token'])
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
@@ -142,7 +142,7 @@ async def read_own_items(current_user: User = Depends(get_current_active_user)):
 
 
 @app.post('/task/test_connection')
-def test_connection(host: Host, current_user: User = Depends(get_current_active_user)):
+def test_connection(host: HostService, current_user: User = Depends(get_current_active_user)):
     # TODO: async
     print('test connection')
 
@@ -160,8 +160,29 @@ def add_task(runActionModel: RunActionModel, current_user: User = Depends(get_cu
         for i_file in json.loads(records['data']):
             if i_file['extid'] == runActionModel.extid_service:
                 service_tmp = ServiceTemplate(i_file)
-                service_tmp.run_action_sh(runActionModel.extid, records['path_cluster_dir'],
-                                          runActionModel.shell_parameters)
+                return {'ProcId': service_tmp.run_action_sh(runActionModel.extid, records['path_cluster_dir'],
+                                                            runActionModel.shell_parameters)}
+
+
+@app.get('/task/status')
+def get_status_task(proc_id: int, current_user: User = Depends(get_current_active_user)):
+    with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+
+        cursor.execute('select * from process where id = %s', (proc_id,))
+        record = cursor.fetchone()
+
+        return dict(record)
+
+
+@app.get('/task/statuses')
+def get_status_task(current_user: User = Depends(get_current_active_user)):
+    with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+
+        cursor.execute('select command, extid_action, is_complite, stdout, date_start, code_return, id'
+                       ' from process p order by id desc limit 100')
+        records = cursor.fetchall()
+
+        return [dict(idx) for idx in records]
 
 
 @app.get('/hosts')
@@ -174,7 +195,7 @@ def list_host(current_user: User = Depends(get_current_active_user)):
 
 
 @app.post('/host/delete')
-def delete_host(host: Host, current_user: User = Depends(get_current_active_user)):
+def delete_host(host: HostService, current_user: User = Depends(get_current_active_user)):
     with conn.cursor() as cursor:
         cursor.execute('DELETE FROM hosts WHERE hostname = %s and username = %s', (host.hostname, host.username))
 
@@ -182,7 +203,7 @@ def delete_host(host: Host, current_user: User = Depends(get_current_active_user
 
 
 @app.post('/host')
-def add_host(host: Host, current_user: User = Depends(get_current_active_user)):
+def add_host(host: HostService, current_user: User = Depends(get_current_active_user)):
     with conn.cursor() as cursor:
         insert_host = sql.SQL('insert into hosts (hostname, username, password, status_connect) values {}').format(
             sql.SQL(',').join(map(sql.Literal, [(host.hostname, host.username, host.password, False)]))
@@ -262,7 +283,7 @@ def delete_cluster(clusterName: str, current_user: User = Depends(get_current_ac
 
         shutil.rmtree(Path(records['path_cluster_dir']))
 
-        cursor.execute('DELETE FROM clusters WHERE name = %s', (clusterName, ))
+        cursor.execute('DELETE FROM clusters WHERE name = %s', (clusterName,))
 
     return {'Status': 'Ok'}
 
@@ -287,6 +308,8 @@ def create_cluster(cluster: ClusterUser, current_user: User = Depends(get_curren
     import os
 
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+        os.chdir(wd)
+
         (name_init_file, version_cluster) = cluster.initfile_name.split('|')
         cursor.execute('SELECT * FROM init_files WHERE version = %s AND name = %s', (version_cluster, name_init_file))
         records = cursor.fetchone()

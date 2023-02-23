@@ -7,7 +7,7 @@ import { catchError, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
-    selector: 'app-welcome',
+    selector: 'app-hosts',
     templateUrl: './hosts.page.html',
 })
 export class HostsComponent implements OnInit {

@@ -1,0 +1,42 @@
+<div class=" border  container-fluid">
+    <div class="row md-2">
+        <div class="col-md-3">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Extid action</th>
+                        <th scope="col">Date Start</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let item of procLogs">
+                        <tr class="{{item.is_complite && item.code_return == 0 ? 'table-primary' : (item.code_return != null ? 'table-danger' : '')}}">
+                        <!-- <tr ng-class="{item.is_complite ? 'table-primary' : 'table-secondary'}"> -->
+                            <td>{{item.id }}</td>
+                            <td>{{item.extid_action}}</td>
+                            <td>{{item.date_start}}</td>
+                            <td>
+                                <button class="btn btn-info" (click)="openProcLog(item.id)">Open</button>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+        <div class="col">
+            <div *ngIf="procLogCurrent != null" class="row">
+                <h2>Id: {{procLogCurrent.id}}</h2>
+                <h2>Date start: {{procLogCurrent.date_start}}</h2>
+                <h2>Action extid: {{procLogCurrent.extid_action}}</h2>
+                <h2>Command: {{procLogCurrent.command}}</h2>
+                <h2>Is complite: {{procLogCurrent.is_complite}}</h2>
+                <h2>Code return {{procLogCurrent.code_return}}</h2>
+                <div class="col">
+                    <p style="white-space: pre-wrap">{{procLogCurrent.stdout}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,10 +1,10 @@
 import cm.api
-import cm.model
+import cm.service
 import cm.db
 
 
 def test_add_host():
-    host = cm.model.Host
+    host = cm.model.HostService
     host.username = 'root'
     host.password = '1234'
     host.hostname = 'vivt.ru'
