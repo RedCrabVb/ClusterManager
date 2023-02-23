@@ -1,6 +1,20 @@
-
 <div class="max-w-2xl container mx-auto pt-5">
 
     <h1 class="font-bload text-center">Welcome</h1>
+    <h2>Update password</h2>
+    <div class="input-group input-group-sm mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="newPassword">New password</span>
+        </div>
+        <input type="text" name="newPassword" aria-label="Small" aria-describedby="newPassword"
+            [formControl]="newPassword" />
+        <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+                <button class="btn btn-info" (click)="updatePassword()">Update</button> <BR>
+            </div>
+        </div>
+    </div>
+
+    <p>Description ...</p>
 
 </div>

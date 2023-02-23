@@ -96,6 +96,25 @@ CREATE TABLE public.user_cm (
 
 ALTER TABLE public.user_cm OWNER TO postgres;
 
+
+-- public.process definition
+
+-- Drop table
+
+-- DROP TABLE public.process;
+
+CREATE TABLE public.process (
+	command varchar NOT NULL,
+	extid_action varchar NOT NULL,
+	is_complite bool NULL DEFAULT false,
+	"stdout" varchar NOT NULL DEFAULT ''::character varying,
+	stderr varchar NULL,
+	date_start date NOT NULL,
+	code_return int8 NULL,
+	id int8 NOT NULL GENERATED ALWAYS AS IDENTITY,
+	CONSTRAINT process_pk PRIMARY KEY (id)
+);
+
 --
 -- TOC entry 2865 (class 2606 OID 174662)
 -- Name: clusters clusters_pk; Type: CONSTRAINT; Schema: public; Owner: postgres

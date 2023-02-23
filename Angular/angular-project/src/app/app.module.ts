@@ -16,6 +16,7 @@ import { LoginComponent } from './page/login/login.page.component';
 import { Router } from '@angular/router';
 import { AuthGuard } from './services/AuthGuard';
 import { ProcComponent } from './page/proc/proc.page.component';
+import { WelcomeComponent } from './page/welcome/welcom.page.component';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import { ProcComponent } from './page/proc/proc.page.component';
     HostsComponent,
     InitFilePage,
     LoginComponent,
-    ProcComponent
+    ProcComponent,
+    WelcomeComponent
   ],
   imports: [
     AppRoutingModule,

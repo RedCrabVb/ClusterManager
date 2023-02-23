@@ -118,8 +118,8 @@ export class ClusterComponenet implements OnInit {
             this.clusterService.runAction(this.clusterObject.name, actions, serviceClusterData?.extid, shellParameters)
                 .pipe(catchError(this.handleError))
                 .subscribe((res: any) => { 
-                    window.location.href = 'http://localhost:4200/proc_status?proc_id=' + res.ProcId
-                     console.log(res);
+                    window.location.href = '/proc_status?proc_id=' + res.ProcId;
+                    console.log(res);
                 });
         }
     }
