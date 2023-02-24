@@ -1,0 +1,13 @@
+ORIGINS_WEB_APP = "http://localhost:4200"
+INIT_FILES_DIR = "../TmpConfigHadoop"
+CLUSTER_DIR = "../TmpConfigHadoop/Cluster"
+DB_NAME = "cm"
+DB_USER = "cm_user"
+DB_PASSWORD = "pass"
+DB_HOST = "localhost"
+DB_PORT = 34543
+ENCODING_CONSOLE = "cp866"
+expire_token = 1
+SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30

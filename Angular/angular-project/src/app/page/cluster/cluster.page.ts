@@ -111,7 +111,7 @@ export class ClusterComponenet implements OnInit {
         let serviceClusterData = this.clusterObject.data.find(d => d.name == this.selectServiceInClusterObject.value);
         var actions = serviceClusterData?.actions.find(a => a.extid == extid)?.extid;
         var shellParameters: any = {};
-        this.serviceDecriptionVar.forEach(e => {
+        this.serviceDecriptionVar.filter(e => e.extid == extid).forEach(e => {
             shellParameters[e.nameDescription] = e.formControll.value;
         })
         if (actions != undefined && serviceClusterData != undefined) {
@@ -127,9 +127,9 @@ export class ClusterComponenet implements OnInit {
     getVarService() {
         let vars_service = this.clusterObject.data.find(d => d.name == this.selectServiceInClusterObject.value)?.vars_service;
         vars_service?.forEach((var_service) => {
-            var_service.description.forEach((descrit) => {
-                if (this.serviceDecriptionVar.find(s => s.extid == var_service.extid && s.nameDescription == descrit) == undefined) {
-                    this.serviceDecriptionVar.push(new ServiceDecriptionFormControll(descrit, var_service.extid, new FormControl()));
+            var_service.description.forEach((description) => {
+                if (!this.serviceDecriptionVar.find(s => s.extid == var_service.extid && s.nameDescription == description)) {
+                    this.serviceDecriptionVar.push(new ServiceDecriptionFormControll(description, var_service.extid, new FormControl()));
                 }
             })
         });

@@ -2,6 +2,7 @@ import json
 import os
 import socket
 import subprocess
+import time
 from threading import Thread
 
 import paramiko
@@ -12,32 +13,31 @@ import psycopg2
 from pydantic import BaseModel
 
 from cm.db import conn
+from config import ENCODING_CONSOLE
 
 logging.basicConfig(filename='record.log', level=logging.DEBUG,
                     format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 
 
 wd = os.getcwd()
-encodings_console = os.environ['ENCODING_CONSOLE']
-
 
 class RunProcess:
     def __init__(self):
         self.return_code = None
 
-    def do(self, shell_command):
-        p = subprocess.Popen(shell_command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
+    def do(self, shell_command, cwd):
+        p = subprocess.Popen(shell_command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=cwd, shell=True)
         while True:
             return_code = p.poll()
             line = p.stdout.readline()
-            line_decode = line.decode(encodings_console)
+            line_decode = line.decode(ENCODING_CONSOLE)
             yield line_decode
             if return_code is not None:
                 self.return_code = return_code
                 break
 
 
-def init_proc(execute_shell: str, extid_action: str):
+def write_proc_to_db(execute_shell: str, extid_action: str):
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
 
         cursor.execute('INSERT INTO process(command, extid_action, date_start) values (%s, %s, now())  returning id',
@@ -46,11 +46,12 @@ def init_proc(execute_shell: str, extid_action: str):
         return proc_id
 
 
-def log_proc_db(proc_id: int, execute_shell: str):
+def log_proc_db(proc_id: int, execute_shell: str, cwd: str):
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+        time.sleep(2)
 
         proc = RunProcess()
-        for line_output in proc.do(execute_shell):
+        for line_output in proc.do(execute_shell, cwd):
             cursor.execute('UPDATE process SET stdout = stdout || %s WHERE id = %s', (line_output, proc_id,))
         cursor.execute('UPDATE process SET is_complite = true, code_return = %s '
                        'WHERE id = %s',
@@ -91,7 +92,10 @@ class ServiceTemplate:
     # Remove from this class
     # passable, move to ansible?
     def save_hosts_to_cluster(self, path_cluster):
-        subprocess.run(f'export ANSIBLE_CONFIG={os.getcwd()}/{path_cluster}', shell=True)
+        # return_code_export_ansible = subprocess.run(f'export ANSIBLE_CONFIG={os.getcwd()}/{path_cluster}', shell=True)
+        # print(return_code_export_ansible)
+        os.chdir(wd)
+
         with open(path_cluster + "/vars/var_list_host.yml", 'w') as f:
             f.write('iter:\n')
             for i, h in enumerate(self.hosts):
@@ -113,16 +117,22 @@ class ServiceTemplate:
     def run_action_sh(self, extid_action, path_cluster, vars_shell=None):
         os.chdir(wd)
         os.chdir(path_cluster)
+        os.putenv('ANSIBLE_CONFIG', os.getcwd())
+        # return_code_export_ansible = subprocess.run(f'; echo $ANSIBLE_CONFIG; echo 3434', shell=True)
+        # print(return_code_export_ansible)
+        # print(return_code_export_ansible.stdout)
+
+        logging.info(f'Current dir {wd}, change dir {path_cluster}')
         for a in self.actions:
             if a['extid'] == extid_action:
                 execute_shell = a['shell']
                 if vars_shell is not None:
                     execute_shell = execute_shell.format(**vars_shell)
 
-                logging.info(f'Execute action extid: {extid_action}, shell: {execute_shell}')
+                logging.info(f'Execute action extid: {extid_action}, shell: {execute_shell}, In dir {os.listdir()}')
 
-                proc_id = init_proc(execute_shell, extid_action)
-                Thread(target=log_proc_db, args=(proc_id, execute_shell)).start()
+                proc_id = write_proc_to_db(execute_shell, extid_action)
+                Thread(target=log_proc_db, args=(proc_id, execute_shell, os.getcwd())).start()
 
                 os.chdir(wd)
                 return proc_id

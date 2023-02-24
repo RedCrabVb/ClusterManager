@@ -1,6 +1,8 @@
 import psycopg2
 import os
 
-conn = psycopg2.connect(dbname=os.environ['DB_NAME'], user=os.environ['DB_USER'],
-                        password=os.environ['DB_PASSWORD'], host=os.environ['DB_HOST'], port=os.environ['DB_PORT'])
+from config import DB_USER, DB_NAME, DB_PASSWORD, DB_HOST, DB_PORT
+
+conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER,
+                        password=DB_PASSWORD, host=DB_HOST, port=DB_PORT)
 conn.autocommit = True

@@ -9,12 +9,12 @@ class Token(BaseModel):
 
 
 class TokenData(BaseModel):
-    username: str | None = None
+    username: str = None
 
 
 class User(BaseModel):
     username: str
-    disabled: bool | None = None
+    disabled: bool = None
 
 
 class UserInDB(User):
@@ -56,6 +56,7 @@ class ClusterUpdate(BaseModel):
     cluster_name: str
     config_name: str
     config_file: str
+
 
 class UpdateConfigItem(BaseModel):
     cluster_name: str

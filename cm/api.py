@@ -1,5 +1,6 @@
 import fnmatch
 import json
+import logging
 import zipfile
 from datetime import timedelta, datetime
 
@@ -10,6 +11,7 @@ from psycopg2 import sql
 from passlib.context import CryptContext
 from starlette import status
 
+import config
 from cm.db import *
 from fastapi.middleware import Middleware
 from fastapi.middleware.cors import CORSMiddleware
@@ -24,11 +26,11 @@ from cm.base_model import *
 
 import os
 
-InitFilesDir = os.environ['INIT_FILES_DIR']
-ClusterDir = os.environ['CLUSTER_DIR']
+InitFilesDir = config.INIT_FILES_DIR
+ClusterDir = config.CLUSTER_DIR
 
 origins = [
-    os.environ['ORIGINS_WEB_APP'],
+    config.ORIGINS_WEB_APP,
 ]
 
 middleware = [
@@ -41,14 +43,16 @@ middleware = [
     )
 ]
 
+logging.basicConfig(filename='record.log', level=logging.DEBUG,
+                    format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
+
+
 app = FastAPI(middleware=middleware)
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
 
 wd = os.getcwd()
 
@@ -78,14 +82,14 @@ def authenticate_user(db, username: str, password: str):
     return user
 
 
-def create_access_token(data: dict, expires_delta: timedelta | None = None):
+def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(days=os.environ['expire_token'])
+        expire = datetime.utcnow() + timedelta(days=config.expire_token)
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, config.SECRET_KEY, algorithm=config.ALGORITHM)
     return encoded_jwt
 
 
@@ -96,7 +100,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, config.SECRET_KEY, algorithms=[config.ALGORITHM])
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
@@ -124,7 +128,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token_expires = timedelta(days=int(os.environ['expire_token']))
+    access_token_expires = timedelta(days=int(config.expire_token))
     access_token = create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
@@ -150,7 +154,6 @@ def add_task(runActionModel: RunActionModel, current_user: User = Depends(get_cu
 
         cursor.execute('SELECT * FROM clusters WHERE name = %s', (runActionModel.cluster_name,))
         records = cursor.fetchone()
-        # print(records['name'])
         for i_file in json.loads(records['data']):
             if i_file['extid'] == runActionModel.extid_service:
                 service_tmp = ServiceTemplate(i_file)
@@ -275,7 +278,10 @@ def delete_cluster(clusterName: str, current_user: User = Depends(get_current_ac
         cursor.execute('SELECT * FROM clusters WHERE name = %s', (clusterName,))
         records = cursor.fetchone()
 
-        shutil.rmtree(Path(records['path_cluster_dir']))
+        try:
+            shutil.rmtree(Path(records['path_cluster_dir']))
+        except OSError as e:
+            logging.error(f'cluster/delete error delete {e.strerror}')
 
         cursor.execute('DELETE FROM clusters WHERE name = %s', (clusterName,))
 
@@ -344,7 +350,10 @@ def delete_initfile(item_init_file: ItemInitFileVersion, current_user: User = De
                        (item_init_file.name, item_init_file.version))
         record_init_file = cursor.fetchone()
 
-        shutil.rmtree(Path(f'{InitFilesDir}/{record_init_file["name"]}'))
+        try:
+            shutil.rmtree(Path(f'{InitFilesDir}/{record_init_file["name"]}'))
+        except OSError as e:
+            logging.error(f'initfile/delete error delete {e.strerror}')
 
         cursor.execute('DELETE FROM init_files WHERE name = %s and version = %s',
                        (item_init_file.name, item_init_file.version))

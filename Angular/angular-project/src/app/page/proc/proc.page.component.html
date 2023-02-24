@@ -1,6 +1,6 @@
 <div class=" border  container-fluid">
     <div class="row md-2">
-        <div class="col-md-3">
+        <div class="col-md-3" style="height: 1200px; overflow: scroll;">
             <table class="table">
                 <thead>
                     <tr>
@@ -26,16 +26,18 @@
             </table>
         </div>
         <div class="col">
-            <div *ngIf="procLogCurrent != null" class="row">
+            <div *ngIf="procLogCurrent != null" class="row" >
                 <h2>Id: {{procLogCurrent.id}}</h2>
                 <h2>Date start: {{procLogCurrent.date_start}}</h2>
-                <h2>Action extid: {{procLogCurrent.extid_action}}</h2>
-                <h2>Command: {{procLogCurrent.command}}</h2>
-                <h2>Is complite: {{procLogCurrent.is_complite}}</h2>
-                <h2>Code return {{procLogCurrent.code_return}}</h2>
-                <div class="col">
+                <p>Action extid: {{procLogCurrent.extid_action}}</p>
+                <span style="white-space: normal">Command: {{procLogCurrent.command}}</span>
+                <p>Is complite: {{procLogCurrent.is_complite}}</p>
+                <p>Code return {{procLogCurrent.code_return}}</p>
+                <div class="col" style="height: 600px; overflow: scroll;">
                     <p style="white-space: pre-wrap">{{procLogCurrent.stdout}}</p>
                 </div>
+                <button class="btn btn-info" (click)="openProcLog(procLogCurrent.id)">Update</button>
+
             </div>
         </div>
     </div>

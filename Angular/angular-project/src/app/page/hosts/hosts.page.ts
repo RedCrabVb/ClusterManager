@@ -53,6 +53,14 @@ export class HostsComponent implements OnInit {
         this.passwordModal.setValue(host.password);
     }
 
+    getHostEditModal() {
+        return {
+            "hostname": this.hostnameEditModel.value,
+            "username": this.usernameEditModel.value,
+            "password": this.passwordEditModel.value
+        }
+    }
+
     getHostModal() {
         return {
             "hostname": this.hostnameModal.value,
@@ -112,7 +120,7 @@ export class HostsComponent implements OnInit {
 
     testConnection() {
         console.log('test connection');
-        const currentHost = this.getHostModal();
+        const currentHost = this.getHostEditModal();
         this.hostsService.testConnection(currentHost)
             .pipe(catchError(this.handleError))
             .subscribe((res: any) => {

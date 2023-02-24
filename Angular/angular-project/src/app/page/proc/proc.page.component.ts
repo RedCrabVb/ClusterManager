@@ -35,6 +35,7 @@ export class ProcComponent implements OnInit {
     openProcLog(proc_id: number) {
         this.procStatus.getTaskStatus(proc_id).subscribe((res: any) => {
             this.procLogCurrent = res;
+            console.log(res)
         })
     }
 }
