@@ -1,23 +1,21 @@
 from pydantic import BaseModel
 
-from cm.service import HostService
 
-
-class Token(BaseModel):
+class TokenModel(BaseModel):
     access_token: str
     token_type: str
 
 
-class TokenData(BaseModel):
+class TokenDataModel(BaseModel):
     username: str = None
 
 
-class User(BaseModel):
+class UserModel(BaseModel):
     username: str
     disabled: bool = None
 
 
-class UserInDB(User):
+class UserModelInDB(UserModel):
     hashed_password: str
 
 
@@ -32,33 +30,38 @@ class ItemInitFileVersion(BaseModel):
     version: str
 
 
-class ItemAddClusterHost(BaseModel):
-    name_cluster: str
-    host: HostService
-    group: str
-    extid_service: str
-
-
 class TaskRunAction(BaseModel):
-    # type: str # add_host cluster, test_connection, run_action,
     cluster: str
     extid_action: str
     intifle_name: str
 
 
-class ClusterUser(BaseModel):
+class HostModel(BaseModel):
+    hostname: str
+    username: str
+    password: str
+
+
+class ItemAddClusterHost(BaseModel):
+    name_cluster: str
+    # host: HostModel
+    group: str
+    extid_service: str
+
+
+class ClusterUserModel(BaseModel):
     name: str
     description: str
     initfile_name: str
 
 
-class ClusterUpdate(BaseModel):
+class ClusterUpdateModel(BaseModel):
     cluster_name: str
     config_name: str
     config_file: str
 
 
-class UpdateConfigItem(BaseModel):
+class UpdateConfigItemModel(BaseModel):
     cluster_name: str
     config_name: str
     config_file: str

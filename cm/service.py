@@ -1,25 +1,36 @@
+import socket
 import json
+import logging
 import os
 import socket
 import subprocess
-import time
+from datetime import timedelta, datetime
+from itertools import groupby
 from threading import Thread
 
 import paramiko
-from itertools import groupby
-import logging
+import psycopg2.extras
+from fastapi import Depends, HTTPException
+from fastapi.security import OAuth2PasswordBearer
+from jose import jwt
+from passlib.context import CryptContext
+from starlette import status
 
-import psycopg2
-from pydantic import BaseModel
-
-from cm.db import conn
+import config
+from cm.base_model import *
+from cm.db import *
 from config import ENCODING_CONSOLE
 
 logging.basicConfig(filename='record.log', level=logging.DEBUG,
                     format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
-
+# add config parameter
 
 wd = os.getcwd()
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
 
 class RunProcess:
     def __init__(self):
@@ -39,7 +50,6 @@ class RunProcess:
 
 def write_proc_to_db(execute_shell: str, extid_action: str):
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-
         cursor.execute('INSERT INTO process(command, extid_action, date_start) values (%s, %s, now())  returning id',
                        (execute_shell, extid_action))
         proc_id = cursor.fetchone()[0]
@@ -48,8 +58,6 @@ def write_proc_to_db(execute_shell: str, extid_action: str):
 
 def log_proc_db(proc_id: int, execute_shell: str, cwd: str):
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-        time.sleep(2)
-
         proc = RunProcess()
         for line_output in proc.do(execute_shell, cwd):
             cursor.execute('UPDATE process SET stdout = stdout || %s WHERE id = %s', (line_output, proc_id,))
@@ -58,10 +66,71 @@ def log_proc_db(proc_id: int, execute_shell: str, cwd: str):
                        (proc.return_code, proc_id,))
 
 
+def verify_password(plain_password, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
+
+
+def get_password_hash(password):
+    return pwd_context.hash(password)
+
+
+def get_user(db, username: str):
+    with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+        cursor.execute('SELECT * FROM user_cm WHERE username = %s', (username,))
+        records = cursor.fetchone()
+
+        return UserModelInDB(username=records['username'], hashed_password=records['hash_password'])
+
+
+def authenticate_user(db, username: str, password: str):
+    user = get_user(db, username)
+    if not user:
+        return False
+    if not verify_password(password, user.hashed_password):
+        return False
+    return user
+
+
+def create_access_token(data: dict, expires_delta: timedelta = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(days=config.expire_token)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, config.SECRET_KEY, algorithm=config.ALGORITHM)
+    return encoded_jwt
+
+
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, config.SECRET_KEY, algorithms=[config.ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            raise credentials_exception
+        token_data = TokenDataModel(username=username)
+    except Exception:
+        raise credentials_exception
+    user = get_user(conn, username=token_data.username)
+    if user is None:
+        raise credentials_exception
+    return user
+
+
+async def get_current_active_user(current_user: UserModel = Depends(get_current_user)):
+    if current_user.disabled:
+        raise HTTPException(status_code=400, detail="Inactive user")
+    return current_user
+
+
 class ServiceTemplate:
 
     def __init__(self, my_dict):
-
         for key in my_dict:
             setattr(self, key, my_dict[key])
 
@@ -118,9 +187,6 @@ class ServiceTemplate:
         os.chdir(wd)
         os.chdir(path_cluster)
         os.putenv('ANSIBLE_CONFIG', os.getcwd())
-        # return_code_export_ansible = subprocess.run(f'; echo $ANSIBLE_CONFIG; echo 3434', shell=True)
-        # print(return_code_export_ansible)
-        # print(return_code_export_ansible.stdout)
 
         logging.info(f'Current dir {wd}, change dir {path_cluster}')
         for a in self.actions:
@@ -146,9 +212,11 @@ class ServiceTemplate:
 
 
 class HostService(BaseModel):
-    hostname: str
-    username: str
-    password: str
+
+    def __init__(self, hostname, username, password):
+        self.hostname = hostname
+        self.username = username
+        self.password = password
 
     # Remove from this class?
     def test_connection(self):
@@ -156,13 +224,13 @@ class HostService(BaseModel):
             ssh_client = paramiko.SSHClient()
 
             ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-
+            # https://stackoverflow.com/questions/15722704/paramiko-creating-a-pkey-from-a-public-key-string
             ssh_client.connect(hostname=self.hostname, username=self.username, password=self.password)
             ssh_client.close()
             return True
         except paramiko.ssh_exception.AuthenticationException:
             return False
-        except socket.gaierror as er:
+        except socket.gaierror:
             return False
 
     # Remove from this class?
