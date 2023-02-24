@@ -2,12 +2,10 @@ import fnmatch
 import json
 import logging
 import zipfile
-from datetime import timedelta, datetime
+from datetime import timedelta
 
-from jose import jwt
 import psycopg2.extras
 from fastapi import FastAPI, Depends, HTTPException
-from passlib.context import CryptContext
 from starlette import status
 
 import config
@@ -17,7 +15,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import base64
 import shutil
 from pathlib import Path
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordRequestForm
 
 from cm.service import ServiceTemplate, authenticate_user, create_access_token, get_current_user, get_password_hash, \
     get_current_active_user, HostService
@@ -43,9 +41,8 @@ middleware = [
     )
 ]
 
-logging.basicConfig(filename='record.log', level=logging.DEBUG,
-                    format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
-# add config parameter
+logging.basicConfig(filename=config.record_filename_log, level=config.level_log,
+                    format=config.formate_log)
 
 app = FastAPI(middleware=middleware)
 
@@ -219,9 +216,7 @@ def create_cluster(cluster: ClusterUserModel, current_user: UserModel = Depends(
 
     with open(f'{cluster_files}/conf.json') as f:
         data = json.loads(f.read())
-        print(data)
-
-    print('cp item.data')
+        logging.debug(f'Data cluster ({cluster.name}) config: {data}')
 
     db_insert_clusters(cluster.name, cluster.description, json.dumps(
         {'item_name': item_name, 'item_version': item_version, 'item_namefile': item_namefile}
@@ -247,9 +242,6 @@ def delete_initfile(item_init_file: ItemInitFileVersion, current_user: UserModel
 @app.get('/initfile')
 def list_init_file(current_user: UserModel = Depends(get_current_active_user)):
     records = db_get_all_init_files()
-    for ix in records:
-        print(dict(ix))
-
     return [dict(ix) for ix in records]
 
 

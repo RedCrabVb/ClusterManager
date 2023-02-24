@@ -1,7 +1,5 @@
-import socket
 import json
 import logging
-import os
 import socket
 import subprocess
 from datetime import timedelta, datetime
@@ -21,9 +19,8 @@ from cm.base_model import *
 from cm.db import *
 from config import ENCODING_CONSOLE
 
-logging.basicConfig(filename='record.log', level=logging.DEBUG,
-                    format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
-# add config parameter
+logging.basicConfig(filename=config.record_filename_log, level=config.level_log,
+                    format=config.formate_log)
 
 wd = os.getcwd()
 
@@ -141,8 +138,8 @@ class ServiceTemplate:
             if r['type_host'] == group:
                 cont_group_in_cluster = 0
                 for h in self.hosts:
-                    print(group)
-                    print(h)
+                    logging.info(f'add host {h} {group}')
+
                     if h['group'] == group:
                         cont_group_in_cluster += 1
 
@@ -158,11 +155,8 @@ class ServiceTemplate:
         self.hosts.append({'hostname': host.hostname, 'username': host.username,
                            'password': host.password, 'group': group})
 
-    # Remove from this class
     # passable, move to ansible?
     def save_hosts_to_cluster(self, path_cluster):
-        # return_code_export_ansible = subprocess.run(f'export ANSIBLE_CONFIG={os.getcwd()}/{path_cluster}', shell=True)
-        # print(return_code_export_ansible)
         os.chdir(wd)
 
         with open(path_cluster + "/vars/var_list_host.yml", 'w') as f:
@@ -233,11 +227,11 @@ class HostService(BaseModel):
         except socket.gaierror:
             return False
 
-    # Remove from this class?
+    # Remove?
     def run_shell(self, command):
         params_ssh = '-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no '
         shell_execute = f'sshpass -p "{self.password}" ssh {params_ssh} {self.username}@{self.hostname} {command}'
-        print(shell_execute)
+        logging.info(f'run shell command {shell_execute}')
         return_code = subprocess.call(shell_execute, shell=True)
 
         return return_code
