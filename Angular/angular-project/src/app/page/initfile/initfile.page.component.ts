@@ -75,6 +75,10 @@ export class InitFilePage implements OnInit {
        });
   }
 
+  createYourWwn(name: string, version: string) {
+    window.location.href=`initfile_create?name=` + name + '&version=' + version;
+  }
+
   updateNameUser(event: any) {
     this.nameuser = event.target.value;
   }

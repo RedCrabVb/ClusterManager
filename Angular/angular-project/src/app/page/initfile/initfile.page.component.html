@@ -23,6 +23,7 @@
             <a (click)="openLicenseText(item)" style="cursor: pointer;" class="link">{{item.license}}</a>
           </td>
           <td>
+            <button class="btn btn-primary" (click)="createYourWwn(item.name, item.version)">Create your own initfile</button>
             <button class="btn btn-danger" (click)="deleteInitFile(item.name, item.version)">Delete</button>
           </td>
         </tr>

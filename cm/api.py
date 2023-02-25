@@ -25,6 +25,7 @@ from cm.base_model import *
 import os
 
 InitFilesDir = config.INIT_FILES_DIR
+PrototypeInitFilesDir = config.PROTOTYPE_INIT_FILES_DIR
 ClusterDir = config.CLUSTER_DIR
 
 origins = [
@@ -268,7 +269,54 @@ def upload(item: ItemInitFile, current_user: UserModel = Depends(get_current_act
                 with z_init_file.open(filename) as f:
                     license_text_init_file = f.read()
 
-    db_insert_init_files(version_init_file.decode('UTF-8'), license_text_init_file.decode('UTF-8'), item.namefile, item.name)
+    db_insert_init_files(version_init_file.decode('UTF-8'), license_text_init_file.decode('UTF-8'),
+                         item.namefile, item.name)
+
+
+@app.get('/initfile/prototype')
+def create_initfile_on_prototype(name: str, version: str, path: str,
+                                 current_user: UserModel = Depends(get_current_active_user)):
+    initfile = db_get_init_files(name, version)
+    pathToInitfile = f'{InitFilesDir}/{name}/{initfile["namefile"]}'
+    pathExtractPrototypeInitfile = f'{PrototypeInitFilesDir}/{name}/{version}'
+
+    if not Path(pathExtractPrototypeInitfile).exists():
+        Path(PrototypeInitFilesDir).mkdir()
+        with zipfile.ZipFile(pathToInitfile, 'r') as zip_ref:
+            zip_ref.extractall(pathExtractPrototypeInitfile)
+
+    def path_to_dict(path):
+        d = {'name': os.path.basename(path)}
+        if os.path.isdir(path):
+            d['type'] = "directory"
+            d['children'] = [path_to_dict(os.path.join(path, x)) for x in os.listdir(path)]
+        else:
+            d['type'] = "file"
+        return d
+
+    return path_to_dict(f'{pathExtractPrototypeInitfile}/{path}')
+
+
+@app.get('/initfile/prototype/load')
+def load_initfile_prototype(namefile: str, path: str, name: str, version: str,
+                            current_user: UserModel = Depends(get_current_active_user)):
+    # todo: check, path must not ../../
+    pathExtractPrototypeInitfile = f'{PrototypeInitFilesDir}/{name}/{version}/'
+
+    with open(f'{pathExtractPrototypeInitfile}/{os.listdir(pathExtractPrototypeInitfile)[0]}/{namefile}') as f:
+        return f.read()
+
+
+@app.post('/initfile/prototype/update')
+def update_initfile_prototype(fileUpdatePrototype: FileUpdatePrototype,
+                              current_user: UserModel = Depends(get_current_active_user)):
+    pathExtractPrototypeInitfile = f'{PrototypeInitFilesDir}/{fileUpdatePrototype.name}/{fileUpdatePrototype.version}'
+
+    with open('rw', f'{pathExtractPrototypeInitfile}/{os.listdir(pathExtractPrototypeInitfile)[0]}/{fileUpdatePrototype.path}') as f:
+        f.write(fileUpdatePrototype.data)
+
+    return {'Status': 'Ok'}
+
 
 
 @app.get("/")

@@ -2,6 +2,7 @@ import logging
 
 ORIGINS_WEB_APP = "http://localhost:4200"
 INIT_FILES_DIR = "../TmpConfigHadoop"
+PROTOTYPE_INIT_FILES_DIR = "../PrototypeTmpConfigHadoop"
 CLUSTER_DIR = "../TmpConfigHadoop/Cluster"
 DB_NAME = "cm"
 DB_USER = "cm_user"

@@ -17,7 +17,9 @@ import { Router } from '@angular/router';
 import { AuthGuard } from './services/AuthGuard';
 import { ProcComponent } from './page/proc/proc.page.component';
 import { WelcomeComponent } from './page/welcome/welcom.page.component';
-
+import { PrototypeInitfileComponent } from './page/create_initfile/PrototypeInitfile.page.component';
+import { MyComponent } from './page/editor/editor.component';
+import { AceEditorModule } from 'ngx-ace-editor-wrapper';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,9 @@ import { WelcomeComponent } from './page/welcome/welcom.page.component';
     InitFilePage,
     LoginComponent,
     ProcComponent,
-    WelcomeComponent
+    WelcomeComponent,
+    PrototypeInitfileComponent,
+    MyComponent,
   ],
   imports: [
     AppRoutingModule,
@@ -37,7 +41,8 @@ import { WelcomeComponent } from './page/welcome/welcom.page.component';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    NgbModule
+    NgbModule,
+    AceEditorModule
   ],
   providers: [AuthGuard],
   bootstrap: [AppComponent]

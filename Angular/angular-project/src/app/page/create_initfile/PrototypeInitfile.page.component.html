@@ -1,0 +1,73 @@
+<div class="max-w-2xl container mx-auto pt-5">
+
+    <div class="row md-2">
+        <div *ngIf="treeView != null" class="col-md-3">
+            <button>add file</button>
+            <p>Path: {{currentContextPath.toArray().reverse().join('/')}}</p>
+            <button *ngIf="currentContextPath.toArray().length > 0" (click)="backDir()"
+                class="btn btn-primary">back</button>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Namefile</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let item of treeViewChildStack.head">
+                        <tr>
+                            <td *ngIf="item.type == 'directory'">
+                                <a (click)="openDir(item.name)" class="link-secondary"
+                                    style="cursor: pointer">{{item.name}}</a>
+                            </td>
+                            <td *ngIf="item.type == 'file'">
+                                <a (click)="openFile(item.name)" class="link-info"
+                                    style="cursor: pointer">{{item.name}}</a>
+                            </td>
+                            <td>{{item.type}}</td>
+                            <td>
+
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-md-3" *ngIf="fileControl != undefined">
+            <div [formGroup]="fileControl">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="Filename">Filename</span>
+                    </div>
+                    <input type="text" name="Filename" aria-label="Small" aria-describedby="nameInitFile"
+                        formControlName="nameFile" [readOnly]="true" />
+                </div>
+
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="contnet">Content</span>
+                    </div>
+                    <input type="text" name="contnet" aria-label="Small" aria-describedby="nameInitFile"
+                        formControlName="contnet" [readOnly]="true" />
+                </div>
+
+                <div style="width: 100%;max-width: 1200px;margin: 0 auto;">
+                    <div style="display: grid;grid-template-columns: repeat(2, minmax(0, 1fr));gap: 16px;">
+                      <div>
+                        <h2>JSON Editor</h2>
+                        <my-component-ace></my-component-ace>
+                        <div ace-editor (text)="title" >4</div>
+                        <!-- <app-editor (text)="jsonInputData" mode="json" ></app-editor> -->
+                      </div>
+                      <div>
+                        <h2>YAML Editor</h2>
+                        <!-- <app-editor (text)="yamlInputData" mode="yaml"></app-editor> -->
+                      </div>
+                    </div>
+                  </div>
+            </div>
+        </div>
+    </div>
+</div>

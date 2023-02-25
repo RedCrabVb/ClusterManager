@@ -32,6 +32,17 @@ class ItemInitFileVersion(BaseModel):
     version: str
 
 
+class ItemInitFilePrototype(ItemInitFileVersion):
+    path: str
+
+
+class FileUpdatePrototype(ItemInitFilePrototype):
+    filename: str
+    data: str
+    operation: str
+
+
+
 class TaskRunAction(BaseModel):
     cluster: str
     extid_action: str
@@ -47,7 +58,6 @@ class HostModel(BaseModel):
 
 class ItemAddClusterHost(BaseModel):
     name_cluster: str
-    # host: HostModel
     group: str
     extid_service: str
 

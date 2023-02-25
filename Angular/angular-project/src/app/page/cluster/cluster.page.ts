@@ -4,7 +4,6 @@ import { ICluster } from "src/app/date/ICluster";
 import { IInitFile } from "src/app/date/IInitfile";
 import { ClusterService } from "src/app/services/cluster.service";
 import { InitFileService } from "src/app/services/initfile.service";
-import { cluster as data } from 'src/app/date/cluster';
 import { InitFile as dataInit } from 'src/app/date/initfile';
 import { FormControl } from "@angular/forms";
 import { ClusterObject } from "src/app/date/clusterobject/clusterobject";
@@ -36,7 +35,7 @@ export class ClusterComponenet implements OnInit {
     hosts: IHost[];
     configs: IConfig[];
     clusterObjects: ClusterObject[];
-    cluseters: ICluster[] = data;
+    cluseters: ICluster[] = [];
 
     name = new FormControl('');
     description = new FormControl('');
