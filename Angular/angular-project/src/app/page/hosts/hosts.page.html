@@ -57,13 +57,14 @@
             formControlName="password" />
         </div>
   
-        <div class="input-group input-group-sm mb-3">
+        <div class="md-form mb-3">
           <div class="input-group-prepend">
             <span class="input-group-text" id="PrivateKey">Private key</span>
           </div>
-          <input type="text" name="PrivateKey" aria-label="Small" aria-describedby="Password"
-            formControlName="private_key" />
+          <textarea type="text" name="PrivateKey" aria-label="Small" class="md-textarea form-control" aria-describedby="Password"
+            formControlName="private_key" ></textarea>
         </div>
+  
   
       </div>
 
@@ -87,7 +88,7 @@
 </jw-modal>
 
 <jw-modal id="custom-modal-2">
-  <div class="max-w-2xl container mx-auto pt-5">
+  <div class="container mx-auto pt-5">
     <h1>Host view</h1>
     <div [formGroup]="hostViewControl">
 
@@ -115,18 +116,18 @@
           formControlName="password" [readOnly]="true" />
       </div>
 
-      <div class="input-group input-group-sm mb-3">
+      <div class="md-form mb-3">
         <div class="input-group-prepend">
           <span class="input-group-text" id="PrivateKey">Private key</span>
         </div>
-        <input type="text" name="PrivateKey" aria-label="Small" aria-describedby="Password"
-          formControlName="private_key" />
+        <textarea type="text" name="PrivateKey" aria-label="Small" class="md-textarea form-control" aria-describedby="Password"
+          formControlName="private_key" [readOnly]="true"></textarea>
       </div>
 
 
-      <div class="input-group input-group-sm mb-3">
+      <div class="input-group input-group-sm">
         <div class="input-group-prepend">
-          <button class="btn btn-info" (click)="testConnection(hostViewControl.value)" [disabled]="!hostControl.valid">Test connection</button> <BR>
+          <button class="btn btn-info" (click)="testConnection(hostViewControl.value)" [disabled]="!hostViewControl.valid">Test connection</button> <BR>
         </div>
       </div>
 

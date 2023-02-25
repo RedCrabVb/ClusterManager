@@ -37,8 +37,8 @@ def db_delete_host(hostname, username):
 
 def db_insert_host(host: HostModel):
     with conn.cursor() as cursor:
-        insert_host = sql.SQL('insert into hosts (hostname, username, password, status_connect) values {}').format(
-            sql.SQL(',').join(map(sql.Literal, [(host.hostname, host.username, host.password, False)]))
+        insert_host = sql.SQL('insert into hosts (hostname, username, password, status_connect, private_key) values {}').format(
+            sql.SQL(',').join(map(sql.Literal, [(host.hostname, host.username, host.password, False, host.private_key)]))
         )
         cursor.execute(insert_host)
 

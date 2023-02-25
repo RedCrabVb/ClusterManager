@@ -220,16 +220,9 @@ class HostService:
 
             ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-            if self.private_key is None:
-                ssh_client.connect(hostname=self.hostname, username=self.username, password=self.password)
-                ssh_client.close()
-            else:
-                pkey = StringIO(self.private_key)
-                private_key = paramiko.RSAKey.from_private_key(pkey)
+            ssh_client.connect(hostname=self.hostname, username=self.username, password=self.password)
+            ssh_client.close()
 
-                ssh_client.connect(hostname=self.hostname, username=self.username,
-                                   password=self.password, pkey=private_key)
-                ssh_client.close()
             return True
         except Exception as e:
             logging.error(f'Try connet to host {self.hostname}, error: {e}')
