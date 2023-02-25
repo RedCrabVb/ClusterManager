@@ -11,6 +11,16 @@ export class InitFileService {
 
     }
 
+    acceptLicense(name: string, version: string) {
+        let headers = new HttpHeaders({
+            'Authorization': `${Utils.getCookie('token_type')} ${Utils.getCookie('access_token')}`
+        });
+
+        return this.http.post(
+            this.config.urlBackEnd + 'initfile/accept', { name, version }, { headers }
+        );
+    } 
+
     // todo: limit version
     uploadFile(namefile: string, data: string, name: string) {
         let headers = new HttpHeaders({

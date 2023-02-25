@@ -18,8 +18,24 @@ export class InitFilePage implements OnInit {
   namefile: string = ''
   fileToUpload: File;
 
+  currentItemInitFile: IInitFile
+
   constructor(private initFileService: InitFileService, private modalService: ModalService) {
 
+  }
+
+  
+  private handleError(error: HttpErrorResponse) {
+    if (error.status === 0) {
+      console.error('An error occurred:', error.error);
+      alert('An error occurred: ' + error.message);
+    } else {
+      console.error(
+        `Backend returned code ${error.status}, body was: `, error.error);
+
+      alert(`Backend returned code ${error.status}, body was: ` + error.message);
+    }
+    return throwError(() => new Error('Something bad happened; please try again later.'));
   }
 
   ngOnInit(): void {
@@ -35,19 +51,19 @@ export class InitFilePage implements OnInit {
     })
   }
 
-  private handleError(error: HttpErrorResponse) {
-    if (error.status === 0) {
-      console.error('An error occurred:', error.error);
-      alert('An error occurred: ' + error.message);
-    } else {
-      console.error(
-        `Backend returned code ${error.status}, body was: `, error.error);
-
-      alert(`Backend returned code ${error.status}, body was: ` + error.message);
-    }
-    return throwError(() => new Error('Something bad happened; please try again later.'));
+  openLicenseText(item: IInitFile) {
+    this.currentItemInitFile = item;
+    this.openModal('custom-modal-2');
   }
 
+  acceptLicense() {
+    this.initFileService.acceptLicense(this.currentItemInitFile.name, this.currentItemInitFile.version)
+    .pipe(catchError(this.handleError))
+    .subscribe((initfiles: any) => {
+      console.log(initfiles);
+      this.updateInitFile();
+    });
+  }
 
   deleteInitFile(name: string, version: string) {
     this.initFileService.deleteFile(name, version)
@@ -55,11 +71,12 @@ export class InitFilePage implements OnInit {
       .subscribe((res: any) => { 
         console.log(res);
         this.updateInitFile();
+        this.closeModal('custom-modal-2');
        });
   }
 
   updateNameUser(event: any) {
-    this.nameuser = event.target.value
+    this.nameuser = event.target.value;
   }
 
   sendInitFile() {

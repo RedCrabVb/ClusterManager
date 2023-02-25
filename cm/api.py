@@ -245,6 +245,12 @@ def list_init_file(current_user: UserModel = Depends(get_current_active_user)):
     return [dict(ix) for ix in records]
 
 
+@app.post('/initfile/accept')
+def accept_license_initfile(initfile: ItemInitFileVersion, current_user: UserModel = Depends(get_current_active_user)):
+    db_update_init_file(initfile.name, initfile.version)
+    return {'Status': 'Ok'}
+
+
 @app.post("/upload/initfile")
 def upload(item: ItemInitFile, current_user: UserModel = Depends(get_current_active_user)):
     Path(f'{InitFilesDir}/{item.name}').mkdir(parents=True, exist_ok=True)
@@ -252,13 +258,17 @@ def upload(item: ItemInitFile, current_user: UserModel = Depends(get_current_act
         f_init_file.write(base64.standard_b64decode(item.data))
 
     version_init_file = None
+    license_text_init_file = None
     with zipfile.ZipFile(f'{InitFilesDir}/{item.name}/{item.namefile}') as z_init_file:
         for filename in z_init_file.namelist():
             if not os.path.isdir(filename) and fnmatch.fnmatch(filename, '*VERSION'):
                 with z_init_file.open(filename) as f:
                     version_init_file = f.read()
+            if not os.path.isdir(filename) and fnmatch.fnmatch(filename, '*LICENSE'):
+                with z_init_file.open(filename) as f:
+                    license_text_init_file = f.read()
 
-    db_insert_init_files(version_init_file.decode('UTF-8'), item.namefile, item.name)
+    db_insert_init_files(version_init_file.decode('UTF-8'), license_text_init_file.decode('UTF-8'), item.namefile, item.name)
 
 
 @app.get("/")

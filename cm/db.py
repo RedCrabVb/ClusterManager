@@ -1,5 +1,4 @@
 import psycopg2
-import os
 
 from psycopg2 import sql
 
@@ -76,12 +75,18 @@ def db_update_password(hash_password: str, username: str):
                        (hash_password, username))
 
 
-def db_insert_init_files(version: str, namefile: str, name: str):
+def db_insert_init_files(version: str, license_text: str, namefile: str, name: str):
     with conn.cursor() as cursor:
-        insert_init_files = sql.SQL('insert into init_files (version, namefile, name) values {}').format(
-            sql.SQL(',').join(map(sql.Literal, [(version, namefile, name)]))
+        insert_init_files = sql.SQL('insert into init_files (version, license_text, namefile, name) values {}').format(
+            sql.SQL(',').join(map(sql.Literal, [(version, license_text, namefile, name)]))
         )
         cursor.execute(insert_init_files)
+
+
+def db_update_init_file(name: str, version: str):
+    with conn.cursor() as cursor:
+        cursor.execute('UPDATE init_files SET license = true WHERE name = %s and version = %s',
+                       (name, version))
 
 
 def db_get_all_init_files():

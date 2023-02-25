@@ -1,9 +1,8 @@
 import json
 import logging
-import socket
+import os
 import subprocess
 from datetime import timedelta, datetime
-from io import StringIO
 from itertools import groupby
 from threading import Thread
 
