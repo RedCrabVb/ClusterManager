@@ -18,8 +18,7 @@ import { AuthGuard } from './services/AuthGuard';
 import { ProcComponent } from './page/proc/proc.page.component';
 import { WelcomeComponent } from './page/welcome/welcom.page.component';
 import { PrototypeInitfileComponent } from './page/create_initfile/PrototypeInitfile.page.component';
-import { MyComponent } from './page/editor/editor.component';
-import { AceEditorModule } from 'ngx-ace-editor-wrapper';
+import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 
 @NgModule({
   declarations: [
@@ -32,8 +31,8 @@ import { AceEditorModule } from 'ngx-ace-editor-wrapper';
     LoginComponent,
     ProcComponent,
     WelcomeComponent,
-    PrototypeInitfileComponent,
-    MyComponent,
+    PrototypeInitfileComponent
+    // MyComponent,
   ],
   imports: [
     AppRoutingModule,
@@ -41,8 +40,7 @@ import { AceEditorModule } from 'ngx-ace-editor-wrapper';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    NgbModule,
-    AceEditorModule
+    NgbModule
   ],
   providers: [AuthGuard],
   bootstrap: [AppComponent]
