@@ -31,40 +31,51 @@
   <div class="max-w-2xl container mx-auto pt-5">
     <h1>Host add</h1>
     <div>
+      <div [formGroup]="hostControl">
 
-      <div class="input-group input-group-sm mb-3">
-        <div class="input-group-prepend">
-          <span class="input-group-text" id="nameInitFile">Hostname</span>
+        <div class="input-group input-group-sm mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="nameInitFile">Hostname</span>
+          </div>
+          <input type="text" name="nameInitFile" aria-label="Small" aria-describedby="nameInitFile"
+            formControlName="hostname" />
         </div>
-        <input type="text" name="nameInitFile" aria-label="Small" aria-describedby="nameInitFile"
-          [formControl]="hostnameModal" />
+
+        <div class="input-group input-group-sm mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="Username">Username</span>
+          </div>
+          <input type="text" name="Username" aria-label="Small" aria-describedby="Username"
+            formControlName="username" />
+        </div>
+  
+        <div class="input-group input-group-sm mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="Password">Password</span>
+          </div>
+          <input type="text" name="Password" aria-label="Small" aria-describedby="Password"
+            formControlName="password" />
+        </div>
+  
+        <div class="input-group input-group-sm mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="PrivateKey">Private key</span>
+          </div>
+          <input type="text" name="PrivateKey" aria-label="Small" aria-describedby="Password"
+            formControlName="private_key" />
+        </div>
+  
       </div>
 
       <div class="input-group input-group-sm mb-3">
         <div class="input-group-prepend">
-          <span class="input-group-text" id="Username">Username</span>
-        </div>
-        <input type="text" name="Username" aria-label="Small" aria-describedby="Username"
-          [formControl]="usernameModal" />
-      </div>
-
-      <div class="input-group input-group-sm mb-3">
-        <div class="input-group-prepend">
-          <span class="input-group-text" id="Password">Password</span>
-        </div>
-        <input type="text" name="Password" aria-label="Small" aria-describedby="Password"
-          [formControl]="passwordModal" />
-      </div>
-
-      <div class="input-group input-group-sm mb-3">
-        <div class="input-group-prepend">
-          <button class="btn btn-info" (click)="addHost()">Add host</button> <BR>
+          <button class="btn btn-info" (click)="addHost()" [disabled]="!hostControl.valid">Add host</button> <BR>
         </div>
       </div>
 
       <div class="input-group input-group-sm mb-3">
         <div class="input-group-prepend">
-          <button class="btn btn-info" (click)="testConnection()">Test connection</button> <BR>
+          <button class="btn btn-info" (click)="testConnection(hostControl.value)" [disabled]="!hostControl.valid">Test connection</button> <BR>
         </div>
       </div>
 
@@ -78,35 +89,44 @@
 <jw-modal id="custom-modal-2">
   <div class="max-w-2xl container mx-auto pt-5">
     <h1>Host view</h1>
-    <div>
+    <div [formGroup]="hostViewControl">
 
       <div class="input-group input-group-sm mb-3">
         <div class="input-group-prepend">
           <span class="input-group-text" id="nameInitFile">Hostname</span>
         </div>
-        <input type="text" name="nameInitFile" aria-label="Small" aria-describedby="nameInitFile" [disabled]="true"
-          [formControl]="hostnameEditModel" />
+        <input type="text" name="nameInitFile" aria-label="Small" aria-describedby="nameInitFile"
+          formControlName="hostname" [readOnly]="true" />
       </div>
 
       <div class="input-group input-group-sm mb-3">
         <div class="input-group-prepend">
           <span class="input-group-text" id="Username">Username</span>
         </div>
-        <input type="text" name="Username" aria-label="Small" aria-describedby="Username" [disabled]="true"
-          [formControl]="usernameEditModel" />
+        <input type="text" name="Username" aria-label="Small" aria-describedby="Username"
+          formControlName="username" [readOnly]="true" />
       </div>
 
       <div class="input-group input-group-sm mb-3">
         <div class="input-group-prepend">
           <span class="input-group-text" id="Password">Password</span>
         </div>
-        <input type="text" name="Password" aria-label="Small" aria-describedby="Password" [disabled]="true"
-          [formControl]="passwordEditModel" />
+        <input type="text" name="Password" aria-label="Small" aria-describedby="Password"
+          formControlName="password" [readOnly]="true" />
       </div>
 
       <div class="input-group input-group-sm mb-3">
         <div class="input-group-prepend">
-          <button class="btn btn-info" (click)="testConnection()">Test connection</button> <BR>
+          <span class="input-group-text" id="PrivateKey">Private key</span>
+        </div>
+        <input type="text" name="PrivateKey" aria-label="Small" aria-describedby="Password"
+          formControlName="private_key" />
+      </div>
+
+
+      <div class="input-group input-group-sm mb-3">
+        <div class="input-group-prepend">
+          <button class="btn btn-info" (click)="testConnection(hostViewControl.value)" [disabled]="!hostControl.valid">Test connection</button> <BR>
         </div>
       </div>
 

@@ -11,10 +11,7 @@ export interface ClusterData {
     vars_service: VarsService[]
 }
 
-class IHostCluster implements IHost {
-    username: string | null
-    hostname: string | null
-    password: string | null
+interface IHostCluster extends IHost {
     group: string | null
 }
 

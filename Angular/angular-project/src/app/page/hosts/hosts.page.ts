@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { HostsService } from 'src/app/services/hosts.service';
 import { ModalService } from 'src/app/components/modal/modalService';
 import { IHost } from 'src/app/date/IHost';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { catchError, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -13,13 +13,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class HostsComponent implements OnInit {
     hosts: IHost[] = [];
 
-    hostnameModal = new FormControl('');
-    usernameModal = new FormControl('');
-    passwordModal = new FormControl('');
-
-    hostnameEditModel = new FormControl('');
-    usernameEditModel = new FormControl('');
-    passwordEditModel = new FormControl('');
+    hostControl: FormGroup;
+    hostViewControl: FormGroup;
 
     constructor(private hostsService: HostsService, private modalService: ModalService) {
 
@@ -39,42 +34,41 @@ export class HostsComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.chnageHostControl({username: '', hostname: '', password: '', private_key: ''});
+        this.chnageHostViewControl({username: '', hostname: '', password: '', private_key: ''});
+        this.hostControl.valueChanges.subscribe((host) => console.log(host))
+
         this.hostsService.getAllHosts()
             .pipe(catchError(this.handleError))
             .subscribe((res: any) => {
                 console.log(res);
                 this.hosts = res;
-            })
+            });
     }
 
-    addHostModal(host: IHost) {
-        this.hostnameModal.setValue(host.hostname);
-        this.usernameModal.setValue(host.username);
-        this.passwordModal.setValue(host.password);
+    chnageHostControl(host: IHost) {
+        this.hostControl = new FormGroup({
+            hostname: new FormControl(host.hostname, [Validators.required, Validators.minLength(1)]),
+            username: new FormControl(host.username, [Validators.required, Validators.minLength(1)]),
+            password: new FormControl(host.password),
+            private_key: new FormControl(host.private_key)
+        });
     }
 
-    getHostEditModal() {
-        return {
-            "hostname": this.hostnameEditModel.value,
-            "username": this.usernameEditModel.value,
-            "password": this.passwordEditModel.value
-        }
-    }
-
-    getHostModal() {
-        return {
-            "hostname": this.hostnameModal.value,
-            "username": this.usernameModal.value,
-            "password": this.passwordModal.value
-        }
+    chnageHostViewControl(host: IHost) {
+        this.hostViewControl = new FormGroup({
+            hostname: new FormControl(host.hostname, [Validators.required, Validators.minLength(1)]),
+            username: new FormControl(host.username, [Validators.required, Validators.minLength(1)]),
+            password: new FormControl(host.password),
+            private_key: new FormControl(host.private_key)
+        });
     }
 
     deleteHost(host: IHost) {
         this.hostsService.deleteHost(host).subscribe((res) => {
             console.log(res);
             this.hostsService.getAllHosts().subscribe((res: any) => {
-                // this.checkError(res, 'Ошибка при получении хостов');
-                this.hosts = res
+                this.hosts = res;
             })
         });
 
@@ -82,51 +76,40 @@ export class HostsComponent implements OnInit {
 
 
     openHost(host: IHost) {
-        this.hostnameEditModel.setValue(host.hostname);
-        this.usernameEditModel.setValue(host.username);
-        this.passwordEditModel.setValue(host.password);
+        this.chnageHostViewControl(host);
         this.openModal('custom-modal-2');
     }
 
     addHost() {
-        this.hostsService.addHosts(this.getHostModal())
+        this.hostsService.addHosts(this.hostControl.value)
             .pipe(catchError(this.handleError))
             .subscribe((res: any) => {
                 alert(res.Status == 'Ok' ? 'Хост добавлен' : 'Ошибка ' + res['Status']);
                 console.log(res);
 
                 this.hostsService.getAllHosts().subscribe((res: any) => {
-                    this.hosts = res
-
-                    this.hostnameEditModel = this.hostnameModal;
-                    this.usernameEditModel = this.usernameModal;
-                    this.passwordEditModel = this.passwordModal;
-
-
-                    this.hostnameModal = new FormControl('');
-                    this.usernameModal = new FormControl('');
-                    this.passwordModal = new FormControl('');
+                    this.hosts = res;
+                    
+                    this.chnageHostViewControl(this.hostControl.value);
+                    this.chnageHostControl({username: '', hostname: '', password: '', private_key: ''});
 
                     this.closeModal('custom-modal-1');
-                    this.addHostModal(this.getHostModal());
                     this.openModal('custom-modal-2');
                 })
 
-            })
-        console.log('add host')
-
-
+            });
     }
 
-    testConnection() {
+    testConnection(host: IHost) {
         console.log('test connection');
-        const currentHost = this.getHostEditModal();
-        this.hostsService.testConnection(currentHost)
+        // const currentHost = this.hostControl.value;
+        this.hostsService.testConnection(host)
             .pipe(catchError(this.handleError))
             .subscribe((res: any) => {
-                console.log(res); alert(res.Status == true ?
-                    'Соединение установлено: ' + currentHost.hostname
-                    : 'Не удалось подключиться к серверу: ' + currentHost.hostname)
+                console.log(res); 
+                alert(res.Status == true ?
+                    'The connection is established: ' + host.hostname
+                    : 'Failed to connect to the server: ' + host.hostname)
             })
     }
 

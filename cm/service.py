@@ -3,6 +3,7 @@ import logging
 import socket
 import subprocess
 from datetime import timedelta, datetime
+from io import StringIO
 from itertools import groupby
 from threading import Thread
 
@@ -205,26 +206,33 @@ class ServiceTemplate:
                                      sort_keys=True, indent=4))
 
 
-class HostService(BaseModel):
+class HostService:
 
-    def __init__(self, hostname, username, password):
+    def __init__(self, hostname: str, username: str, password: str, private_key: str):
         self.hostname = hostname
         self.username = username
         self.password = password
+        self.private_key = private_key
 
-    # Remove from this class?
     def test_connection(self):
         try:
             ssh_client = paramiko.SSHClient()
 
             ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            # https://stackoverflow.com/questions/15722704/paramiko-creating-a-pkey-from-a-public-key-string
-            ssh_client.connect(hostname=self.hostname, username=self.username, password=self.password)
-            ssh_client.close()
+
+            if self.private_key is None:
+                ssh_client.connect(hostname=self.hostname, username=self.username, password=self.password)
+                ssh_client.close()
+            else:
+                pkey = StringIO(self.private_key)
+                private_key = paramiko.RSAKey.from_private_key(pkey)
+
+                ssh_client.connect(hostname=self.hostname, username=self.username,
+                                   password=self.password, pkey=private_key)
+                ssh_client.close()
             return True
-        except paramiko.ssh_exception.AuthenticationException:
-            return False
-        except socket.gaierror:
+        except Exception as e:
+            logging.error(f'Try connet to host {self.hostname}, error: {e}')
             return False
 
     # Remove?

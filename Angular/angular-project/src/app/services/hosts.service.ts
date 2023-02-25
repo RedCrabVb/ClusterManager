@@ -28,7 +28,7 @@ export class HostsService {
         });
 
         return this.http.post(
-            this.config.urlBackEnd + 'host', { "hostname": host.hostname, "password": host.password, "username": host.username }, { headers }
+            this.config.urlBackEnd + 'host', host, { headers }
         );
     }
 

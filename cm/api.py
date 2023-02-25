@@ -73,7 +73,7 @@ def update_password(new_password: str, current_user: UserModel = Depends(get_cur
 
 @app.post('/task/test_connection')
 def test_connection(host: HostModel, current_user: UserModel = Depends(get_current_active_user)):
-    return {'Status': HostService(host.hostname, host.username, host.password).test_connection()}
+    return {'Status': HostService(host.hostname, host.username, host.password, host.private_key).test_connection()}
 
 
 @app.post('/task/run_action')

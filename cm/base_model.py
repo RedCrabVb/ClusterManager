@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel
 
 
@@ -39,7 +41,8 @@ class TaskRunAction(BaseModel):
 class HostModel(BaseModel):
     hostname: str
     username: str
-    password: str
+    password: Optional[str] = None
+    private_key: Optional[str] = None
 
 
 class ItemAddClusterHost(BaseModel):
