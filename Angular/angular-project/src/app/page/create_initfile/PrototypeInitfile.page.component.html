@@ -50,13 +50,13 @@
                 </div>
                 <div class="input-group input-group-sm mb-3">
                     <div class="input-group-prepend">
-                        <span class="input-group-text" id="contnet">Content</span>
+                        <span class="input-group-text" id="content">Content</span>
                     </div>
-                    <input type="text" name="contnet" aria-label="Small" aria-describedby="nameInitFile"
-                        formControlName="contnet" [readOnly]="true" />
+                    <input type="text" name="content" aria-label="Small" aria-describedby="nameInitFile"
+                        formControlName="content" [readOnly]="true" />
                 </div>
 
-                <editor id="editor" >
+                <editor id="editor" [fileControl]="fileControl" >
 
                 </editor>
 

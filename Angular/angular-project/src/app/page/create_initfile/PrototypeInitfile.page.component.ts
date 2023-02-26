@@ -73,7 +73,7 @@ export class PrototypeInitfileComponent implements OnInit {
                 // result.item.content = res;
                 this.fileControl = new FormGroup({
                     nameFile: new FormControl(name),
-                    contnet: new FormControl(res)
+                    content: new FormControl(res)
                 })
             })
     }

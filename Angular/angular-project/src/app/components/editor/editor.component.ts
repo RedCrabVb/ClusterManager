@@ -1,4 +1,5 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core'
+import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnInit, ViewChild } from '@angular/core'
+import { FormGroup } from '@angular/forms';
 
 declare var CodeMirror: any
 
@@ -13,21 +14,16 @@ declare var CodeMirror: any
     ]
 })
 
-export class EditorComponent implements AfterViewInit, OnInit {
+export class EditorComponent implements AfterViewInit, OnInit, OnChanges {
     @ViewChild('editor') editor: any;
-    @Input() content: string
+    @Input() fileControl: FormGroup
     editorMirror: any;
 
     constructor() {
-        console.log(this.content)
-        console.log(this.content)
-        console.log(this.content)
-        console.log(this.content)
-        console.log(this.content)
     }
 
     ngOnInit() {
-        console.log(this.editor);
+        console.log(this.fileControl);
     }
 
     ngAfterViewInit(): void {
@@ -45,22 +41,26 @@ export class EditorComponent implements AfterViewInit, OnInit {
 
         this.editorMirror.on('change', (editor: any) => {
             console.log(this.editorMirror.getDoc().getValue());
+
+            this.fileControl.controls['content'].setValue(this.editorMirror.getDoc().getValue());
         });
 
-        this.editorMirror.setValue('asdf')
+        console.log(this.fileControl)
+
+        this.editorMirror.setValue(this.fileControl.controls['content'].value)
+
+        this.fileControl.controls['content'].valueChanges.subscribe((new_value: string) => {
+            if (new_value != this.editorMirror.getDoc().getValue()) {
+                this.editorMirror.setValue(new_value)
+            }
+        })  
 
         let edRef = this.editorMirror
-        console.log(this.content)
-        console.log(this.content)
-        console.log(this.content)
-        console.log(this.content)
-        console.log(this.content)
-        // setTimeout(function () {
-        //     edRef.refresh()
-        //     console.log(this.content)
-        //     console.log('ef refresh')
-        // }, 1);
+        console.log(this.fileControl.controls['content'].value)
+    }
 
+    ngOnChanges() {
+        this.editorMirror.setValue(this.fileControl.controls['content'].value)
     }
 
 }
