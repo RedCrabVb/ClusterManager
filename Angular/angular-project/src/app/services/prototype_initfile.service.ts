@@ -33,4 +33,8 @@ export class PrototypeInitFileService {
         return this.http.post(this.config.urlBackEnd + 'initfile/prototype/update', { name, version, path, filename, data, operation, type },
             this.getAuthHeader())
     }
+
+    loadFile(name: string, version: string) {
+        return this.http.get(this.config.urlBackEnd + `initfile/prototype/zip?name=${name}&version=${version}`, this.getAuthHeader())
+    }
 }

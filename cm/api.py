@@ -1,4 +1,5 @@
 import fnmatch
+import io
 import json
 import logging
 import zipfile
@@ -6,7 +7,9 @@ from datetime import timedelta
 
 import psycopg2.extras
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi.openapi.models import Response
 from starlette import status
+from starlette.responses import FileResponse, StreamingResponse
 
 import config
 from cm.db import *
@@ -336,9 +339,52 @@ def update_initfile_prototype(fileUpdatePrototype: FileUpdatePrototype,
         elif fileUpdatePrototype.type == 'directory':
             Path(path_create_file).mkdir()
 
-
     return {'Status': 'Ok'}
 
+    #
+    # def dir_to_zip_file(dir):
+    #     in_memory_output_file = io.BytesIO()
+    #     zip_file_object = zipfile.ZipFile(in_memory_output_file, 'w')
+    #     for file_name in os.listdir(dir):
+    #         zip_file_object.write(os.path.join(dir, file_name))
+    #     zip_file_object.close()
+    #     in_memory_output_file.seek(0)
+    #     binary_data = in_memory_output_file.read()
+    #     in_memory_output_file.close()
+    #     return binary_data
+    #
+    # @app.get('/initfile/prototype/zip')
+    # def get_zip_prototype(name: str, version: str):
+    #     initfile = db_get_init_files(name, version)
+    #     pathToInitfile = f'{InitFilesDir}/{name}/{initfile["namefile"]}'
+    #     pathExtractPrototypeInitfile = f'{PrototypeInitFilesDir}/{name}/{version}'
+
+    return FileResponse(dir_to_zip_file(pathExtractPrototypeInitfile))
+
+
+def dir_to_zip_file(dir):
+    in_memory_output_file = io.BytesIO()
+    zip_file_object = zipfile.ZipFile(in_memory_output_file, 'w')
+    for root, dirs, files in os.walk(dir):
+        for file in files:
+            zip_file_object.write(os.path.join(dir, f'{os.listdir(dir)[0]}', file))
+
+
+    zip_file_object.close()
+
+    in_memory_output_file.seek(0)
+    # binary_data = in_memory_output_file.read()
+    # in_memory_output_file.close()
+    return in_memory_output_file
+
+
+@app.get('/initfile/prototype/zip')
+def get_zip_prototype(name: str, version: str):
+    initfile = db_get_init_files(name, version)
+    # pathToInitfile = f'{InitFilesDir}/{name}/{initfile["namefile"]}'
+    pathExtractPrototypeInitfile = f'{PrototypeInitFilesDir}/{name}/{version}'
+
+    return StreamingResponse(dir_to_zip_file(pathExtractPrototypeInitfile), media_type="application/x-zip-compressed", )
 
 
 @app.get("/")
