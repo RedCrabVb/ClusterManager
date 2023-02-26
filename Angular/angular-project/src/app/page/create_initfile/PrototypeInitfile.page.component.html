@@ -1,5 +1,6 @@
 <div class="max-w-2xl container mx-auto pt-5">
 
+
     <div class="row md-2">
         <div *ngIf="treeView != null" class="col-md-3">
             <button>add file</button>
@@ -28,6 +29,7 @@
                             <td>{{item.type}}</td>
                             <td>
 
+
                             </td>
                         </tr>
                     </ng-container>
@@ -35,7 +37,9 @@
             </table>
         </div>
 
-        <div class="col-md-3" *ngIf="fileControl != undefined">
+
+
+        <div class="col" *ngIf="fileControl != undefined">
             <div [formGroup]="fileControl">
                 <div class="input-group input-group-sm mb-3">
                     <div class="input-group-prepend">
@@ -44,7 +48,6 @@
                     <input type="text" name="Filename" aria-label="Small" aria-describedby="nameInitFile"
                         formControlName="nameFile" [readOnly]="true" />
                 </div>
-
                 <div class="input-group input-group-sm mb-3">
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="contnet">Content</span>
@@ -53,18 +56,11 @@
                         formControlName="contnet" [readOnly]="true" />
                 </div>
 
-                <div style="width: 100%;max-width: 1200px;margin: 0 auto;">
-                    <div style="display: grid;grid-template-columns: repeat(2, minmax(0, 1fr));gap: 16px;">
-                      <div>
-                        <h2>JSON Editor</h2>
-                        <!-- <app-editor (text)="jsonInputData" mode="json" ></app-editor> -->
-                      </div>
-                      <div>
-                        <h2>YAML Editor</h2>
-                        <!-- <app-editor (text)="yamlInputData" mode="yaml"></app-editor> -->
-                      </div>
-                    </div>
-                  </div>
+                <editor id="editor" >
+
+                </editor>
+
+
             </div>
         </div>
     </div>

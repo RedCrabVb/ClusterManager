@@ -8,17 +8,15 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppHeaderComponent } from './components/header/app-header';
 import { InitFilePage } from './page/initfile/initfile.page.component';
 import { ModalComponent } from './components/modal/modal.component';
-import { ModalService } from './components/modal/modalService';
 import { HostsComponent } from './page/hosts/hosts.page';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ClusterComponenet } from './page/cluster/cluster.page';
 import { LoginComponent } from './page/login/login.page.component';
-import { Router } from '@angular/router';
 import { AuthGuard } from './services/AuthGuard';
 import { ProcComponent } from './page/proc/proc.page.component';
 import { WelcomeComponent } from './page/welcome/welcom.page.component';
 import { PrototypeInitfileComponent } from './page/create_initfile/PrototypeInitfile.page.component';
-import { CodemirrorModule } from '@ctrl/ngx-codemirror';
+import { EditorComponent } from './components/editor/editor.component';
 
 @NgModule({
   declarations: [
@@ -31,8 +29,8 @@ import { CodemirrorModule } from '@ctrl/ngx-codemirror';
     LoginComponent,
     ProcComponent,
     WelcomeComponent,
-    PrototypeInitfileComponent
-    // MyComponent,
+    PrototypeInitfileComponent,
+    EditorComponent,
   ],
   imports: [
     AppRoutingModule,

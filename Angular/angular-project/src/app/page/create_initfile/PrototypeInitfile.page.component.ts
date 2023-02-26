@@ -4,11 +4,12 @@ import { ActivatedRoute } from '@angular/router';
 import { ITreeView } from 'src/app/date/ITreeView';
 import { PrototypeInitFileService } from 'src/app/services/prototype_initfile.service';
 import { Stack } from 'stack-typescript';
-// import 'ace-builds/webpack-resolver';
+// import 'codemirror/mode/javascript/javascript';
+// import 'codemirror/mode/markdown/markdown';
 
 @Component({
     selector: 'app-prototype',
-    templateUrl: './PrototypeInitfile.page.component.html',
+    templateUrl: './prototypeInitfile.page.component.html',
 })
 export class PrototypeInitfileComponent implements OnInit {
 
@@ -67,6 +68,9 @@ export class PrototypeInitfileComponent implements OnInit {
         this.prototypeInitFileService.openFile(name, this.currentContextPath.toArray().reverse().join('/'),
             this.name_initfile, this.version_initfile).subscribe((res) => {
                 console.log(res);
+
+                var result = document.getElementsByClassName("multi-files");
+                // result.item.content = res;
                 this.fileControl = new FormGroup({
                     nameFile: new FormControl(name),
                     contnet: new FormControl(res)

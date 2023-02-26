@@ -10,6 +10,7 @@ import { AuthGuard } from './services/AuthGuard';
 import { ProcComponent } from './page/proc/proc.page.component';
 import { PrototypeInitFileService } from './services/prototype_initfile.service';
 import { PrototypeInitfileComponent } from './page/create_initfile/PrototypeInitfile.page.component';
+import { EditorComponent } from './components/editor/editor.component';
 
 const routes: Routes = [
   {
@@ -32,6 +33,9 @@ const routes: Routes = [
   },
   {
     'path': 'initfile_create', component: PrototypeInitfileComponent
+  },
+  {
+    'path': 'test', component: EditorComponent
   }
 ];
 
