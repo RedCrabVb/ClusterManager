@@ -303,7 +303,14 @@ def load_initfile_prototype(namefile: str, path: str, name: str, version: str,
     # todo: check, path must not ../../
     pathExtractPrototypeInitfile = f'{PrototypeInitFilesDir}/{name}/{version}/'
 
-    with open(f'{pathExtractPrototypeInitfile}/{os.listdir(pathExtractPrototypeInitfile)[0]}/{namefile}') as f:
+    if path != '':
+        pathFormat = f'/{path}/'
+    else:
+        pathFormat = ''
+
+    pathForRead = f'{pathExtractPrototypeInitfile}{os.listdir(pathExtractPrototypeInitfile)[0]}{pathFormat}/{namefile}'
+
+    with open(pathForRead) as f:
         return f.read()
 
 
@@ -312,8 +319,23 @@ def update_initfile_prototype(fileUpdatePrototype: FileUpdatePrototype,
                               current_user: UserModel = Depends(get_current_active_user)):
     pathExtractPrototypeInitfile = f'{PrototypeInitFilesDir}/{fileUpdatePrototype.name}/{fileUpdatePrototype.version}'
 
-    with open('rw', f'{pathExtractPrototypeInitfile}/{os.listdir(pathExtractPrototypeInitfile)[0]}/{fileUpdatePrototype.path}') as f:
-        f.write(fileUpdatePrototype.data)
+    path_create_file = f'{pathExtractPrototypeInitfile}/{os.listdir(pathExtractPrototypeInitfile)[0]}/{fileUpdatePrototype.path}/{fileUpdatePrototype.filename}'
+
+    if fileUpdatePrototype.operation == 'update':
+        with open(path_create_file, 'w') as f:
+            f.write(fileUpdatePrototype.data)
+    elif fileUpdatePrototype.operation == 'delete':
+        if Path(path_create_file).is_dir():
+            os.rmdir(path_create_file)
+        else:
+            os.remove(path_create_file)
+    elif fileUpdatePrototype.operation == 'create':
+        if fileUpdatePrototype.type == 'file':
+            with open(path_create_file, 'w') as f:
+                f.write(fileUpdatePrototype.data)
+        elif fileUpdatePrototype.type == 'directory':
+            Path(path_create_file).mkdir()
+
 
     return {'Status': 'Ok'}
 

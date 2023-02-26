@@ -40,7 +40,7 @@ class FileUpdatePrototype(ItemInitFilePrototype):
     filename: str
     data: str
     operation: str
-
+    type: str
 
 
 class TaskRunAction(BaseModel):

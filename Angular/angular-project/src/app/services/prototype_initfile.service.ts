@@ -16,20 +16,21 @@ export class PrototypeInitFileService {
             'Authorization': `${Utils.getCookie('token_type')} ${Utils.getCookie('access_token')}`
         });
 
-        return {headers: headers};
+        return { headers: headers };
     }
 
     openFile(namefile: string, path: string, name: string, version: string) {
-        return this.http.get(this.config.urlBackEnd + 
+        return this.http.get(this.config.urlBackEnd +
             `initfile/prototype/load?name=${name}&version=${version}&path=${path}&namefile=${namefile}`, this.getAuthHeader())
     }
 
     viewDir(name: string, version: string, path: string) {
-        return this.http.get(this.config.urlBackEnd + 
+        return this.http.get(this.config.urlBackEnd +
             `initfile/prototype?name=${name}&version=${version}&path=${path}`, this.getAuthHeader())
     }
 
-    get() {
-        return this.http.get(this.config.urlBackEnd, this.getAuthHeader())
+    updateFile(name: string, version: string, path: string, filename: string, data: string, operation: string, type: string = '') {
+        return this.http.post(this.config.urlBackEnd + 'initfile/prototype/update', { name, version, path, filename, data, operation, type },
+            this.getAuthHeader())
     }
 }

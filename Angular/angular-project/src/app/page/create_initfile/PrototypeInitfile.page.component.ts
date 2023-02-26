@@ -1,11 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { ModalService } from 'src/app/components/modal/modalService';
 import { ITreeView } from 'src/app/date/ITreeView';
 import { PrototypeInitFileService } from 'src/app/services/prototype_initfile.service';
 import { Stack } from 'stack-typescript';
-// import 'codemirror/mode/javascript/javascript';
-// import 'codemirror/mode/markdown/markdown';
 
 @Component({
     selector: 'app-prototype',
@@ -21,16 +20,14 @@ export class PrototypeInitfileComponent implements OnInit {
     version_initfile: string
 
     fileControl: FormGroup | undefined
+    fileCreateControl: FormGroup = new FormGroup({
+        nameFile: new FormControl(''),
+        typeFile: new FormControl('')
+    })
 
-
-
-    title = 'angular-code-editor';
-    jsonInputData = 'sdf';
-    yamlInputData = '';
-    appModuleTsData = '';
-    scssData = '';
-
-    constructor(private prototypeInitFileService: PrototypeInitFileService, private activatedRoute: ActivatedRoute) {
+    constructor(private prototypeInitFileService: PrototypeInitFileService, 
+        private activatedRoute: ActivatedRoute,
+        private modalService: ModalService) {
 
     }
 
@@ -52,6 +49,51 @@ export class PrototypeInitfileComponent implements OnInit {
         });
     }
 
+    saveFile() {
+        if (this.fileControl == undefined) {
+            console.error(this.fileControl + ' is undefined')
+            return;
+        }
+        this.prototypeInitFileService.updateFile(this.name_initfile, this.version_initfile, 
+            this.currentContextPath.toArray().reverse().join('/'),
+            this.fileControl.controls['nameFile'].value, 
+            this.fileControl.controls['content'].value, 'update').subscribe((res) => {
+                console.log(res);
+            })
+    }
+
+    deleteFile(namefile: string) {
+        if (this.fileControl == undefined) {
+            console.error(this.fileControl + ' is undefined')
+            return;
+        }
+        this.prototypeInitFileService.updateFile(this.name_initfile, this.version_initfile, 
+            this.currentContextPath.toArray().reverse().join('/'),
+            namefile, 
+            '', 'delete').subscribe((res) => {
+                console.log(res);
+                this.ngOnInit();
+
+                if (this.fileControl != undefined) {
+                    this.fileControl.controls['nameFile'].setValue('');
+                    this.fileControl.controls['content'].setValue('');
+                }
+
+            })
+    }
+
+    createFile() {
+        this.prototypeInitFileService.updateFile(this.name_initfile, this.version_initfile, 
+            this.currentContextPath.toArray().reverse().join('/'),
+            this.fileCreateControl.controls['nameFile'].value, 
+            '', 'create', this.fileCreateControl.controls['typeFile'].value).subscribe((res) => {
+                console.log(res);
+
+                this.ngOnInit();
+                this.closeModal('custom-modal-2');
+            })
+    }
+
     openDir(name: string) {
         this.fileControl = undefined;
         this.treeViewChildStack.head.forEach(
@@ -69,8 +111,6 @@ export class PrototypeInitfileComponent implements OnInit {
             this.name_initfile, this.version_initfile).subscribe((res) => {
                 console.log(res);
 
-                var result = document.getElementsByClassName("multi-files");
-                // result.item.content = res;
                 this.fileControl = new FormGroup({
                     nameFile: new FormControl(name),
                     content: new FormControl(res)
@@ -83,4 +123,12 @@ export class PrototypeInitfileComponent implements OnInit {
         this.treeViewChildStack.pop();
     }
 
+
+    openModal(id: string) {
+        this.modalService.open(id);
+      }
+    
+      closeModal(id: string) {
+        this.modalService.close(id);
+      }
 }

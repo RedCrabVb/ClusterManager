@@ -23,29 +23,24 @@ export class EditorComponent implements AfterViewInit, OnInit, OnChanges {
     }
 
     ngOnInit() {
-        console.log(this.fileControl);
     }
 
     ngAfterViewInit(): void {
-        console.log(this.editor.nativeElement)
         this.editorMirror = new CodeMirror.fromTextArea(this.editor.nativeElement, {
             lineNumbers: true,
             lineWrapping: true,
             styleActiveLine: true,
             autoRefresh: true,
-            mode: 'text',
+            mode: 'text/x-yaml',
             theme: "monokai",
         }
         );
-        console.log(this.editorMirror)
 
         this.editorMirror.on('change', (editor: any) => {
             console.log(this.editorMirror.getDoc().getValue());
 
             this.fileControl.controls['content'].setValue(this.editorMirror.getDoc().getValue());
         });
-
-        console.log(this.fileControl)
 
         this.editorMirror.setValue(this.fileControl.controls['content'].value)
 
@@ -55,12 +50,12 @@ export class EditorComponent implements AfterViewInit, OnInit, OnChanges {
             }
         })  
 
-        let edRef = this.editorMirror
-        console.log(this.fileControl.controls['content'].value)
+        this.editorMirror.setSize('100%', '900px')
     }
 
     ngOnChanges() {
         this.editorMirror.setValue(this.fileControl.controls['content'].value)
+        //save form
     }
 
 }

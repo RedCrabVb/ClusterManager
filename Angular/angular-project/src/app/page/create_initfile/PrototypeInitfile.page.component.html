@@ -3,7 +3,7 @@
 
     <div class="row md-2">
         <div *ngIf="treeView != null" class="col-md-3">
-            <button>add file</button>
+            <button class="btn btn-success" (click)="openModal('custom-modal-2')">add file</button>
             <p>Path: {{currentContextPath.toArray().reverse().join('/')}}</p>
             <button *ngIf="currentContextPath.toArray().length > 0" (click)="backDir()"
                 class="btn btn-primary">back</button>
@@ -28,8 +28,7 @@
                             </td>
                             <td>{{item.type}}</td>
                             <td>
-
-
+                                <button class="btn btn-danger" (click)="deleteFile(item.name)">Delete</button>
                             </td>
                         </tr>
                     </ng-container>
@@ -56,7 +55,14 @@
                         formControlName="content" [readOnly]="true" />
                 </div>
 
-                <editor id="editor" [fileControl]="fileControl" >
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="updateFile">Save file</span>
+                    </div>
+                    <button class="btn btn-success" (click)="saveFile()">Save file</button>
+                </div>
+
+                <editor id="editor" [fileControl]="fileControl" style="height: 80%;">
 
                 </editor>
 
@@ -65,3 +71,39 @@
         </div>
     </div>
 </div>
+
+
+<jw-modal id="custom-modal-2">
+    <div class="max-w-2xl container mx-auto pt-5" [formGroup]="fileCreateControl">
+        <h1>Create file</h1>
+
+        <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="Filename">Filename</span>
+            </div>
+            <input type="text" name="Filename" aria-label="Small" aria-describedby="nameInitFile"
+                formControlName="nameFile" />
+        </div>
+
+        <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="Type">Type</span>
+            </div>
+            <select formControlName="typeFile">
+                <option>file</option>
+                <option>directory</option>
+            </select>
+
+        </div>
+
+        <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+                <button class="btn btn-primary" (click)="createFile()">Create file</button>
+            </div>
+        </div>
+
+
+        <button class="btn btn-secondary" (click)="closeModal('custom-modal-2')">Close</button>
+
+    </div>
+</jw-modal>
