@@ -204,7 +204,7 @@ def create_cluster(cluster: ClusterUserModel, current_user: UserModel = Depends(
     os.chdir(wd)
 
     (name_init_file, version_cluster) = cluster.initfile_name.split('|')
-    record = db_get_init_files(version_cluster, name_init_file)
+    record = db_get_init_files(name_init_file, version_cluster)
 
     item_name = record['name']
     item_namefile = record['namefile']
@@ -284,7 +284,7 @@ def create_initfile_on_prototype(name: str, version: str, path: str,
     pathExtractPrototypeInitfile = f'{PrototypeInitFilesDir}/{name}/{version}'
 
     if not Path(pathExtractPrototypeInitfile).exists():
-        Path(PrototypeInitFilesDir).mkdir()
+        Path(pathExtractPrototypeInitfile).mkdir(parents=True)
         with zipfile.ZipFile(pathToInitfile, 'r') as zip_ref:
             zip_ref.extractall(pathExtractPrototypeInitfile)
 

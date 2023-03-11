@@ -60,6 +60,7 @@ class ItemAddClusterHost(BaseModel):
     name_cluster: str
     group: str
     extid_service: str
+    host: HostModel
 
 
 class ClusterUserModel(BaseModel):
