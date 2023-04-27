@@ -119,12 +119,7 @@ export class PrototypeInitfileComponent implements OnInit {
     }
 
     loadZip() {
-        this.prototypeInitFileService.loadFile(this.name_initfile, this.version_initfile).subscribe((
-        (res: any) => {
-                var file = window.URL.createObjectURL(res.blob());
-                window.location.assign(file);
-            } 
-        ))
+        this.prototypeInitFileService.loadFile(this.name_initfile, this.version_initfile)
     }
 
     backDir() {

@@ -367,8 +367,7 @@ def dir_to_zip_file(dir):
     zip_file_object = zipfile.ZipFile(in_memory_output_file, 'w')
     for root, dirs, files in os.walk(dir):
         for file in files:
-            zip_file_object.write(os.path.join(dir, f'{os.listdir(dir)[0]}', file))
-
+            zip_file_object.write(os.path.join(root, file), os.path.relpath(os.path.join(root, file), dir))
 
     zip_file_object.close()
 

@@ -35,6 +35,7 @@ export class PrototypeInitFileService {
     }
 
     loadFile(name: string, version: string) {
-        return this.http.get(this.config.urlBackEnd + `initfile/prototype/zip?name=${name}&version=${version}`, this.getAuthHeader())
+        window.open(this.config.urlBackEnd + `initfile/prototype/zip?name=${name}&version=${version}`);
+        // return this.http.get(this.config.urlBackEnd + `initfile/prototype/zip?name=${name}&version=${version}`, this.getAuthHeader())
     }
 }
