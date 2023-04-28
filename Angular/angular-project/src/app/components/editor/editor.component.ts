@@ -17,6 +17,7 @@ declare var CodeMirror: any
 export class EditorComponent implements AfterViewInit, OnInit, OnChanges {
     @ViewChild('editor') editor: any;
     @Input() fileControl: FormGroup
+    @Input() sizeEditor: number;
     editorMirror: any;
 
     constructor() {
@@ -50,7 +51,7 @@ export class EditorComponent implements AfterViewInit, OnInit, OnChanges {
             }
         })  
 
-        this.editorMirror.setSize('100%', '900px')
+        this.editorMirror.setSize('100%', '' + this.sizeEditor + 'px')
     }
 
     ngOnChanges() {

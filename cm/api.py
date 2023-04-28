@@ -341,24 +341,6 @@ def update_initfile_prototype(fileUpdatePrototype: FileUpdatePrototype,
 
     return {'Status': 'Ok'}
 
-    #
-    # def dir_to_zip_file(dir):
-    #     in_memory_output_file = io.BytesIO()
-    #     zip_file_object = zipfile.ZipFile(in_memory_output_file, 'w')
-    #     for file_name in os.listdir(dir):
-    #         zip_file_object.write(os.path.join(dir, file_name))
-    #     zip_file_object.close()
-    #     in_memory_output_file.seek(0)
-    #     binary_data = in_memory_output_file.read()
-    #     in_memory_output_file.close()
-    #     return binary_data
-    #
-    # @app.get('/initfile/prototype/zip')
-    # def get_zip_prototype(name: str, version: str):
-    #     initfile = db_get_init_files(name, version)
-    #     pathToInitfile = f'{InitFilesDir}/{name}/{initfile["namefile"]}'
-    #     pathExtractPrototypeInitfile = f'{PrototypeInitFilesDir}/{name}/{version}'
-
     return FileResponse(dir_to_zip_file(pathExtractPrototypeInitfile))
 
 
@@ -372,18 +354,21 @@ def dir_to_zip_file(dir):
     zip_file_object.close()
 
     in_memory_output_file.seek(0)
-    # binary_data = in_memory_output_file.read()
-    # in_memory_output_file.close()
     return in_memory_output_file
 
 
 @app.get('/initfile/prototype/zip')
 def get_zip_prototype(name: str, version: str):
     initfile = db_get_init_files(name, version)
-    # pathToInitfile = f'{InitFilesDir}/{name}/{initfile["namefile"]}'
     pathExtractPrototypeInitfile = f'{PrototypeInitFilesDir}/{name}/{version}'
 
     return StreamingResponse(dir_to_zip_file(pathExtractPrototypeInitfile), media_type="application/x-zip-compressed", )
+
+
+@app.get('/api/text')
+def add_task(context: str, text: str):
+    import requests
+    return json.loads(requests.get(config.server_ai + f'?context={context}&text={text}').text)
 
 
 @app.get("/")

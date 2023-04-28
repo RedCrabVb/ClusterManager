@@ -17,3 +17,4 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 record_filename_log = "../record.log"
 formate_log = "%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s"
 level_log = logging.DEBUG
+server_ai='http://localhost:5001/api/text'
