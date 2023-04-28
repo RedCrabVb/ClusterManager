@@ -12,20 +12,23 @@ import { Stack } from 'stack-typescript';
 })
 export class PrototypeInitfileComponent implements OnInit {
 
-    treeView: ITreeView
-    treeViewChildStack: Stack<ITreeView[]> = new Stack()
-    currentContextPath: Stack<string> = new Stack()
+    treeView: ITreeView;
+    treeViewChildStack: Stack<ITreeView[]> = new Stack();
+    currentContextPath: Stack<string> = new Stack();
 
-    name_initfile: string
-    version_initfile: string
+    name_initfile: string;
+    version_initfile: string;
 
-    fileControl: FormGroup | undefined
+    fileControl: FormGroup | undefined;
+    aiControl: FormGroup | undefined;
+    loadAi: boolean = false;
+    outputAi: string | undefined;
     fileCreateControl: FormGroup = new FormGroup({
         nameFile: new FormControl(''),
         typeFile: new FormControl('')
     })
 
-    constructor(private prototypeInitFileService: PrototypeInitFileService, 
+    constructor(private prototypeInitFileService: PrototypeInitFileService,
         private activatedRoute: ActivatedRoute,
         private modalService: ModalService) {
 
@@ -33,6 +36,8 @@ export class PrototypeInitfileComponent implements OnInit {
 
     ngOnInit(): void {
         console.log("Init")
+
+
         this.activatedRoute.queryParams.subscribe(params => {
             this.name_initfile = params['name'];
             this.version_initfile = params['version'];
@@ -49,14 +54,33 @@ export class PrototypeInitfileComponent implements OnInit {
         });
     }
 
+    sendContextAndText() {
+        if (this.fileControl == undefined || this.aiControl == undefined) {
+            console.error('fileControll or aiControll is undefined')
+            return;
+        }
+        let fileContent = this.fileControl.controls['content'].value;
+        let aiContent = this.aiControl.controls['content'].value;
+        this.loadAi = true;
+        console.log(fileContent + ' ' + aiContent)
+        this.prototypeInitFileService.aiService(
+            fileContent,
+            aiContent
+        ).subscribe((res: any) => {
+            this.outputAi = res.predictions;
+            this.loadAi = false;
+            // this.outputAi = this.outputAi?.replace(fileContent, "").replace(aiContent, "");
+        });
+    }
+
     saveFile() {
         if (this.fileControl == undefined) {
             console.error(this.fileControl + ' is undefined')
             return;
         }
-        this.prototypeInitFileService.updateFile(this.name_initfile, this.version_initfile, 
+        this.prototypeInitFileService.updateFile(this.name_initfile, this.version_initfile,
             this.currentContextPath.toArray().reverse().join('/'),
-            this.fileControl.controls['nameFile'].value, 
+            this.fileControl.controls['nameFile'].value,
             this.fileControl.controls['content'].value, 'update').subscribe((res) => {
                 console.log(res);
             })
@@ -67,9 +91,9 @@ export class PrototypeInitfileComponent implements OnInit {
             console.error(this.fileControl + ' is undefined')
             return;
         }
-        this.prototypeInitFileService.updateFile(this.name_initfile, this.version_initfile, 
+        this.prototypeInitFileService.updateFile(this.name_initfile, this.version_initfile,
             this.currentContextPath.toArray().reverse().join('/'),
-            namefile, 
+            namefile,
             '', 'delete').subscribe((res) => {
                 console.log(res);
                 this.ngOnInit();
@@ -83,9 +107,9 @@ export class PrototypeInitfileComponent implements OnInit {
     }
 
     createFile() {
-        this.prototypeInitFileService.updateFile(this.name_initfile, this.version_initfile, 
+        this.prototypeInitFileService.updateFile(this.name_initfile, this.version_initfile,
             this.currentContextPath.toArray().reverse().join('/'),
-            this.fileCreateControl.controls['nameFile'].value, 
+            this.fileCreateControl.controls['nameFile'].value,
             '', 'create', this.fileCreateControl.controls['typeFile'].value).subscribe((res) => {
                 console.log(res);
 
@@ -114,7 +138,11 @@ export class PrototypeInitfileComponent implements OnInit {
                 this.fileControl = new FormGroup({
                     nameFile: new FormControl(name),
                     content: new FormControl(res)
-                })
+                });
+
+                this.aiControl = new FormGroup({
+                    content: new FormControl('')
+                });
             })
     }
 
@@ -130,9 +158,9 @@ export class PrototypeInitfileComponent implements OnInit {
 
     openModal(id: string) {
         this.modalService.open(id);
-      }
-    
-      closeModal(id: string) {
+    }
+
+    closeModal(id: string) {
         this.modalService.close(id);
-      }
+    }
 }

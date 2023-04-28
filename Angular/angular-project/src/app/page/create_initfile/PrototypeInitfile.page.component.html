@@ -39,7 +39,7 @@
 
 
 
-        <div class="col" *ngIf="fileControl != undefined">
+        <div class="col" *ngIf="fileControl != undefined && aiControl != undefined">
             <div [formGroup]="fileControl">
                 <div class="input-group input-group-sm mb-3">
                     <div class="input-group-prepend">
@@ -63,11 +63,21 @@
                     <button class="btn btn-success" (click)="saveFile()">Save file</button>
                 </div>
 
-                <editor id="editor" [fileControl]="fileControl" style="height: 80%;">
+                <editor id="editor" [fileControl]="fileControl" style="height: 80%;" [sizeEditor]="900">
+            </editor>
 
-                </editor>
+                <div class="m-3">
+                    <button class="btn btn-info" (click)="sendContextAndText()">Help</button>
+                </div>
+                <div class="mb-3">
+                    <editor id="editor" [fileControl]="aiControl" style="height: 10%;" [sizeEditor]="100"></editor>
+                </div>
 
-
+                <h4>Output</h4>
+                <div *ngIf="loadAi">
+                    Loading...
+                </div>
+                <span *ngIf="!loadAi" style="white-space: pre-line">{{outputAi}}</span>
             </div>
         </div>
     </div>
