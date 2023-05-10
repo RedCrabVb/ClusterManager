@@ -1,8 +1,7 @@
 paramiko>=3.0.0
-fastapi>=0.92.0
-uvicorn>=0.20.0
-psycopg2-binary>=2.9.5
+uvicorn>=0.17.0
 python-jose>=3.3.0
 passlib>=1.7.4
 python-multipart>=0.0.5
 urllib3>=1.26.15
+fastapi>=0.83.0

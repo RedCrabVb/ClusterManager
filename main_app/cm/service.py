@@ -14,10 +14,10 @@ from jose import jwt
 from passlib.context import CryptContext
 from starlette import status
 
-import config
-from cm.base_model import *
-from cm.db import *
-from config import ENCODING_CONSOLE
+from main_app import config
+from main_app.cm.base_model import *
+from main_app.cm.db import *
+from main_app.config import ENCODING_CONSOLE
 
 logging.basicConfig(filename=config.record_filename_log, level=config.level_log,
                     format=config.formate_log)

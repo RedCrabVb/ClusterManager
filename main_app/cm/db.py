@@ -2,8 +2,8 @@ import psycopg2
 
 from psycopg2 import sql
 
-from cm.base_model import HostModel
-from config import DB_USER, DB_NAME, DB_PASSWORD, DB_HOST, DB_PORT
+from main_app.cm.base_model import HostModel
+from main_app.config import DB_USER, DB_NAME, DB_PASSWORD, DB_HOST, DB_PORT
 
 conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER,
                         password=DB_PASSWORD, host=DB_HOST, port=DB_PORT)
