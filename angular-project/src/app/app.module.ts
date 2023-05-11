@@ -15,7 +15,7 @@ import { LoginComponent } from './page/login/login.page.component';
 import { AuthGuard } from './services/AuthGuard';
 import { ProcComponent } from './page/proc/proc.page.component';
 import { WelcomeComponent } from './page/welcome/welcom.page.component';
-import { PrototypeInitfileComponent } from './page/create_initfile/PrototypeInitfile.page.component';
+import { PrototypeInitfileComponent } from './page/create_initfile/prototypeInitfile.page.component';
 import { EditorComponent } from './components/editor/editor.component';
 
 @NgModule({

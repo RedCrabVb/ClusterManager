@@ -18,6 +18,8 @@ services:
       - 5000:5000
     restart: always
 
+  app_web:
+    build: angular-project/
 
 #volumes:
 #  db:

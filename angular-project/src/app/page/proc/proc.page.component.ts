@@ -1,12 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ProcStatusService } from '../../services/proc_status.service';
-import { InitFile as data } from '../../date/initfile';
-import { ModalService } from 'src/app/components/modal/modalService';
-import { IInitFile } from 'src/app/date/IInitfile';
-import { HttpErrorResponse } from '@angular/common/http';
-import { catchError, throwError } from 'rxjs';
 import { ProcLog } from 'src/app/date/IProcLog';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-proc',
