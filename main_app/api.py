@@ -10,8 +10,8 @@ from fastapi import FastAPI, Depends, HTTPException
 from starlette import status
 from starlette.responses import FileResponse, StreamingResponse
 
-from main_app import config
-from main_app.cm.db import *
+import config
+from db import *
 from fastapi.middleware import Middleware
 from fastapi.middleware.cors import CORSMiddleware
 import base64
@@ -19,10 +19,10 @@ import shutil
 from pathlib import Path
 from fastapi.security import OAuth2PasswordRequestForm
 
-from main_app.cm.service import ServiceTemplate, authenticate_user, create_access_token, get_current_user, get_password_hash, \
+from service import ServiceTemplate, authenticate_user, create_access_token, get_current_user, get_password_hash, \
     get_current_active_user, HostService
 
-from main_app.cm.base_model import *
+from base_model import *
 
 import os
 

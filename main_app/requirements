@@ -5,3 +5,5 @@ passlib>=1.7.4
 python-multipart>=0.0.5
 urllib3>=1.26.15
 fastapi>=0.83.0
+psycopg2-binary
+requests<=2.29.0

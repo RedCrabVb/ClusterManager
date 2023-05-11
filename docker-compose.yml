@@ -4,11 +4,22 @@ version: '3.1'
 services:
 
   db:
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_PASSWORD: example
+    build: database/
 
-  app:
-    image: main_ai
+  app_ai:
+    build: main_ai/
+    ports:
+      - 5001:5001
     restart: always
+
+  app_main:
+    build: main_app/
+    ports:
+      - 5000:5000
+    restart: always
+
+
+#volumes:
+#  db:
+#  app:
+#  app_main:

@@ -3,12 +3,14 @@ from pathlib import Path
 
 import uvicorn
 
+import api
+
 if __name__ == '__main__':
     print('Start ClusterManager')
 
-    if not Path(main_app.cm.api.PrototypeInitFilesDir).exists():
-        Path(main_app.cm.api.PrototypeInitFilesDir).mkdir()
+    if not Path(api.PrototypeInitFilesDir).exists():
+        Path(api.PrototypeInitFilesDir).mkdir()
 
-    uvicorn.run(main_app.cm.api.app, host=sys.argv[1], port=int(sys.argv[2]), log_level="info")
+    uvicorn.run(api.app, host=sys.argv[1], port=int(sys.argv[2]), log_level="info")
 
 
