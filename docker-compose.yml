@@ -20,6 +20,8 @@ services:
 
   app_web:
     build: angular-project/
+    ports:
+      - 4200:4200
 
 #volumes:
 #  db:

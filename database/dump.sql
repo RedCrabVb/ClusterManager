@@ -128,5 +128,5 @@ CREATE TABLE public.user_cm (
 -- Data for Name: user_cm; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.user_cm VALUES ('alex', '$2b$12$9dlxMDYS2t3lnSUS15qYp.EvA8TT8xmrxz0g39Sai8g3zoT8.LBdq');
+INSERT INTO public.user_cm VALUES ('admin', '$2b$12$9dlxMDYS2t3lnSUS15qYp.EvA8TT8xmrxz0g39Sai8g3zoT8.LBdq');
 
