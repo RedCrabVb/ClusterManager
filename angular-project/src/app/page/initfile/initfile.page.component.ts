@@ -5,6 +5,7 @@ import { ModalService } from 'src/app/components/modal/modalService';
 import { IInitFile } from 'src/app/date/IInitfile';
 import { HttpErrorResponse } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-initfile',
@@ -28,12 +29,12 @@ export class InitFilePage implements OnInit {
   private handleError(error: HttpErrorResponse) {
     if (error.status === 0) {
       console.error('An error occurred:', error.error);
-      alert('An error occurred: ' + error.message);
+      Swal.fire('An error occurred: ' + error.message, 'error');
     } else {
       console.error(
         `Backend returned code ${error.status}, body was: `, error.error);
 
-      alert(`Backend returned code ${error.status}, body was: ` + error.message);
+      Swal.fire('Error', `Backend returned code ${error.status}, body was: ` + error.message, 'error');
     }
     return throwError(() => new Error('Something bad happened; please try again later.'));
   }
@@ -86,7 +87,7 @@ export class InitFilePage implements OnInit {
   sendInitFile() {
     const reader = new FileReader();
     if (this.fileToUpload == null) {
-      alert('Not found file');
+      Swal.fire('Error', 'Not found file', 'error');
       return;
     }
     reader.readAsDataURL(this.fileToUpload);
@@ -98,7 +99,7 @@ export class InitFilePage implements OnInit {
           .subscribe((res) => {
             console.log(res); 
             this.updateInitFile();
-            alert("success upload!");
+            Swal.fire('success', "success upload!", 'success');
           })
       }
     };

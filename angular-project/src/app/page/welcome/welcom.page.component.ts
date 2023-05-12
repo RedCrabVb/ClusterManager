@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { UserService } from 'src/app/services/user.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-welcome',
@@ -16,7 +17,7 @@ export class WelcomeComponent {
   updatePassword() {
     this.userService.updatePassword(this.newPassword.value).subscribe((res: any) => {
       console.log(res);
-      alert(res.Status);
+      Swal.fire('success', (res.Status), 'success');
       window.location.href = '/login';
     });
   }

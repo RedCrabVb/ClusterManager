@@ -24,6 +24,7 @@
     "ngx-bootstrap": "^10.2.0",
     "rxjs": "~7.5.0",
     "stack-typescript": "^1.0.4",
+    "sweetalert2": "^11.7.5",
     "zone.js": "~0.12.0"
   },
   "devDependencies": {

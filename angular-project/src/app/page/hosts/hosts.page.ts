@@ -5,6 +5,7 @@ import { IHost } from 'src/app/date/IHost';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { catchError, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-hosts',
@@ -23,12 +24,12 @@ export class HostsComponent implements OnInit {
     private handleError(error: HttpErrorResponse) {
         if (error.status === 0) {
             console.error('An error occurred:', error.error);
-            alert('An error occurred: ' + error.message);
+            Swal.fire('Error', 'An error occurred: ' + error.message, 'error');
         } else {
             console.error(
                 `Backend returned code ${error.status}, body was: `, error.error);
 
-            alert(`Backend returned code ${error.status}, body was: ` + error.message);
+            Swal.fire('Error', (`Backend returned code ${error.status}, body was: ` + error.message), 'error');
         }
         return throwError(() => new Error('Something bad happened; please try again later.'));
     }
@@ -84,7 +85,7 @@ export class HostsComponent implements OnInit {
         this.hostsService.addHosts(this.hostControl.value)
             .pipe(catchError(this.handleError))
             .subscribe((res: any) => {
-                alert(res.Status == 'Ok' ? 'Хост добавлен' : 'Ошибка ' + res['Status']);
+                res.Status == 'Ok' ? Swal.fire('success', 'Host add', 'success') : Swal.fire('Error', res['Status'], 'error');
                 console.log(res);
 
                 this.hostsService.getAllHosts().subscribe((res: any) => {
@@ -102,14 +103,13 @@ export class HostsComponent implements OnInit {
 
     testConnection(host: IHost) {
         console.log('test connection');
-        // const currentHost = this.hostControl.value;
         this.hostsService.testConnection(host)
             .pipe(catchError(this.handleError))
             .subscribe((res: any) => {
                 console.log(res); 
-                alert(res.Status == true ?
-                    'The connection is established: ' + host.hostname
-                    : 'Failed to connect to the server: ' + host.hostname)
+
+                res.Status == true ? Swal.fire('success', 'The connection is established: ' + host.hostname, 'success') : 
+                Swal.fire('error', 'Failed to connect to the server: ' + host.hostname, 'error');
             })
     }
 

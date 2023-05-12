@@ -13,6 +13,7 @@ import { ClusterData } from "src/app/date/clusterobject/clusterdata";
 import { IConfig } from "src/app/date/clusterobject/IConfig";
 import { HttpErrorResponse } from "@angular/common/http";
 import { catchError, throwError } from "rxjs";
+import Swal from "sweetalert2";
 
 class ServiceDecriptionFormControll {
     nameDescription: string;
@@ -95,12 +96,13 @@ export class ClusterComponenet implements OnInit {
     private handleError(error: HttpErrorResponse) {
         if (error.status === 0) {
             console.error('An error occurred:', error.error);
-            alert('An error occurred: ' + error.message);
+            // alert('An error occurred: ' + error.message);
+            Swal.fire('Error', 'An error occurred: ' + error.message, 'error')
         } else {
             console.error(
                 `Backend returned code ${error.status}, body was: `, error.error);
 
-            alert(`Backend returned code ${error.status}, body was: ` + error.message);
+            Swal.fire('Error', `Backend returned code ${error.status}, body was: ` + error.message, 'error');
         }
         return throwError(() => new Error('Something bad happened; please try again later.'));
     }
@@ -182,7 +184,7 @@ export class ClusterComponenet implements OnInit {
         this.hosts.forEach((v: IHost) => {
             if (v.hostname == hostname && v.username == username && this.service != null) {
                 this.clusterService.addHostToCluster(this.clusterObject.name, v, this.groupTragetAdd.value, this.service.extid).subscribe((res) => {
-                    alert("Связка прошла успешно");
+                    Swal.fire('Success', "The bundle was successful", 'success');
                     this.clusterService.getAllCluster().subscribe((res: any) => {
                         this.cluseters = res
                         this.clusterObjects = res

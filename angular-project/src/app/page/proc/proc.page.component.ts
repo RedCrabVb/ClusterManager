@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ProcStatusService } from '../../services/proc_status.service';
 import { ProcLog } from 'src/app/date/IProcLog';
 import { ActivatedRoute } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-proc',
@@ -15,6 +16,7 @@ export class ProcComponent implements OnInit {
     constructor(private procStatus: ProcStatusService, private activatedRoute: ActivatedRoute) {
 
     }
+    
     ngOnInit(): void {
         this.procStatus.getTaskStatuses().subscribe((res: any) => {
             this.procLogs = res;
