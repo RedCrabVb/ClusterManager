@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 @Component({
     selector: 'app-proc',
     templateUrl: './proc.page.component.html',
+    styleUrls: ["./proc.page.component.css"]
 })
 export class ProcComponent implements OnInit {
     procLogs: ProcLog[]

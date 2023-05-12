@@ -1,3 +1,13 @@
+@import "~bootstrap-icons/font/bootstrap-icons.css";
+
 .file-input {
     display: none;
+}
+
+.icon-success {
+    color: #5CB85C;
+}
+
+.icon-error {
+    color: #da0000;
 }

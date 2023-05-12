@@ -7,7 +7,7 @@
                         <th scope="col">Id</th>
                         <th scope="col">Extid action</th>
                         <th scope="col">Date Start</th>
-                        <th scope="col">Action</th>
+                        <th scope="col">Open</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -18,7 +18,7 @@
                             <td>{{item.extid_action}}</td>
                             <td>{{item.date_start}}</td>
                             <td>
-                                <button class="btn btn-info" (click)="openProcLog(item.id)">Open</button>
+                                <button class="btn btn-info" (click)="openProcLog(item.id)"><i class="bi bi-eye-fill"></i></button>
                             </td>
                         </tr>
                     </ng-container>

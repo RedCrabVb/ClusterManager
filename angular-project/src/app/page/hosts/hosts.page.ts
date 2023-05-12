@@ -11,6 +11,7 @@ import { Utils } from 'src/app/services/utils';
 @Component({
     selector: 'app-hosts',
     templateUrl: './hosts.page.html',
+    styleUrls: ['./host.page.css']
 })
 export class HostsComponent implements OnInit {
     hosts: IHost[] = [];

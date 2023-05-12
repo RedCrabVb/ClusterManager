@@ -1,6 +1,6 @@
 <div class="container-fluid">
 
-  <button class="btn btn-info" (click)="openModal('custom-modal-1')">Add</button>
+  <button class="btn btn-info" (click)="openModal('custom-modal-1')"><i class="bi bi-plus-circle"></i> Add</button>
 
 
   <table class="table">
@@ -10,7 +10,8 @@
         <th scope="col">Namefile</th>
         <th scope="col">Version</th>
         <th scope="col">License</th>
-        <th scope="col">Action</th>
+        <th scope="col">Open</th>
+        <th scope="col">Delete</th>
       </tr>
     </thead>
     <tbody>
@@ -20,11 +21,19 @@
           <td>{{item.namefile}}</td>
           <td>{{item.version}} </td>
           <td>
-            <a (click)="openLicenseText(item)" style="cursor: pointer;" class="link">{{item.license}}</a>
+            <a (click)="openLicenseText(item)" style="cursor: pointer;" class="link icon-success" ><i class="bi" [ngClass]="{'bi-eye icon-success': item.license, 'bi-exclamation icon-error': !item.license}" style="font-size: 30px"></i>
+            </a>
           </td>
           <td>
-            <button class="btn btn-primary m-1" (click)="createYourWwn(item.name, item.version)">Change</button>
-            <button class="btn btn-danger" (click)="deleteInitFile(item.name, item.version)">Delete</button>
+            <button class="btn btn-outline-info m-1" (click)="createYourWwn(item.name, item.version)">
+              <i class="bi bi-gear"></i>
+              </button>
+            
+          </td>
+          <td>
+            <button class="btn btn-danger" (click)="deleteInitFile(item.name, item.version)">
+              <i class="bi bi-trash"></i>
+              </button>
           </td>
         </tr>
       </ng-container>

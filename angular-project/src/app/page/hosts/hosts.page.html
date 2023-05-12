@@ -1,6 +1,6 @@
 <div class="container-fluid">
 
-  <button class="btn btn-info" (click)="openModal('custom-modal-1')">Add</button>
+  <button class="btn btn-info" (click)="openModal('custom-modal-1')"><i class="bi bi-plus-circle"></i> Add</button>
 
 
   <table class="table">
@@ -8,7 +8,8 @@
       <tr>
         <th scope="col">Hostname</th>
         <th scope="col">Username</th>
-        <th scope="col">Action</th>
+        <th scope="col">View</th>
+        <th scop="col">Delete</th>
       </tr>
     </thead>
     <tbody>
@@ -17,8 +18,13 @@
           <td>{{item.hostname }}</td>
           <td>{{item.username}}</td>
           <td>
-            <button class="btn btn-info m-1" (click)="openHost(item)">View</button>
-            <button class="btn btn-danger" (click)="deleteHost(item)">Delete</button>
+            <button class="btn btn-outline-info m-1" (click)="openHost(item)"><i class="bi bi-gear"></i> </button>
+
+          </td>
+          <td>
+            <button class="btn btn-danger" (click)="deleteHost(item)">
+              <i class="bi bi-trash"></i>
+              </button>
           </td>
         </tr>
       </ng-container>
@@ -76,8 +82,12 @@
 
       <div class="input-group input-group-sm mb-3">
         <div class="input-group-prepend">
-          <button class="btn btn-info" (click)="testConnection(hostControl.value)" [disabled]="!hostControl.valid">Test
-            connection</button> <BR>
+          <button class="btn btn-info" (click)="testConnection(hostControl.value)" [disabled]="!hostControl.valid">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-dash-fill" viewBox="0 0 16 16">
+              <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 1.59 2.498C8 14 8 13 8 12.5a4.5 4.5 0 0 1 5.026-4.47L15.964.686Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z"/>
+              <path d="M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Zm-5.5 0a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 0-1h-3a.5.5 0 0 0-.5.5Z"/>
+            </svg>
+            Test connection</button> <BR>
         </div>
       </div>
 
@@ -129,7 +139,12 @@
       <div class="input-group input-group-sm mb-3">
         <div class="input-group-prepend">
           <button class="btn btn-info" (click)="testConnection(hostViewControl.value)"
-            [disabled]="!hostViewControl.valid">Test connection</button> <BR>
+            [disabled]="!hostViewControl.valid">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-dash-fill" viewBox="0 0 16 16">
+              <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 1.59 2.498C8 14 8 13 8 12.5a4.5 4.5 0 0 1 5.026-4.47L15.964.686Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z"/>
+              <path d="M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Zm-5.5 0a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 0-1h-3a.5.5 0 0 0-.5.5Z"/>
+            </svg>
+             Test connection</button> <BR>
         </div>
       </div>
 

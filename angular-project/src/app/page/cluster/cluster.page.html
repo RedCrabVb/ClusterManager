@@ -1,13 +1,14 @@
 <div class=" border  container-fluid">
     <div class="row md-2">
         <div class="col-md-3">
-            <button class="btn btn-info" (click)="openModal('custom-modal-1')">Add</button>
+            <button class="btn btn-info" (click)="openModal('custom-modal-1')"><i class="bi bi-plus-circle"></i> Add</button>
             <table class="table">
                 <thead>
                     <tr>
                         <th scope="col">Name</th>
                         <th scope="col">Description</th>
-                        <th scope="col">Action</th>
+                        <th scope="col">Open</th>
+                        <th scope="col">Delete</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -16,8 +17,11 @@
                             <td>{{item.name }}</td>
                             <td>{{item.description}}</td>
                             <td>
-                                <button class="btn btn-info m-1" (click)="openCluster(item)">Open</button>
-                                <button class="btn btn-danger m-1" (click)="deleteCluster(item.name)">Delete</button>
+                                <button class="btn btn-outline-info m-1" (click)="openCluster(item)"><i class="bi bi-gear"></i> </button>
+                                
+                            </td>
+                            <td>
+                                <button class="btn btn-danger m-1" (click)="deleteCluster(item.name)"><i class="bi bi-trash"></i> </button>
                             </td>
                         </tr>
                     </ng-container>
@@ -45,7 +49,7 @@
                     </div>
                     <div class="m-2">
                         <button (click)="radioButton('main')" class="btn btn-secondary" class="btn btn-secondary">
-                            <h3>Main</h3>
+                            <h3>Main data</h3>
                         </button>
                     </div>
                 </div>
@@ -138,7 +142,7 @@
 
                     </div>
                     <div *ngIf="main">
-                        Main, Hello!
+                <span  style="white-space: pre-wrap">{{clusterDataToJson()}}</span>
                     </div>
                 </div>
             </div>
@@ -167,10 +171,10 @@
             </div>
             <div class="input-group input-group-sm mb-3">
                 <div class="input-group-prepend col-3">
-                    <span class="input-group-text col-12" id="initFile">Initfile for instal cluster</span>
+                    <span class="input-group-text col-12" id="initFile">PackageConfigfor instal cluster</span>
                 </div>
                 <select class="custom-select form-control" id="initFile" [formControl]="initfile">
-                    <ng-container *ngFor="let item of initfiles">
+                    <ng-container *ngFor="let item of filterFunctionPackageConfiuration()">
                         <option value="{{item.name}}|{{item.version}}">{{item.name}}|{{item.version}}</option>
                     </ng-container>
                 </select>

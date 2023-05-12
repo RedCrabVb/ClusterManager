@@ -3,11 +3,11 @@
 
     <div class="row md-2">
         <div *ngIf="treeView != null" class="col-md-3">
-            <button class="btn btn-success m-1" (click)="openModal('custom-modal-2')">add file</button>
-            <button class="btn btn-primary" (click)="loadZip()">Load result</button>
+            <button class="btn btn-success m-1" (click)="openModal('custom-modal-2')"><i class="bi bi-file-code"></i> Add</button>
+            <button class="btn btn-info" (click)="loadZip()"><i class="bi bi-upload"></i> Upload</button>
             <p>Path: {{currentContextPath.toArray().reverse().join('/')}}</p>
             <button *ngIf="currentContextPath.toArray().length > 0" (click)="backDir()"
-                class="btn btn-primary">back</button>
+                class="btn btn-info">back</button>
             <table class="table">
                 <thead>
                     <tr>
@@ -29,7 +29,7 @@
                             </td>
                             <td>{{item.type}}</td>
                             <td>
-                                <button class="btn btn-danger" (click)="deleteFile(item.name)">Delete</button>
+                                <button class="btn btn-danger" (click)="deleteFile(item.name)"><i class="bi bi-trash"></i></button>
                             </td>
                         </tr>
                     </ng-container>

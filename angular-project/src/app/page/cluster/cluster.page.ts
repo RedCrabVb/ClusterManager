@@ -30,7 +30,8 @@ class ServiceDecriptionFormControll {
 
 @Component({
     selector: 'cluster-component',
-    templateUrl: './cluster.page.html'
+    templateUrl: './cluster.page.html',
+    styleUrls: ["./cluster.page.css"]
 })
 export class ClusterComponenet implements OnInit {
     initfiles: IInitFile[] = dataInit;
@@ -254,6 +255,14 @@ export class ClusterComponenet implements OnInit {
         })
 
 
+    }
+
+    clusterDataToJson() {
+        return JSON.stringify(this.clusterObject.data, null, "    ");
+    }
+
+    filterFunctionPackageConfiuration() {
+        return this.initfiles.filter(b => b.license);
     }
 
     createCluseter() {

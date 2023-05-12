@@ -9,6 +9,7 @@ import { Stack } from 'stack-typescript';
 @Component({
     selector: 'app-prototype',
     templateUrl: './prototypeInitfile.page.component.html',
+    styleUrls: ["./prototypeInitfile.page.component.css"]
 })
 export class PrototypeInitfileComponent implements OnInit {
 

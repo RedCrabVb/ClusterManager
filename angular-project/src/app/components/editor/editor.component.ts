@@ -55,7 +55,9 @@ export class EditorComponent implements AfterViewInit, OnInit, OnChanges {
     }
 
     ngOnChanges() {
-        this.editorMirror.setValue(this.fileControl.controls['content'].value)
+        if (this.editorMirror != undefined) {
+            this.editorMirror.setValue(this.fileControl.controls['content'].value)
+        }
         //save form
     }
 
