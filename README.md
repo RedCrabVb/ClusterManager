@@ -2,13 +2,12 @@
 
 Cluster Manager - приложение, которое может подключаться к машинам по ssh, и устанавливать кластер Hadoop
 
-Архитекутра 
+# Архитекутра 
 
 ![img.png](img.png)
 
+# Установка и запуск
 
-# install 
-yum install python
-pip3 install -r requirements
-pip install fastapi
-pip3 install starlette uvicorn
+```commandline
+docker-compose up
+```
