@@ -1,7 +1,7 @@
 <div class=" border  container-fluid">
     <div class="row md-2">
         <div class="col-md-3">
-            <button class="btn btn-info" (click)="openModal('custom-modal-1')">Create cluster</button>
+            <button class="btn btn-info" (click)="openModal('custom-modal-1')">Add</button>
             <table class="table">
                 <thead>
                     <tr>
@@ -16,8 +16,8 @@
                             <td>{{item.name }}</td>
                             <td>{{item.description}}</td>
                             <td>
-                                <button class="btn btn-info" (click)="openCluster(item)">Open</button>
-                                <button class="btn btn-danger" (click)="deleteCluster(item.name)">Delete</button>
+                                <button class="btn btn-info m-1" (click)="openCluster(item)">Open</button>
+                                <button class="btn btn-danger m-1" (click)="deleteCluster(item.name)">Delete</button>
                             </td>
                         </tr>
                     </ng-container>
@@ -99,7 +99,7 @@
                         <ng-container *ngFor="let item of configs">
                             <tr>
                                 <td>{{item.filename }}</td>
-                                <button class="btn btn-info" (click)="openConfig(item)">Open</button>
+                                <button class="btn btn-info m-1" (click)="openConfig(item)">Open</button>
                             </tr>
                         </ng-container>
                     </div>

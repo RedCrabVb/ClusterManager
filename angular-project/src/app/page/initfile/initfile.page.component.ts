@@ -6,6 +6,7 @@ import { IInitFile } from 'src/app/date/IInitfile';
 import { HttpErrorResponse } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
 import Swal from 'sweetalert2';
+import { Utils } from 'src/app/services/utils';
 
 @Component({
   selector: 'app-initfile',
@@ -25,19 +26,6 @@ export class InitFilePage implements OnInit {
 
   }
 
-  
-  private handleError(error: HttpErrorResponse) {
-    if (error.status === 0) {
-      console.error('An error occurred:', error.error);
-      Swal.fire('An error occurred: ' + error.message, 'error');
-    } else {
-      console.error(
-        `Backend returned code ${error.status}, body was: `, error.error);
-
-      Swal.fire('Error', `Backend returned code ${error.status}, body was: ` + error.message, 'error');
-    }
-    return throwError(() => new Error('Something bad happened; please try again later.'));
-  }
 
   ngOnInit(): void {
     this.updateInitFile();
@@ -45,7 +33,7 @@ export class InitFilePage implements OnInit {
 
   updateInitFile() {
     this.initFileService.getAllInitfiles()
-    .pipe(catchError(this.handleError))
+    .pipe(catchError(Utils.handleError))
     .subscribe((initfiles: any) => {
       console.log(initfiles);
       this.initfiles = initfiles
@@ -59,21 +47,44 @@ export class InitFilePage implements OnInit {
 
   acceptLicense() {
     this.initFileService.acceptLicense(this.currentItemInitFile.name, this.currentItemInitFile.version)
-    .pipe(catchError(this.handleError))
+    .pipe(catchError(Utils.handleError))
     .subscribe((initfiles: any) => {
       console.log(initfiles);
       this.updateInitFile();
+      Swal.fire('Success', 'accept ok', 'success');
+      this.closeModal('custom-modal-2')
     });
   }
 
   deleteInitFile(name: string, version: string) {
-    this.initFileService.deleteFile(name, version)
-      .pipe(catchError(this.handleError))
-      .subscribe((res: any) => { 
-        console.log(res);
-        this.updateInitFile();
-        this.closeModal('custom-modal-2');
-       });
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Are you sure you want to delete the package confiugration?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, keep it',
+    }).then((result) => {
+
+      if (result.isConfirmed) {
+
+        this.initFileService.deleteFile(name, version)
+        .pipe(catchError(Utils.handleError))
+        .subscribe((res: any) => { 
+          console.log(res);
+          this.updateInitFile();
+          this.closeModal('custom-modal-2');
+         });
+
+      } else if (result.isDismissed) {
+
+        console.log('Clicked No, package confiugration is safe!');
+
+      }
+    })
+
+
+
   }
 
   createYourWwn(name: string, version: string) {
@@ -95,7 +106,7 @@ export class InitFilePage implements OnInit {
       console.log(reader.result);
       if (reader.result != undefined) {
         this.initFileService.uploadFile(this.namefile, reader.result.toString(), this.nameuser)
-          .pipe(catchError(this.handleError))
+          .pipe(catchError(Utils.handleError))
           .subscribe((res) => {
             console.log(res); 
             this.updateInitFile();

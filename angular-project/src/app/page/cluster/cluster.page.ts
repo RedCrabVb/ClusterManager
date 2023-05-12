@@ -14,6 +14,7 @@ import { IConfig } from "src/app/date/clusterobject/IConfig";
 import { HttpErrorResponse } from "@angular/common/http";
 import { catchError, throwError } from "rxjs";
 import Swal from "sweetalert2";
+import { Utils } from "src/app/services/utils";
 
 class ServiceDecriptionFormControll {
     nameDescription: string;
@@ -75,36 +76,22 @@ export class ClusterComponenet implements OnInit {
 
     ngOnInit(): void {
         this.initFileService.getAllInitfiles()
-            .pipe(catchError(this.handleError))
+            .pipe(catchError(Utils.handleError))
             .subscribe((res: any) => {
                 this.initfiles = res;
             });
         this.clusterService.getAllCluster()
-            .pipe(catchError(this.handleError))
+            .pipe(catchError(Utils.handleError))
             .subscribe((res: any) => {
                 this.cluseters = res;
                 this.clusterObjects = res;
                 this.clusterObject = res[0];
             });
         this.hostsService.getAllHosts()
-            .pipe(catchError(this.handleError))
+            .pipe(catchError(Utils.handleError))
             .subscribe((res: any) => {
                 this.hosts = res;
             });
-    }
-
-    private handleError(error: HttpErrorResponse) {
-        if (error.status === 0) {
-            console.error('An error occurred:', error.error);
-            // alert('An error occurred: ' + error.message);
-            Swal.fire('Error', 'An error occurred: ' + error.message, 'error')
-        } else {
-            console.error(
-                `Backend returned code ${error.status}, body was: `, error.error);
-
-            Swal.fire('Error', `Backend returned code ${error.status}, body was: ` + error.message, 'error');
-        }
-        return throwError(() => new Error('Something bad happened; please try again later.'));
     }
 
 
@@ -117,8 +104,8 @@ export class ClusterComponenet implements OnInit {
         })
         if (actions != undefined && serviceClusterData != undefined) {
             this.clusterService.runAction(this.clusterObject.name, actions, serviceClusterData?.extid, shellParameters)
-                .pipe(catchError(this.handleError))
-                .subscribe((res: any) => { 
+                .pipe(catchError(Utils.handleError))
+                .subscribe((res: any) => {
                     window.location.href = '/proc_status?proc_id=' + res.ProcId;
                     console.log(res);
                 });
@@ -198,7 +185,7 @@ export class ClusterComponenet implements OnInit {
     saveHostInCluster() {
         if (this.service != null) {
             this.clusterService.saveHost(this.clusterObject.name, this.service?.extid)
-                .pipe(catchError(this.handleError))
+                .pipe(catchError(Utils.handleError))
                 .subscribe((res) => console.log(res))
         }
     }
@@ -216,7 +203,7 @@ export class ClusterComponenet implements OnInit {
 
             this.editConfig = true;
             this.clusterService.getListConfg(this.clusterObject.name)
-                .pipe(catchError(this.handleError))
+                .pipe(catchError(Utils.handleError))
                 .subscribe((res: any) => {
                     console.log(res);
                     this.configs = res;
@@ -233,7 +220,7 @@ export class ClusterComponenet implements OnInit {
     updateConfig(): void {
         this.clusterService
             .updateConfigFile(this.clusterObject.name, this.currentConfig.value, this.currentConfigContent.value)
-            .pipe(catchError(this.handleError))
+            .pipe(catchError(Utils.handleError))
             .subscribe((res: any) => {
                 console.log(res);
                 this.clusterService.getListConfg(this.clusterObject.name).subscribe((res: any) => {
@@ -244,7 +231,29 @@ export class ClusterComponenet implements OnInit {
     }
 
     deleteCluster(nameCluster: string | null) {
-        this.clusterService.deleteCluster(nameCluster).subscribe((res: any) => { console.log(res); this.ngOnInit(); })
+
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Are you sure you want to delete the cluster?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, keep it',
+        }).then((result) => {
+
+            if (result.isConfirmed) {
+
+                this.clusterService.deleteCluster(nameCluster).subscribe((res: any) => { console.log(res); this.ngOnInit(); })
+
+            } else if (result.isDismissed) {
+
+                console.log('Clicked No, cluster is safe!');
+
+            }
+        })
+
+
     }
 
     createCluseter() {
@@ -256,7 +265,7 @@ export class ClusterComponenet implements OnInit {
             "initfile": this.initfile.value
         }
         this.clusterService.createCluster(cluseterNew)
-            .pipe(catchError(this.handleError))
+            .pipe(catchError(Utils.handleError))
             .subscribe((res) => {
                 console.log(res)
 

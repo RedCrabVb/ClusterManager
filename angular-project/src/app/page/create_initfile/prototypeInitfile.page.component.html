@@ -3,7 +3,7 @@
 
     <div class="row md-2">
         <div *ngIf="treeView != null" class="col-md-3">
-            <button class="btn btn-success" (click)="openModal('custom-modal-2')">add file</button>
+            <button class="btn btn-success m-1" (click)="openModal('custom-modal-2')">add file</button>
             <button class="btn btn-primary" (click)="loadZip()">Load result</button>
             <p>Path: {{currentContextPath.toArray().reverse().join('/')}}</p>
             <button *ngIf="currentContextPath.toArray().length > 0" (click)="backDir()"
@@ -64,7 +64,7 @@
                 </div>
 
                 <editor id="editor" [fileControl]="fileControl" style="height: 80%;" [sizeEditor]="900">
-            </editor>
+                </editor>
 
                 <div class="m-3">
                     <button class="btn btn-info" (click)="sendContextAndText()">Help</button>

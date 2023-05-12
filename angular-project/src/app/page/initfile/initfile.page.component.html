@@ -1,6 +1,6 @@
 <div class="container-fluid">
 
-  <button class="btn btn-info" (click)="openModal('custom-modal-1')">Add initfile</button>
+  <button class="btn btn-info" (click)="openModal('custom-modal-1')">Add</button>
 
 
   <table class="table">
@@ -23,7 +23,7 @@
             <a (click)="openLicenseText(item)" style="cursor: pointer;" class="link">{{item.license}}</a>
           </td>
           <td>
-            <button class="btn btn-primary" (click)="createYourWwn(item.name, item.version)">Change</button>
+            <button class="btn btn-primary m-1" (click)="createYourWwn(item.name, item.version)">Change</button>
             <button class="btn btn-danger" (click)="deleteInitFile(item.name, item.version)">Delete</button>
           </td>
         </tr>
@@ -36,12 +36,12 @@
 
 <jw-modal id="custom-modal-1">
   <div class="max-w-2xl container mx-auto pt-5">
-    <h1>InitFile add</h1>
+    <h1>Add PackageConfig</h1>
     <div>
 
       <div class="input-group input-group-sm mb-3">
         <div class="input-group-prepend">
-          <span class="input-group-text" id="nameInitFile">Name initfile</span>
+          <span class="input-group-text" id="nameInitFile">Name</span>
         </div>
         <input type="text" name="nameInitFile" aria-label="Small" aria-describedby="nameInitFile"
           (keyup)="updateNameUser($event)" />
@@ -49,7 +49,7 @@
 
       <div class="input-group mb-3">
         <div class="input-group-prepend">
-          <span class="input-group-text">Upload InitFile</span>
+          <span class="input-group-text">Upload</span>
         </div>
         <div class="input-group-prepend">
           <label for="inputGroupFile" class="form-control">{{ namefile ? namefile : 'Choose file'}}</label>
@@ -62,7 +62,7 @@
 
       <div class="input-group input-group-sm mb-3">
         <div class="input-group-prepend">
-          <button class="btn btn-info" (click)="sendInitFile()">Send InitFile</button> <BR>
+          <button class="btn btn-info" (click)="sendInitFile()">Send</button> <BR>
         </div>
       </div>
 
@@ -78,13 +78,14 @@
   <div class="max-w-2xl container mx-auto pt-5" *ngIf="currentItemInitFile != null">
     <h1>License</h1>
     <h2>{{currentItemInitFile.name}}{{currentItemInitFile.version}}</h2>
-    <div  class="input-group input-group-sm mb-3" style="height: 600px; overflow: scroll;">
+    <div class="input-group input-group-sm mb-3" style="height: 600px; overflow: scroll;">
       <p style="white-space: pre-wrap">{{currentItemInitFile.license_text}}</p>
     </div>
-    
+
     <div class="input-group input-group-sm mb-3">
       <div class="input-group-prepend">
-        <button class="btn btn-primary" (click)="acceptLicense()" [disabled]="currentItemInitFile.license">I accept</button>
+        <button class="btn btn-primary" (click)="acceptLicense()" [disabled]="currentItemInitFile.license">I
+          accept</button>
       </div>
     </div>
 

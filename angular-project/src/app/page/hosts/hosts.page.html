@@ -1,6 +1,6 @@
 <div class="container-fluid">
 
-  <button class="btn btn-info" (click)="openModal('custom-modal-1')">Add host</button>
+  <button class="btn btn-info" (click)="openModal('custom-modal-1')">Add</button>
 
 
   <table class="table">
@@ -17,7 +17,7 @@
           <td>{{item.hostname }}</td>
           <td>{{item.username}}</td>
           <td>
-            <button class="btn btn-info" (click)="openHost(item)">Edit</button>
+            <button class="btn btn-info m-1" (click)="openHost(item)">View</button>
             <button class="btn btn-danger" (click)="deleteHost(item)">Delete</button>
           </td>
         </tr>
@@ -48,7 +48,7 @@
           <input type="text" name="Username" aria-label="Small" aria-describedby="Username"
             formControlName="username" />
         </div>
-  
+
         <div class="input-group input-group-sm mb-3">
           <div class="input-group-prepend">
             <span class="input-group-text" id="Password">Password</span>
@@ -56,16 +56,16 @@
           <input type="text" name="Password" aria-label="Small" aria-describedby="Password"
             formControlName="password" />
         </div>
-  
+<!-- 
         <div class="md-form mb-3">
           <div class="input-group-prepend">
             <span class="input-group-text" id="PrivateKey">Private key</span>
           </div>
-          <textarea type="text" name="PrivateKey" aria-label="Small" class="md-textarea form-control" aria-describedby="Password"
-            formControlName="private_key" ></textarea>
-        </div>
-  
-  
+          <textarea type="text" name="PrivateKey" aria-label="Small" class="md-textarea form-control"
+            aria-describedby="Password" formControlName="private_key"></textarea>
+        </div> -->
+
+
       </div>
 
       <div class="input-group input-group-sm mb-3">
@@ -76,7 +76,8 @@
 
       <div class="input-group input-group-sm mb-3">
         <div class="input-group-prepend">
-          <button class="btn btn-info" (click)="testConnection(hostControl.value)" [disabled]="!hostControl.valid">Test connection</button> <BR>
+          <button class="btn btn-info" (click)="testConnection(hostControl.value)" [disabled]="!hostControl.valid">Test
+            connection</button> <BR>
         </div>
       </div>
 
@@ -104,30 +105,31 @@
         <div class="input-group-prepend">
           <span class="input-group-text" id="Username">Username</span>
         </div>
-        <input type="text" name="Username" aria-label="Small" aria-describedby="Username"
-          formControlName="username" [readOnly]="true" />
+        <input type="text" name="Username" aria-label="Small" aria-describedby="Username" formControlName="username"
+          [readOnly]="true" />
       </div>
 
       <div class="input-group input-group-sm mb-3">
         <div class="input-group-prepend">
           <span class="input-group-text" id="Password">Password</span>
         </div>
-        <input type="text" name="Password" aria-label="Small" aria-describedby="Password"
-          formControlName="password" [readOnly]="true" />
+        <input type="text" name="Password" aria-label="Small" aria-describedby="Password" formControlName="password"
+          [readOnly]="true" />
       </div>
 
-      <div class="md-form mb-3">
+      <!-- <div class="md-form mb-3">
         <div class="input-group-prepend">
           <span class="input-group-text" id="PrivateKey">Private key</span>
         </div>
-        <textarea type="text" name="PrivateKey" aria-label="Small" class="md-textarea form-control" aria-describedby="Password"
-          formControlName="private_key" [readOnly]="true"></textarea>
-      </div>
+        <textarea type="text" name="PrivateKey" aria-label="Small" class="md-textarea form-control"
+          aria-describedby="Password" formControlName="private_key" [readOnly]="true"></textarea>
+      </div> -->
 
 
-      <div class="input-group input-group-sm">
+      <div class="input-group input-group-sm mb-3">
         <div class="input-group-prepend">
-          <button class="btn btn-info" (click)="testConnection(hostViewControl.value)" [disabled]="!hostViewControl.valid">Test connection</button> <BR>
+          <button class="btn btn-info" (click)="testConnection(hostViewControl.value)"
+            [disabled]="!hostViewControl.valid">Test connection</button> <BR>
         </div>
       </div>
 

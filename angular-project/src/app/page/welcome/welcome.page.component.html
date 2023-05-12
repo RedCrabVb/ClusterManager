@@ -7,24 +7,30 @@
     </div>
     <div>
         <h2>Abbreviations</h2>
-        <strong>Host</strong> is a representation of a physical or virtual machine. The host must be accessible via SSH, and it does not matter whether it is physical (hardware) or virtual (cloud).
-        <br><strong>Service</strong> is software running on hosts. A service can be either a single entity or a logical entity that combines several components (for example, in the case of HDFS).
+        <strong>Host</strong> is a representation of a physical or virtual machine. The host must be accessible via SSH,
+        and it does not matter whether it is physical (hardware) or virtual (cloud).
+        <br><strong>Service</strong> is software running on hosts. A service can be either a single entity or a logical
+        entity that combines several components (for example, in the case of HDFS).
         <br><strong>Cluster</strong> is a set of services running on a set of hosts
         <br><strong>InitFiles</strong> is a CM object that is needed to install and deploy services.
     </div>
-    
-    <h3>Update password</h3>
-    <div class="input-group input-group-sm mb-3">
-        <div class="input-group-prepend">
-            <span class="input-group-text" id="newPassword">New password</span>
-        </div>
-        <input type="text" name="newPassword" aria-label="Small" aria-describedby="newPassword"
-            [formControl]="newPassword" />
 
-    </div>
-    <div class="input-group input-group-sm mb-3">
-        <div class="input-group-prepend">
-            <button class="btn btn-info" (click)="updatePassword()">Update</button> <BR>
+    <div  class="mb-3" style="padding-top: 10%;">
+        <h3>Update password</h3>
+        <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="newPassword">New password</span>
+            </div>
+            <input type="text" name="newPassword" aria-label="Small" aria-describedby="newPassword"
+                [formControl]="newPassword" />
+    
+        </div>
+    
+        <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+                <button class="btn btn-info" (click)="updatePassword()">Update</button> <BR>
+            </div>
         </div>
     </div>
+ 
 </div>

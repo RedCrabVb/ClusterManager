@@ -6,6 +6,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { catchError, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import Swal from 'sweetalert2';
+import { Utils } from 'src/app/services/utils';
 
 @Component({
     selector: 'app-hosts',
@@ -21,26 +22,13 @@ export class HostsComponent implements OnInit {
 
     }
 
-    private handleError(error: HttpErrorResponse) {
-        if (error.status === 0) {
-            console.error('An error occurred:', error.error);
-            Swal.fire('Error', 'An error occurred: ' + error.message, 'error');
-        } else {
-            console.error(
-                `Backend returned code ${error.status}, body was: `, error.error);
-
-            Swal.fire('Error', (`Backend returned code ${error.status}, body was: ` + error.message), 'error');
-        }
-        return throwError(() => new Error('Something bad happened; please try again later.'));
-    }
-
     ngOnInit(): void {
-        this.chnageHostControl({username: '', hostname: '', password: '', private_key: ''});
-        this.chnageHostViewControl({username: '', hostname: '', password: '', private_key: ''});
+        this.chnageHostControl({ username: '', hostname: '', password: '', private_key: '' });
+        this.chnageHostViewControl({ username: '', hostname: '', password: '', private_key: '' });
         this.hostControl.valueChanges.subscribe((host) => console.log(host))
 
         this.hostsService.getAllHosts()
-            .pipe(catchError(this.handleError))
+            .pipe(catchError(Utils.handleError))
             .subscribe((res: any) => {
                 console.log(res);
                 this.hosts = res;
@@ -66,12 +54,33 @@ export class HostsComponent implements OnInit {
     }
 
     deleteHost(host: IHost) {
-        this.hostsService.deleteHost(host).subscribe((res) => {
-            console.log(res);
-            this.hostsService.getAllHosts().subscribe((res: any) => {
-                this.hosts = res;
-            })
-        });
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Are you sure you want to delete the host?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, keep it',
+        }).then((result) => {
+
+            if (result.isConfirmed) {
+
+                this.hostsService.deleteHost(host).subscribe((res) => {
+                    console.log(res);
+                    this.hostsService.getAllHosts().subscribe((res: any) => {
+                        this.hosts = res;
+                    })
+                });
+
+            } else if (result.isDismissed) {
+
+                console.log('Clicked No, host is safe!');
+
+            }
+        })
+
+
 
     }
 
@@ -83,16 +92,16 @@ export class HostsComponent implements OnInit {
 
     addHost() {
         this.hostsService.addHosts(this.hostControl.value)
-            .pipe(catchError(this.handleError))
+            .pipe(catchError(Utils.handleError))
             .subscribe((res: any) => {
                 res.Status == 'Ok' ? Swal.fire('success', 'Host add', 'success') : Swal.fire('Error', res['Status'], 'error');
                 console.log(res);
 
                 this.hostsService.getAllHosts().subscribe((res: any) => {
                     this.hosts = res;
-                    
+
                     this.chnageHostViewControl(this.hostControl.value);
-                    this.chnageHostControl({username: '', hostname: '', password: '', private_key: ''});
+                    this.chnageHostControl({ username: '', hostname: '', password: '', private_key: '' });
 
                     this.closeModal('custom-modal-1');
                     this.openModal('custom-modal-2');
@@ -104,12 +113,12 @@ export class HostsComponent implements OnInit {
     testConnection(host: IHost) {
         console.log('test connection');
         this.hostsService.testConnection(host)
-            .pipe(catchError(this.handleError))
+            .pipe(catchError(Utils.handleError))
             .subscribe((res: any) => {
-                console.log(res); 
+                console.log(res);
 
-                res.Status == true ? Swal.fire('success', 'The connection is established: ' + host.hostname, 'success') : 
-                Swal.fire('error', 'Failed to connect to the server: ' + host.hostname, 'error');
+                res.Status == true ? Swal.fire('success', 'The connection is established: ' + host.hostname, 'success') :
+                    Swal.fire('error', 'Failed to connect to the server: ' + host.hostname, 'error');
             })
     }
 

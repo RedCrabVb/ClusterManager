@@ -16,7 +16,7 @@ export class ProcComponent implements OnInit {
     constructor(private procStatus: ProcStatusService, private activatedRoute: ActivatedRoute) {
 
     }
-    
+
     ngOnInit(): void {
         this.procStatus.getTaskStatuses().subscribe((res: any) => {
             this.procLogs = res;
