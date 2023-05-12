@@ -5,7 +5,7 @@ import { IInitFile } from "src/app/date/IInitfile";
 import { ClusterService } from "src/app/services/cluster.service";
 import { InitFileService } from "src/app/services/initfile.service";
 import { InitFile as dataInit } from 'src/app/date/initfile';
-import { FormControl } from "@angular/forms";
+import { FormControl, FormGroup } from "@angular/forms";
 import { ClusterObject } from "src/app/date/clusterobject/clusterobject";
 import { IHost } from "src/app/date/IHost";
 import { HostsService } from "src/app/services/hosts.service";
@@ -49,7 +49,8 @@ export class ClusterComponenet implements OnInit {
 
     clusterObject: ClusterObject;
     selectServiceInClusterObject = new FormControl('');
-    serviceDecriptionVar: ServiceDecriptionFormControll[] = []
+    serviceDecriptionVar: ServiceDecriptionFormControll[] = [];
+    mainContent: FormGroup;
 
     service: ClusterData | null;
 
@@ -258,7 +259,13 @@ export class ClusterComponenet implements OnInit {
     }
 
     clusterDataToJson() {
-        return JSON.stringify(this.clusterObject.data, null, "    ");
+        let newValue = JSON.stringify(this.clusterObject.data, null, "    ");
+        if (this.mainContent == undefined || this.mainContent.controls['content'].value != newValue) {
+            this.mainContent = new FormGroup({
+                content: new FormControl(newValue)
+            });
+        }
+        return this.mainContent ;
     }
 
     filterFunctionPackageConfiuration() {

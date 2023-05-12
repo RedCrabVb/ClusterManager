@@ -1,4 +1,6 @@
-<div class=" border  container-fluid">
+<h1 style="text-align: center;">Cluster</h1>
+
+<div class="container-fluid">
     <div class="row md-2">
         <div class="col-md-3">
             <button class="btn btn-info" (click)="openModal('custom-modal-1')"><i class="bi bi-plus-circle"></i> Add</button>
@@ -142,6 +144,9 @@
 
                     </div>
                     <div *ngIf="main">
+                        <h1>Main</h1>
+                        <editor id="editor" [fileControl]="clusterDataToJson()" style="height: 80%;" [sizeEditor]="900">
+                        </editor>
                 <span  style="white-space: pre-wrap">{{clusterDataToJson()}}</span>
                     </div>
                 </div>
